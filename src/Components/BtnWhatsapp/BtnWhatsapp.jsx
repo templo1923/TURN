@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import './BtnWhatsapp.css';
-import whatsappIcon from '../../images/wpp.png';
 import Modal from 'react-modal';
 import baseURL from '../url';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -58,7 +57,7 @@ export default function BtnWhatsapp() {
     return (
         <div className='containWpp'>
             <button className='btnWhatsapp' onClick={openModal}>
-                <img src={whatsappIcon} alt="whatsappIcon" />
+                <i className='fa fa-whatsapp'></i>
             </button>
 
             <Modal
@@ -100,7 +99,7 @@ export default function BtnWhatsapp() {
                                         onClick={() => setSelectedContact(item)}
                                     >
                                         {item.telefono}
-                                        <img src={whatsappIcon} alt="whatsappIcon" />
+                                        <i className='fa fa-whatsapp'></i>
                                     </button>
                                 ))}
                             </div>

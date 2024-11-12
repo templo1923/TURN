@@ -21,7 +21,7 @@ export default function HeaderDash() {
                 <Estado />
                 <ButonInstallAppNav />
                 <Anchor to={'/'} className='link'>
-                    <FontAwesomeIcon icon={faHome} /> Tienda
+                    <FontAwesomeIcon icon={faHome} /> Principal
                 </Anchor>
                 <QrGenerator />
                 <InfoUser />

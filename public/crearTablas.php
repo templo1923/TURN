@@ -64,6 +64,7 @@ try {
         descripcion TEXT NOT NULL,
         titulo VARCHAR(255) NOT NULL,
         precio INT(100),
+        telefono VARCHAR(20) NOT NULL,
         idCategoria INT(100) NOT NULL,
         idSubCategoria INT(100),
         imagen1 VARCHAR(900),
@@ -72,7 +73,15 @@ try {
     )";
     crearTablaSiNoExiste($conexion, 'servicios', $consultaServicios);
 
-
+    // Crear tabla 'dias_horarios' si no existe
+    $consultaDiasHorarios = "CREATE TABLE IF NOT EXISTS `dias_horarios` (
+    idDiasHorarios INT(11) AUTO_INCREMENT PRIMARY KEY,
+    dias JSON NOT NULL,
+    estado VARCHAR(30) NOT NULL,
+    idServicio INT(11) NOT NULL,
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+    crearTablaSiNoExiste($conexion, 'dias_horarios', $consultaDiasHorarios);
 
     // Crear tabla 'turnos'
     $consultaTurnos = "CREATE TABLE IF NOT EXISTS `turnos` (

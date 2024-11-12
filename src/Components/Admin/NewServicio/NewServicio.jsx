@@ -28,7 +28,7 @@ export default function NewServicio() {
     const [verItems, setVerItems] = useState('No');
     const [customStock, setCustomStock] = useState('');
     const [cantidadStock, setCantidadStock] = useState(''); // Nuevo estado para cantidad de stock manual
-
+    const [telefono, setTelefono] = useState('');
     useEffect(() => {
         cargarCategoriasYSubcategorias();
     }, []);
@@ -363,7 +363,17 @@ export default function NewServicio() {
                                         <option value="No-Disponible">No-Disponible</option>
                                     </select>
                                 </fieldset>
-
+                                <fieldset>
+                                    <legend>Telefono (*)</legend>
+                                    <input
+                                        type="text"
+                                        id="telefono"
+                                        name="telefono"
+                                        required
+                                        value={telefono}
+                                        onChange={(e) => setTelefono(e.target.value)}
+                                    />
+                                </fieldset>
                                 <fieldset id='descripcion'>
                                     <legend>Descripción  </legend>
                                     <textarea

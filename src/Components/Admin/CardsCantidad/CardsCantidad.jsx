@@ -23,7 +23,7 @@ export default function CardsCantidad() {
     }, []);
 
     const cargarServicios = () => {
-        fetch(`${baseURL}/seviciosGet.php`, {
+        fetch(`${baseURL}/serviciosGet.php`, {
             method: 'GET',
         })
             .then(response => response.json())

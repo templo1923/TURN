@@ -15,7 +15,6 @@ export default function IndexLayout() {
             <TitleMeta />
             {isScreenLarge ?
                 <>
-                    <Nabvar />
                     <Outlet />
                     <Footer />
                     <BtnWhatsapp />

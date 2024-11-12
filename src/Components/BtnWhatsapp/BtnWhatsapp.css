@@ -4,7 +4,7 @@
 
 .btnWhatsapp{
     position: fixed;
-    bottom: 140px;
+    bottom: 40px;
     right: 0;
     left: 92%;
     background-color: rgb(30, 184, 30);
@@ -17,7 +17,7 @@
    justify-content: center;
    align-items: center;
    border: none;
-   font-size: 17px;
+   font-size: 23px;
    z-index: 2;
    cursor: pointer;
    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.196);
@@ -41,7 +41,7 @@
 
 }
 .modal-wpp{
-    bottom: 50px;
+    bottom: 40px;
     background-color: var(--blanco);
     width: 20rem;
     height: 23rem;
@@ -53,11 +53,7 @@
     position: fixed;
     
 }
-.containModalWpp{
-    
-   
 
-}
 .headerWpp{
     background-color: rgb(30, 184, 30);
     width: 100%;
@@ -133,7 +129,7 @@
 @media (max-width: 900px) {
     .btnWhatsapp{
         position: fixed;
-       bottom: 100px;
+       bottom: 30px;
         right: 0;
         left: 80%;
        

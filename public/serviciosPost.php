@@ -31,6 +31,7 @@ try {
         $idCategoria = $_POST['idCategoria'];
         $idSubCategoria = $_POST['idSubCategoria'];
         $estado = $_POST['estado'];
+        $telefono = $_POST['telefono'];
 
         // Validar que el título no contenga caracteres prohibidos
         if (strpos($titulo, '/') !== false || strpos($titulo, '\\') !== false) {
@@ -38,7 +39,7 @@ try {
             exit;
         }
 
-        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado)) {
+        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado) && !empty($telefono)) {
 
             // Verificar si se envió una imagen
             $imagenPresente = isset($_FILES['imagen1']);
@@ -66,8 +67,8 @@ try {
                 }
 
                 // Almacenar datos en la tabla `servicios`
-                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1) 
-                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1)";
+                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1, telefono) 
+                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1, :telefono)";
                 $stmt = $conexion->prepare($sqlInsert);
                 $stmt->bindParam(':titulo', $titulo);
                 $stmt->bindParam(':descripcion', $descripcion);
@@ -76,6 +77,7 @@ try {
                 $stmt->bindParam(':idSubCategoria', $idSubCategoria);
                 $stmt->bindParam(':estado', $estado);
                 $stmt->bindParam(':imagen1', $rutaImagenCompleta);
+                $stmt->bindParam(':telefono', $telefono);
                 $stmt->execute();
 
                 // Obtener el ID de la última inserción

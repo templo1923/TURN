@@ -37,7 +37,7 @@ try {
         $nuevaSubCategoria = isset($data['nuevaSubCategoria']) ? $data['nuevaSubCategoria'] : null;
         $nuevoPrecio = isset($data['nuevoPrecio']) ? $data['nuevoPrecio'] : null;
         $nuevoEstado = isset($data['nuevoEstado']) ? $data['nuevoEstado'] : null; 
-
+        $nuevoTelefono = isset($data['nuevoTelefono']) ? $data['nuevoTelefono'] : null; 
         // Validar que el título no contenga '/' o '\'
         if (strpos($nuevoTitulo, '/') !== false || strpos($nuevoTitulo, '\\') !== false) {
             echo json_encode(["error" => "El título no debe contener '/' o '\\'."]);
@@ -55,7 +55,7 @@ try {
             $nuevaCategoria = $row['idCategoria'];
         }
 
-        $sqlUpdate = "UPDATE servicios SET descripcion = :descripcion, titulo = :titulo, idCategoria = :idCategoria, idSubCategoria = :idSubCategoria, precio = :precio, estado = :estado
+        $sqlUpdate = "UPDATE servicios SET descripcion = :descripcion, titulo = :titulo, idCategoria = :idCategoria, idSubCategoria = :idSubCategoria, precio = :precio, estado = :estado, telefono = :telefono
         WHERE idServicio = :idServicio";
         $sentenciaUpdate = $conexion->prepare($sqlUpdate);
         $sentenciaUpdate->bindParam(':descripcion', $nuevaDescripcion);
@@ -64,6 +64,7 @@ try {
         $sentenciaUpdate->bindParam(':idSubCategoria', $nuevaSubCategoria); 
         $sentenciaUpdate->bindParam(':precio', $nuevoPrecio);
         $sentenciaUpdate->bindParam(':estado', $nuevoEstado); 
+        $sentenciaUpdate->bindParam(':telefono', $nuevoTelefono); 
         $sentenciaUpdate->bindParam(':idServicio', $idServicio, PDO::PARAM_INT);
 
         if ($sentenciaUpdate->execute()) {

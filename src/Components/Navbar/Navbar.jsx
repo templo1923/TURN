@@ -7,7 +7,7 @@ import 'swiper/swiper-bundle.css';
 import Profile from '../Profile/Profile';
 import './Navbar.css';
 import InputSerach from '../InputSerach/InputSearchs';
-
+import Favoritos from '../Favoritos/Favoritos';
 export default function Navbar() {
     const [isOpen, setIsOpen] = useState(false);
     const [images, setImages] = useState([]);
@@ -80,6 +80,8 @@ export default function Navbar() {
 
                 <div className='deFLexNavs'>
                     <InputSerach />
+                    <Favoritos />
+
                     <div className={`nav_toggle ${isOpen && "open"}`} onClick={() => setIsOpen(!isOpen)}>
                         <span></span>
                         <span></span>

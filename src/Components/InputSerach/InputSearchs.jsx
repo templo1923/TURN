@@ -6,6 +6,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import Modal from 'react-modal';
 import baseURL from '../url';
 import { useMediaQuery } from '@react-hook/media-query';
+
 export default function InputSearchs() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredResults, setFilteredResults] = useState([]);
@@ -13,29 +14,26 @@ export default function InputSearchs() {
     const [noResults, setNoResults] = useState(false);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const isScreenLarge = useMediaQuery('(min-width: 1024px)');
-    const [productos, setProductos] = useState([]);
+    const [servicios, setServicios] = useState([]);
     const [categorias, setCategorias] = useState([]);
-    const [visibleProducts, setVisibleProducts] = useState({});
+    const [visibleServices, setVisibleServices] = useState({});
+
     useEffect(() => {
-        cargarProductos();
+        cargarServicios();
         cargarCategorias();
     }, []);
 
-    const cargarProductos = () => {
-        fetch(`${baseURL}/productosGet.php`, {
-            method: 'GET',
-        })
+    const cargarServicios = () => {
+        fetch(`${baseURL}/serviciosGet.php`, { method: 'GET' })
             .then(response => response.json())
             .then(data => {
-                setProductos(data.productos || []);
+                setServicios(data.servicios || []);
             })
-            .catch(error => console.error('Error al cargar productos:', error));
+            .catch(error => console.error('Error al cargar servicios:', error));
     };
 
     const cargarCategorias = () => {
-        fetch(`${baseURL}/categoriasGet.php`, {
-            method: 'GET',
-        })
+        fetch(`${baseURL}/categoriasGet.php`, { method: 'GET' })
             .then(response => response.json())
             .then(data => {
                 setCategorias(data.categorias || []);
@@ -48,23 +46,24 @@ export default function InputSearchs() {
         setSearchTerm(searchTerm);
 
         const filteredResults = categorias.map((categoria) => {
-            const productosFiltrados = productos.filter((producto) => {
+            const serviciosFiltrados = servicios.filter((servicio) => {
                 return (
-                    producto.idCategoria === categoria.idCategoria &&
-                    (producto.titulo.toLowerCase().includes(searchTerm) ||
+                    servicio.idCategoria === categoria.idCategoria &&
+                    (servicio.titulo.toLowerCase().includes(searchTerm) ||
                         categoria.categoria.toLowerCase().includes(searchTerm))
                 );
             });
 
-            return productosFiltrados.length > 0 ? { categoria, productos: productosFiltrados } : null;
+            return serviciosFiltrados.length > 0 ? { categoria, servicios: serviciosFiltrados } : null;
         }).filter(result => result !== null);
 
         setFilteredResults(filteredResults);
         setShowResults(searchTerm !== "");
         setNoResults(searchTerm !== "" && filteredResults.length === 0);
     };
+
     const handleShowMore = (categoria) => {
-        setVisibleProducts(prev => ({
+        setVisibleServices(prev => ({
             ...prev,
             [categoria?.idCategoria]: (prev[categoria?.idCategoria] || 5) + 5
         }));
@@ -80,8 +79,7 @@ export default function InputSearchs() {
 
     return (
         <div className="fondo-input">
-
-            {isScreenLarge ?
+            {isScreenLarge ? (
                 <div className="search-container">
                     <fieldset className="inputSearch">
                         <FontAwesomeIcon icon={faSearch} className="search-icon" />
@@ -95,19 +93,19 @@ export default function InputSearchs() {
                     </fieldset>
                     {showResults && (
                         <div className="modalSearch">
-                            {filteredResults.map(({ categoria, productos }) => (
+                            {filteredResults.map(({ categoria, servicios }) => (
                                 <div key={categoria.idCategoria} className="sectionSearch">
                                     <h3>{categoria.categoria}</h3>
                                     <hr />
-                                    {productos?.slice(0, visibleProducts[categoria?.idCategoria] || 5).map((producto) => (
-                                        <div key={producto.idProducto}>
-                                            <a href={`/producto/${producto.idProducto}/${producto.titulo.replace(/\s+/g, '-')}`} onClick={closeModal}>
-                                                <img src={producto.imagen1} alt="" />
-                                                <p>{producto.titulo}</p>
+                                    {servicios?.slice(0, visibleServices[categoria?.idCategoria] || 5).map((servicio) => (
+                                        <div key={servicio.idServicio}>
+                                            <a href={`/servicio/${servicio.idServicio}/${servicio.titulo.replace(/\s+/g, '-')}`} onClick={closeModal}>
+                                                <img src={servicio.imagen1} alt="" />
+                                                <p>{servicio.titulo}</p>
                                             </a>
                                         </div>
                                     ))}
-                                    {productos?.length > (visibleProducts[categoria?.idCategoria] || 5) && (
+                                    {servicios?.length > (visibleServices[categoria?.idCategoria] || 5) && (
                                         <button onClick={() => handleShowMore(categoria)} className="show-more-btn2">Mostrar más</button>
                                     )}
                                 </div>
@@ -116,7 +114,7 @@ export default function InputSearchs() {
                         </div>
                     )}
                 </div>
-                :
+            ) : (
                 <div className="search-container">
                     <FontAwesomeIcon icon={faSearch} className="search-icon" onClick={openModal} />
                     <Modal isOpen={modalIsOpen} onRequestClose={closeModal} className="modalInput" overlayClassName="overlayInput">
@@ -132,19 +130,19 @@ export default function InputSearchs() {
                         </fieldset>
                         {showResults && (
                             <div className="modalSearch">
-                                {filteredResults.map(({ categoria, productos }) => (
+                                {filteredResults.map(({ categoria, servicios }) => (
                                     <div key={categoria.idCategoria} className="sectionSearch">
                                         <h3>{categoria.categoria}</h3>
                                         <hr />
-                                        {productos?.slice(0, visibleProducts[categoria?.idCategoria] || 5).map((producto) => (
-                                            <div key={producto.idProducto}>
-                                                <Link to={`/producto/${producto.idProducto}/${producto.titulo.replace(/\s+/g, '-')}`} onClick={closeModal}>
-                                                    <img src={producto.imagen1} alt="" />
-                                                    <p>{producto.titulo}</p>
+                                        {servicios?.slice(0, visibleServices[categoria?.idCategoria] || 5).map((servicio) => (
+                                            <div key={servicio.idServicio}>
+                                                <Link to={`/servicio/${servicio.idServicio}/${servicio.titulo.replace(/\s+/g, '-')}`} onClick={closeModal}>
+                                                    <img src={servicio.imagen1} alt="" />
+                                                    <p>{servicio.titulo}</p>
                                                 </Link>
                                             </div>
                                         ))}
-                                        {productos?.length > (visibleProducts[categoria?.idCategoria] || 5) && (
+                                        {servicios?.length > (visibleServices[categoria?.idCategoria] || 5) && (
                                             <button onClick={() => handleShowMore(categoria)} className="show-more-btn2">Mostrar más</button>
                                         )}
                                     </div>
@@ -154,9 +152,7 @@ export default function InputSearchs() {
                         )}
                     </Modal>
                 </div>
-
-            }
-
+            )}
         </div>
     );
 }

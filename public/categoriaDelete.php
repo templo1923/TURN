@@ -35,16 +35,16 @@ try {
             exit;
         }
 
-        // Verificar si hay productos asociados a la categoría
-        $sqlCheckProducts = "SELECT COUNT(*) FROM productos WHERE idCategoria = :idCategoria";
-        $sentenciaCheckProducts = $conexion->prepare($sqlCheckProducts);
-        $sentenciaCheckProducts->bindParam(':idCategoria', $idCategoria, PDO::PARAM_INT);
-        $sentenciaCheckProducts->execute();
-        $cantidadProductos = $sentenciaCheckProducts->fetchColumn();
+        // Verificar si hay servicios asociados a la categoría
+        $sqlCheckServices = "SELECT COUNT(*) FROM servicios WHERE idCategoria = :idCategoria";
+        $sentenciaCheckServices = $conexion->prepare($sqlCheckServices);
+        $sentenciaCheckServices->bindParam(':idCategoria', $idCategoria, PDO::PARAM_INT);
+        $sentenciaCheckServices->execute();
+        $cantidadServicios = $sentenciaCheckServices->fetchColumn();
 
-        if ($cantidadProductos > 0) {
-            echo json_encode(["error" => "No se puede eliminar la categoría porque hay productos asociados a ella."]);
-            exit;  // Aquí se detiene la ejecución si hay productos asociados
+        if ($cantidadServicios > 0) {
+            echo json_encode(["error" => "No se puede eliminar la categoría porque hay servicios asociados a ella."]);
+            exit;  // Aquí se detiene la ejecución si hay servicios asociados
         }
 
         // Eliminar subcategorías asociadas a la categoría

@@ -1,0 +1,82 @@
+.diaChek{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    width: 100%;
+    background-color: var(--gris2);
+    padding: 5px;
+    border-radius: 6px;
+    
+}
+.diaChek span{
+    color: var(--text-color2);
+}
+.diasContainer{
+    display: flex;
+    width: 100%;
+    gap: 10px;
+}
+.diaGrp{
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+    width: 100%;
+}
+#hora{
+    background-color: var(--gris2);
+    border-radius: 6px;
+    color: var(--text-color2);
+    
+}
+
+.btnMoreHora{
+    background-color: var(--color1);
+    padding: 5px 7px;
+    color: var(--blanco);
+    border: none;
+    border-radius: 2px;
+   
+}
+.btnMenosHora{
+    background-color: red;
+    padding: 5px 7px;
+    color: var(--blanco);
+    border: none;
+    border-radius: 2px;
+    margin-top: 5px;
+    width: 100%;
+    margin-bottom: 1rem;
+}
+.horarios{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+
+}
+.horario span{
+    color: var(--text-color2);
+    font-size: 0.7em;
+}
+
+
+#NewDias .modal-content{
+    width: 80%;
+}
+
+@media (max-width: 1000px){
+    #NewDias .modal-content{
+        width: 100%;
+    }
+    .diasContainer{
+    
+        gap: 1rem;
+        overflow-x: scroll;
+    }
+    .diaChek{
+       
+        width: 6rem;
+    }
+}

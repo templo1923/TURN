@@ -35,20 +35,20 @@ try {
             exit;
         }
 
-        // Verificar si existen productos asociados a la subcategoría
-        $sqlCheckProducts = "SELECT COUNT(*) FROM productos WHERE idSubCategoria = :idSubCategoria"; // Cambia "productos" al nombre correcto de tu tabla
-        $sentenciaCheck = $conexion->prepare($sqlCheckProducts);
+        // Verificar si existen servicios asociados a la subcategoría
+        $sqlCheckServices = "SELECT COUNT(*) FROM servicios WHERE idSubCategoria = :idSubCategoria"; // Cambia "servicios" al nombre correcto de tu tabla
+        $sentenciaCheck = $conexion->prepare($sqlCheckServices);
         $sentenciaCheck->bindParam(':idSubCategoria', $idSubCategoria, PDO::PARAM_INT);
         $sentenciaCheck->execute();
-        $countProducts = $sentenciaCheck->fetchColumn();
+        $countServices = $sentenciaCheck->fetchColumn();
 
-        if ($countProducts > 0) {
-            // Si hay productos asociados, no se puede eliminar
-            echo json_encode(["error" => "No se puede eliminar la subcategoría porque hay productos asociados."]);
+        if ($countServices > 0) {
+            // Si hay servicios asociados, no se puede eliminar
+            echo json_encode(["error" => "No se puede eliminar la subcategoría porque hay servicios asociados."]);
             exit;
         }
 
-        // Si no hay productos asociados, proceder a eliminar la subcategoría
+        // Si no hay servicios asociados, proceder a eliminar la subcategoría
         $sqlDelete = "DELETE FROM subcategorias WHERE idSubCategoria = :idSubCategoria"; // Cambio en la tabla
         $sentenciaDelete = $conexion->prepare($sqlDelete);
         $sentenciaDelete->bindParam(':idSubCategoria', $idSubCategoria, PDO::PARAM_INT); // Cambio en el parámetro de enlace

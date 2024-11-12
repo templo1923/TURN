@@ -14,10 +14,13 @@ import moneda from '../../moneda';
 import { Link as Anchor } from "react-router-dom";
 import imageIcon from '../../../images/imageIcon.png';
 import { fetchUsuario, getUsuario } from '../../user';
+import NewDias from '../NewDias/NewDias';
+
 export default function ServiciosData() {
     const [servicios, setServicios] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
     const [nuevoTitulo, setNuevoTitulo] = useState('');
+    const [nuevoTelefono, setNuevoTelefono] = useState('');
     const [nuevaDescripcion, setNuevaDescripcion] = useState('');
     const [nuevoPrecio, setNuevoPrecio] = useState('');
     const [nuevoEstado, setNuevoEstado] = useState('');
@@ -103,6 +106,7 @@ export default function ServiciosData() {
         setNuevoPrecio(servicio.precio);
         setNuevoEstado(servicio.estado)
         setIdCategoria(servicio.idCategoria)
+        setNuevoTelefono(servicio.telefono)
         setIdSubCategoria(servicio.idSubCategoria)
     }, [servicio]);
 
@@ -239,6 +243,7 @@ export default function ServiciosData() {
             nuevaCategoria: idCategoria !== '' ? idCategoria : servicio.idCategoria,
             nuevaSubCategoria: idSubCategoria !== 0 ? idSubCategoria : servicio.idSubCategoria,
             nuevoEstado: nuevoEstado !== '' ? nuevoEstado : servicio.estado,
+            nuevoTelefono: nuevoTelefono !== '' ? nuevoTelefono : servicio.telefono,
         };
 
         fetch(`${baseURL}/servicioTextPut.php?idServicio=${idServicio}`, {
@@ -394,6 +399,7 @@ export default function ServiciosData() {
 
                 <div className='deFlex2'>
                     <NewServicio />
+                    <NewDias />
                     <button className='excel' onClick={descargarExcel}><FontAwesomeIcon icon={faArrowDown} /> Excel</button>
                     <button className='pdf' onClick={descargarPDF}><FontAwesomeIcon icon={faArrowDown} /> PDF</button>
                 </div>
@@ -540,7 +546,14 @@ export default function ServiciosData() {
                                         <option value="No-Disponible">No-Disponible</option>
                                     </select>
                                 </fieldset>
-
+                                <fieldset>
+                                    <legend>Telefono (*)</legend>
+                                    <input
+                                        type="number"
+                                        value={nuevoTelefono}
+                                        onChange={(e) => setNuevoTelefono(e.target.value)}
+                                    />
+                                </fieldset>
                                 <fieldset id='descripcion'>
                                     <legend>Descripcion </legend>
                                     <textarea
@@ -616,6 +629,7 @@ export default function ServiciosData() {
                             <th>Precio</th>
                             <th>Categoria</th>
                             <th>Subcategoria</th>
+                            <th>Teléfono</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -634,13 +648,11 @@ export default function ServiciosData() {
                                     )}
                                 </td>
                                 <td>{item.titulo}</td>
-
                                 <td style={{
                                     color: '#008000',
                                 }}>
                                     {moneda} {`${item?.precio}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
                                 </td>
-
                                 {categorias
                                     ?.filter(categoriaFiltrada => categoriaFiltrada.idCategoria === item.idCategoria)
                                     ?.map(categoriaFiltrada => (
@@ -668,6 +680,7 @@ export default function ServiciosData() {
                                         </>
                                     }
                                 </td>
+                                <td>{item.telefono}</td>
 
 
                                 {item.estado === 'Disponible' ? (
@@ -722,7 +735,7 @@ export default function ServiciosData() {
                                             <button className='editar' onClick={() => abrirModal(item)}>
                                                 <FontAwesomeIcon icon={faEdit} />
                                             </button>
-                                            <Anchor className='editar' to={`/producto/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
+                                            <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
                                                 <FontAwesomeIcon icon={faEye} />
                                             </Anchor>
                                         </>
