@@ -17,7 +17,6 @@ export default function IndexLayout() {
                 <>
                     <Outlet />
                     <Footer />
-                    <BtnWhatsapp />
                 </> :
                 <>
 

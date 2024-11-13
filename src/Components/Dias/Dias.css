@@ -1,4 +1,14 @@
 
+.Dias{
+
+    padding-bottom: 40vh;
+} 
+
+.Dias hr{
+    margin-bottom: 3rem;
+    margin: 20px;
+}
+    
 #cardDay{
     background-color: var(--blanco);
     width: 10rem;
@@ -99,6 +109,8 @@
     align-items:center ;
     text-align: center;
     color: var(--text-color2);
+    font-weight: 500;
+    font-size: 1em;
 }
 
 .noHay{
@@ -107,7 +119,21 @@
     color: var(--text-color2);
     padding: 20px;
 }
-
+.btnFlotant{
+    background-color: var(--color1);
+    padding: 12px;
+    color: var(--blanco);
+    border: none;
+    border-radius: 10px;
+    position: fixed;
+    bottom: 40px;
+    right: 0;
+    left: 79.4%;
+    width: 9rem;
+    z-index: 2;
+    cursor: pointer;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.196);
+}
 @media (max-width: 1000px) {
     .flexGrapHoras button{
         width: 100%;
@@ -133,5 +159,20 @@
     }
     .Dias p{
         font-size: 0.6em;
+    }
+    .btnFlotant{
+        background-color: var(--color1);
+        padding: 12px;
+        color: var(--blanco);
+        border: none;
+        border-radius: 10px;
+        position: fixed;
+        bottom: 40px;
+        right: 0;
+        left: 55%;
+        width: 9rem;
+        z-index: 2;
+        cursor: pointer;
+        box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.196);
     }
 }

@@ -87,9 +87,9 @@
 }
 .image-banner-prev{
     width: 100%;
-    height: 100%;
+    height: 250px;
+    border-radius: 10px;
     object-fit: cover;
-    
 }
 .legenda{
     display: flex;
@@ -107,5 +107,8 @@
     }
     .legenda{
     font-size: 14px;
+    }
+    .image-banner-prev{
+        height: 160px;
     }
 }

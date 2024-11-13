@@ -32,6 +32,8 @@ try {
         $idSubCategoria = $_POST['idSubCategoria'];
         $estado = $_POST['estado'];
         $telefono = $_POST['telefono'];
+        $email = $_POST['email'];
+        $nombre = $_POST['nombre'];
 
         // Validar que el título no contenga caracteres prohibidos
         if (strpos($titulo, '/') !== false || strpos($titulo, '\\') !== false) {
@@ -39,7 +41,7 @@ try {
             exit;
         }
 
-        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado) && !empty($telefono)) {
+        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado) && !empty($telefono) && !empty($email) && !empty($nombre)) {
 
             // Verificar si se envió una imagen
             $imagenPresente = isset($_FILES['imagen1']);
@@ -67,8 +69,8 @@ try {
                 }
 
                 // Almacenar datos en la tabla `servicios`
-                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1, telefono) 
-                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1, :telefono)";
+                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1, telefono, email, nombre) 
+                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1, :telefono, :email, :nombre)";
                 $stmt = $conexion->prepare($sqlInsert);
                 $stmt->bindParam(':titulo', $titulo);
                 $stmt->bindParam(':descripcion', $descripcion);
@@ -78,6 +80,8 @@ try {
                 $stmt->bindParam(':estado', $estado);
                 $stmt->bindParam(':imagen1', $rutaImagenCompleta);
                 $stmt->bindParam(':telefono', $telefono);
+                $stmt->bindParam(':email', $email);
+                $stmt->bindParam(':nombre', $nombre);
                 $stmt->execute();
 
                 // Obtener el ID de la última inserción

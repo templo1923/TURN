@@ -72,7 +72,7 @@ export default function CardsCantidad() {
 
 
     const cargarTurnos = () => {
-        fetch(`${baseURL}/turnosGet.php`, {
+        fetch(`${baseURL}/turnoGet.php`, {
             method: 'GET',
         })
             .then(response => response.json())

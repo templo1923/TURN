@@ -1,0 +1,52 @@
+.modal-admin {
+    top: 0;
+    background-color: var(--blanco);
+    width: 100vh;
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 10px ;
+    border: none;
+    padding: 20px;
+}
+
+.overlay-admin {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.333); 
+    z-index: 999; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+.modal-admin select{
+    width: 100%;
+    background-color: var(--blanco);
+    border: none;
+    color: var(--text-color2);
+}
+
+@media (max-width: 1000px){
+    .overlay-admin {
+        justify-content: end;
+        align-items: end;
+        padding: 0;
+    }
+    .modal-admin {
+        top: 0;
+        background-color: var(--blanco);
+        width: 100%;
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-radius: 10px ;
+        border: none;
+        padding: 10px;
+    }
+}

@@ -23,6 +23,13 @@
     border-radius: 10px;
     padding: 2rem;
 }
+.container2{
+    background-color: var(--blanco);
+      box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.114);
+    width: 100%;
+    border-radius: 10px;
+    padding: 2rem;
+}
 .containerMain{
     display: flex;
     flex-direction: column;
@@ -61,6 +68,9 @@
     }
     .container{
        
+        padding: 10px;
+    }
+    .container2{
         padding: 10px;
     }
 }

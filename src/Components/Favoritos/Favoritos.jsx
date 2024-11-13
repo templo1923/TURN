@@ -3,33 +3,34 @@ import Modal from 'react-modal';
 import baseURL from '../url';
 import './Favoritos.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faHeart, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faHeart } from '@fortawesome/free-solid-svg-icons';
 import { Link as Anchor } from "react-router-dom";
 import moneda from '../moneda';
+
 export default function Favoritos() {
     const [favoritos, setFavoritos] = useState([]);
-    const [productos, setProductos] = useState([]);
+    const [servicios, setServicios] = useState([]);
     const [loading, setLoading] = useState(true);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [isFocused, setIsFocused] = useState(false);
 
     useEffect(() => {
-        cargarProductos();
+        cargarServicios();
         cargarFavoritos();
     }, [isFocused]);
 
-    const cargarProductos = () => {
-        fetch(`${baseURL}/productosGet.php`, {
+    const cargarServicios = () => {
+        fetch(`${baseURL}/serviciosGet.php`, {
             method: 'GET',
         })
             .then(response => response.json())
             .then(data => {
-                setProductos(data.productos || []);
-                setLoading(false); // Marcamos como cargados los productos
+                setServicios(data.servicios || []);
+                setLoading(false);
             })
             .catch(error => {
-                console.error('Error al cargar productos:', error);
-                setLoading(false); // En caso de error, marcamos como cargados para evitar bucles
+                console.error('Error al cargar servicios:', error);
+                setLoading(false);
             });
     };
 
@@ -52,11 +53,10 @@ export default function Favoritos() {
         setIsFocused(false);
     };
 
-    const eliminarProducto = (id) => {
+    const eliminarServicio = (id) => {
         const updatedFavoritos = favoritos.filter(itemId => itemId !== id);
         setFavoritos(updatedFavoritos);
         localStorage.setItem('favoritos', JSON.stringify(updatedFavoritos));
-
     };
 
     return (
@@ -82,25 +82,20 @@ export default function Favoritos() {
                         ) : (
                             <div>
                                 {favoritos.map((id) => {
-                                    const producto = productos.find(prod => prod.idProducto === id);
-                                    if (!producto) return null;
+                                    const servicio = servicios.find(serv => serv.idServicio === id);
+                                    if (!servicio) return null;
                                     return (
-
-
-                                        <div key={producto.idProducto} className='cardProductCart' >
-                                            <Anchor to={`/producto/${producto?.idProducto}/${producto?.titulo?.replace(/\s+/g, '-')}`} onClick={closeModal} >
-                                                <img src={obtenerImagen(producto)} alt="imagen" />
+                                        <div key={servicio.idServicio} className='cardProductCart'>
+                                            <Anchor to={`/servicio/${servicio?.idServicio}/${servicio?.titulo?.replace(/\s+/g, '-')}`} onClick={closeModal} >
+                                                <img src={obtenerImagen(servicio)} alt="imagen" />
                                             </Anchor>
                                             <div className='cardProductCartText'>
-                                                <h3>{producto.titulo}</h3>
-                                                <span>{producto.categoria}</span>
-                                                <strong> {moneda} {producto?.precio?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</strong>
-
+                                                <h3>{servicio.titulo}</h3>
+                                                <span>{servicio.categoria}</span>
+                                                <strong>{moneda} {servicio?.precio?.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</strong>
                                             </div>
-                                            <button onClick={() => eliminarProducto(id)} className='deleteFav'><FontAwesomeIcon icon={faHeart} /></button>
+                                            <button onClick={() => eliminarServicio(id)} className='deleteFav'><FontAwesomeIcon icon={faHeart} /></button>
                                         </div>
-
-
                                     );
                                 })}
                             </div>

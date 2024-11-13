@@ -27,24 +27,26 @@ try {
     $dsn = "mysql:host=$servidor;dbname=$dbname";
     $conexion = new PDO($dsn, $usuario, $contrasena);
     $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
     if ($_SERVER['REQUEST_METHOD'] === 'PUT') {
         $idServicio = isset($_REQUEST['idServicio']) ? $_REQUEST['idServicio'] : null;
         $data = json_decode(file_get_contents("php://input"), true);
-    
+
         $nuevaDescripcion = isset($data['nuevaDescripcion']) ? $data['nuevaDescripcion'] : null;
         $nuevoTitulo = isset($data['nuevoTitulo']) ? $data['nuevoTitulo'] : null;
         $nuevaCategoria = isset($data['nuevaCategoria']) ? $data['nuevaCategoria'] : null;
         $nuevaSubCategoria = isset($data['nuevaSubCategoria']) ? $data['nuevaSubCategoria'] : null;
         $nuevoPrecio = isset($data['nuevoPrecio']) ? $data['nuevoPrecio'] : null;
-        $nuevoEstado = isset($data['nuevoEstado']) ? $data['nuevoEstado'] : null; 
-        $nuevoTelefono = isset($data['nuevoTelefono']) ? $data['nuevoTelefono'] : null; 
+        $nuevoEstado = isset($data['nuevoEstado']) ? $data['nuevoEstado'] : null;
+        $nuevoTelefono = isset($data['nuevoTelefono']) ? $data['nuevoTelefono'] : null;
+        $nuevoEmail = isset($data['nuevoEmail']) ? $data['nuevoEmail'] : null;
+        $nuevoNombre = isset($data['nuevoNombre']) ? $data['nuevoNombre'] : null;
+
         // Validar que el título no contenga '/' o '\'
         if (strpos($nuevoTitulo, '/') !== false || strpos($nuevoTitulo, '\\') !== false) {
             echo json_encode(["error" => "El título no debe contener '/' o '\\'."]);
             exit;
         }
-
-      
 
         if (empty($nuevaCategoria)) {
             $sqlSelect = "SELECT idCategoria FROM servicios WHERE idServicio = :idServicio";
@@ -55,7 +57,7 @@ try {
             $nuevaCategoria = $row['idCategoria'];
         }
 
-        $sqlUpdate = "UPDATE servicios SET descripcion = :descripcion, titulo = :titulo, idCategoria = :idCategoria, idSubCategoria = :idSubCategoria, precio = :precio, estado = :estado, telefono = :telefono
+        $sqlUpdate = "UPDATE servicios SET descripcion = :descripcion, titulo = :titulo, idCategoria = :idCategoria, idSubCategoria = :idSubCategoria, precio = :precio, estado = :estado, telefono = :telefono, email = :email, nombre = :nombre
         WHERE idServicio = :idServicio";
         $sentenciaUpdate = $conexion->prepare($sqlUpdate);
         $sentenciaUpdate->bindParam(':descripcion', $nuevaDescripcion);
@@ -65,6 +67,8 @@ try {
         $sentenciaUpdate->bindParam(':precio', $nuevoPrecio);
         $sentenciaUpdate->bindParam(':estado', $nuevoEstado); 
         $sentenciaUpdate->bindParam(':telefono', $nuevoTelefono); 
+        $sentenciaUpdate->bindParam(':email', $nuevoEmail);
+        $sentenciaUpdate->bindParam(':nombre', $nuevoNombre);
         $sentenciaUpdate->bindParam(':idServicio', $idServicio, PDO::PARAM_INT);
 
         if ($sentenciaUpdate->execute()) {

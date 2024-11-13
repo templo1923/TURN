@@ -24,6 +24,8 @@ export default function ServiciosData() {
     const [nuevaDescripcion, setNuevaDescripcion] = useState('');
     const [nuevoPrecio, setNuevoPrecio] = useState('');
     const [nuevoEstado, setNuevoEstado] = useState('');
+    const [nuevoNombre, setNuevoNombre] = useState('');
+    const [nuevoEmail, setNuevoEmail] = useState('');
     const [servicio, setServicio] = useState({});
     const [modalImagenVisible, setModalImagenVisible] = useState(false);
     const [imagenSeleccionada, setImagenSeleccionada] = useState('');
@@ -108,6 +110,8 @@ export default function ServiciosData() {
         setIdCategoria(servicio.idCategoria)
         setNuevoTelefono(servicio.telefono)
         setIdSubCategoria(servicio.idSubCategoria)
+        setNuevoNombre(servicio.nombre);
+        setNuevoEmail(servicio.email);
     }, [servicio]);
 
     const cargarServicios = () => {
@@ -244,6 +248,8 @@ export default function ServiciosData() {
             nuevaSubCategoria: idSubCategoria !== 0 ? idSubCategoria : servicio.idSubCategoria,
             nuevoEstado: nuevoEstado !== '' ? nuevoEstado : servicio.estado,
             nuevoTelefono: nuevoTelefono !== '' ? nuevoTelefono : servicio.telefono,
+            nuevoNombre: nuevoNombre !== '' ? nuevoNombre : servicio.nombre,
+            nuevoEmail: nuevoEmail !== undefined ? nuevoEmail : servicio.email,
         };
 
         fetch(`${baseURL}/servicioTextPut.php?idServicio=${idServicio}`, {
@@ -547,11 +553,27 @@ export default function ServiciosData() {
                                     </select>
                                 </fieldset>
                                 <fieldset>
+                                    <legend>Nombre  (*)</legend>
+                                    <input
+                                        type="text"
+                                        value={nuevoNombre}
+                                        onChange={(e) => setNuevoNombre(e.target.value)}
+                                    />
+                                </fieldset>
+                                <fieldset>
                                     <legend>Telefono (*)</legend>
                                     <input
                                         type="number"
                                         value={nuevoTelefono}
                                         onChange={(e) => setNuevoTelefono(e.target.value)}
+                                    />
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Email  (*)</legend>
+                                    <input
+                                        type="email"
+                                        value={nuevoEmail}
+                                        onChange={(e) => setNuevoEmail(e.target.value)}
                                     />
                                 </fieldset>
                                 <fieldset id='descripcion'>
@@ -565,15 +587,14 @@ export default function ServiciosData() {
 
 
                             </div>
-                            <label id='textLabel'>Imagenes</label>
-                            <div className='previevProduct'>
+                            <div className='image-container'>
 
                                 {imagenPreview ? (
-                                    <img src={imagenPreview} alt="Vista previa de la imagen" onClick={() => abrirModalImagenSeleccionada(servicio.imagen1)} />
+                                    <img src={imagenPreview} alt="Vista previa de la imagen" className='image-banner-prev' onClick={() => document.getElementById('fileInput1').click()} />
                                 ) : (
                                     <>
                                         {servicio.imagen1 ? (
-                                            <img src={servicio.imagen1} alt="imagen" onClick={() => abrirModalImagenSeleccionada(servicio.imagen1)} />
+                                            <img src={servicio.imagen1} className='image-banner-prev' alt="imagen" onClick={() => document.getElementById('fileInput1').click()} />
 
                                         ) : (
                                             <span className='imgNone'>
@@ -592,6 +613,7 @@ export default function ServiciosData() {
                                         src={imageIcon}
                                         alt="Imagen de ejemplo"
                                         className='image-icon'
+                                        style={{ display: 'none' }}
                                         onClick={() => document.getElementById('fileInput1').click()} // Al hacer clic, simula un clic en el input
                                     />
                                     <input
@@ -629,6 +651,7 @@ export default function ServiciosData() {
                             <th>Precio</th>
                             <th>Categoria</th>
                             <th>Subcategoria</th>
+                            <th>Nombre</th>
                             <th>Teléfono</th>
                             <th>Estado</th>
                             <th>Acciones</th>
@@ -680,6 +703,7 @@ export default function ServiciosData() {
                                         </>
                                     }
                                 </td>
+                                <td>{item.nombre}</td>
                                 <td>{item.telefono}</td>
 
 
@@ -695,51 +719,15 @@ export default function ServiciosData() {
 
 
                                 <td>
-                                    {loading ? (
-                                        <></>
-                                    ) : usuarioLegued?.idUsuario ? (
-                                        <>
-                                            {usuarioLegued?.rol === 'admin' ? (
-                                                <>
-                                                    <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
-                                                        <FontAwesomeIcon icon={faTrash} />
-                                                    </button>
-                                                    <button className='editar' onClick={() => abrirModal(item)}>
-                                                        <FontAwesomeIcon icon={faEdit} />
-                                                    </button>
-                                                    <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
-                                                        <FontAwesomeIcon icon={faEye} />
-                                                    </Anchor>
-                                                </>
-                                            ) : usuarioLegued?.rol === 'colaborador' ? (
-                                                <>
-                                                    <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
-                                                        <FontAwesomeIcon icon={faTrash} />
-                                                    </button>
-                                                    <button className='editar' onClick={() => abrirModal(item)}>
-                                                        <FontAwesomeIcon icon={faEdit} />
-                                                    </button>
-                                                    <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
-                                                        <FontAwesomeIcon icon={faEye} />
-                                                    </Anchor>
-                                                </>
-                                            ) : (
-                                                <></>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
-                                                <FontAwesomeIcon icon={faTrash} />
-                                            </button>
-                                            <button className='editar' onClick={() => abrirModal(item)}>
-                                                <FontAwesomeIcon icon={faEdit} />
-                                            </button>
-                                            <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
-                                                <FontAwesomeIcon icon={faEye} />
-                                            </Anchor>
-                                        </>
-                                    )}
+                                    <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
+                                        <FontAwesomeIcon icon={faTrash} />
+                                    </button>
+                                    <button className='editar' onClick={() => abrirModal(item)}>
+                                        <FontAwesomeIcon icon={faEdit} />
+                                    </button>
+                                    <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
+                                        <FontAwesomeIcon icon={faEye} />
+                                    </Anchor>
 
                                 </td>
                             </tr>

@@ -13,22 +13,18 @@ export default function NewServicio() {
     const [isImageSelected, setIsImageSelected] = useState([false, false, false, false]); // Arreglo para selección de imágenes
     const [descripcion, setDescripcion] = useState('');
     const [titulo, setTitulo] = useState('');
-    const [categoria, setCategoria] = useState('');
     const [estado, setEstado] = useState('');
     const [precio, setPrecio] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [categorias, setCategoras] = useState([]);
-    const [stock, setStock] = useState('');
     const [subcategorias, setSubCategorias] = useState([]);
-    const [subcategoria, setSubCategoria] = useState([]);
-    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('');
     const [categoriasConSubcategorias, setCategoriasConSubcategorias] = useState([]);
     const [idCategoria, setIdCategoria] = useState('');
     const [idSubCategoria, setIdSubCategoria] = useState('');
-    const [verItems, setVerItems] = useState('No');
-    const [customStock, setCustomStock] = useState('');
-    const [cantidadStock, setCantidadStock] = useState(''); // Nuevo estado para cantidad de stock manual
     const [telefono, setTelefono] = useState('');
+    const [nombre, setNombre] = useState('');
+    const [email, setEmail] = useState('');
+
     useEffect(() => {
         cargarCategoriasYSubcategorias();
     }, []);
@@ -145,15 +141,15 @@ export default function NewServicio() {
 
         // Añadir idCategoria al FormData
         formData.append('idCategoria', idCategoria);
-        formData.append('verItems', verItems);
         // Verificar si se ha seleccionado una subcategoría, de lo contrario, añadir 0
         if (idSubCategoria) {
             formData.append('idSubCategoria', idSubCategoria);
         } else {
             formData.append('idSubCategoria', '0');
         }
+        formData.append('nombre', nombre);
+        formData.append('email', email);
 
-        formData.append('stock', stock === 'elegir' ? cantidadStock : stock);
 
         try {
             const response = await fetch(`${baseURL}/serviciosPost.php`, {
@@ -240,20 +236,9 @@ export default function NewServicio() {
             ) : usuarioLegued?.idUsuario ? (
                 <>
                     {usuarioLegued?.rol === 'admin' ? (
-                        <>
-                            {
-                                productos?.length < limitePlan ? (
-                                    <button onClick={toggleModal} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-
-                                ) : (
-                                    <button onClick={alertPlan} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-                                )
-                            }
-                        </>
+                        <button onClick={toggleModal} className='btnSave'>
+                            <span>+</span> Agregar
+                        </button>
                     ) : usuarioLegued?.rol === 'colaborador' ? (
                         <>
                             {
@@ -364,6 +349,20 @@ export default function NewServicio() {
                                     </select>
                                 </fieldset>
                                 <fieldset>
+                                    <legend>Nombre (*)</legend>
+                                    <input
+                                        type="text"
+                                        id="nombre"
+                                        name="nombre"
+                                        required
+                                        value={nombre}
+                                        onChange={(e) => setNombre(e.target.value)}
+                                    />
+                                </fieldset>
+
+
+
+                                <fieldset>
                                     <legend>Telefono (*)</legend>
                                     <input
                                         type="text"
@@ -372,6 +371,17 @@ export default function NewServicio() {
                                         required
                                         value={telefono}
                                         onChange={(e) => setTelefono(e.target.value)}
+                                    />
+                                </fieldset>
+                                <fieldset>
+                                    <legend>Email (*)</legend>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </fieldset>
                                 <fieldset id='descripcion'>
@@ -389,7 +399,7 @@ export default function NewServicio() {
 
                                 <div className='image-container'>
                                     {[...Array(1)].map((_, index) => (
-                                        <div key={index} className='image-input'>
+                                        <div key={index} className='flexGrap'>
                                             <input
                                                 type="file"
                                                 id={`imagen${index + 1}`}
@@ -399,11 +409,11 @@ export default function NewServicio() {
                                                 style={{ display: 'none' }} // Ocultar input file
                                                 required
                                             />
-                                            <label htmlFor={`imagen${index + 1}`} className={`image-label ${isImageSelected[index] ? 'selectedImage' : ''}`}>
+                                            <label htmlFor={`imagen${index + 1}`} className={`image-banner-label ${isImageSelected[index] ? 'selectedImage' : ''}`}>
                                                 {isImageSelected[index] ? (
-                                                    <img src={imagenPreview[index]} alt={`Vista previa ${index + 1}`} className='preview-image' />
+                                                    <img src={imagenPreview[index]} alt={`Vista previa ${index + 1}`} className='image-banner-prev' />
                                                 ) : (
-                                                    <img src={imageIcon} alt="Seleccionar imagen" className='image-icon' />
+                                                    <img src={imageIcon} alt="Seleccionar imagen" className='image-banner' />
                                                 )}
                                             </label>
                                             {isImageSelected[index] && (

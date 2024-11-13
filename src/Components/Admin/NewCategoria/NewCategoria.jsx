@@ -101,20 +101,9 @@ export default function NewCategoria() {
             ) : usuarioLegued?.idUsuario ? (
                 <>
                     {usuarioLegued?.rol === 'admin' ? (
-                        <>
-                            {
-                                categorias?.length < limitePlan ? (
-                                    <button onClick={toggleModal} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-
-                                ) : (
-                                    <button onClick={alertPlan} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-                                )
-                            }
-                        </>
+                        <button onClick={toggleModal} className='btnSave'>
+                            <span>+</span> Agregar
+                        </button>
                     ) : usuarioLegued?.rol === 'colaborador' ? (
                         <>
                             {

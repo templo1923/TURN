@@ -69,6 +69,8 @@ try {
         idSubCategoria INT(100),
         imagen1 VARCHAR(900),
         estado VARCHAR(30) NOT NULL,
+        nombre VARCHAR(255) NOT NULL,
+        email VARCHAR(255) NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     crearTablaSiNoExiste($conexion, 'servicios', $consultaServicios);
@@ -89,10 +91,10 @@ try {
         idServicio INT(100) NOT NULL,
         nombre VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
+        dni VARCHAR(20) NOT NULL,
         telefono VARCHAR(255) NOT NULL,
-        direccion VARCHAR(255),
         estado VARCHAR(30) NOT NULL,
-        fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        dias JSON NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     crearTablaSiNoExiste($conexion, 'turnos', $consultaTurnos);

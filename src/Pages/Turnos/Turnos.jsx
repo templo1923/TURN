@@ -25,7 +25,7 @@ export default function Servicios() {
             <section className='containerSection'>
 
                 <HeaderDash />
-                <div className='container'>
+                <div className='container2'>
 
                     {loading ? (
                         <></>

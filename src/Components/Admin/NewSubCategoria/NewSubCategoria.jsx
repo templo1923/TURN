@@ -85,27 +85,9 @@ export default function NewSubCategoria() {
     return (
         <div className='NewContain'>
             <ToastContainer />
-            {loading ? (
-                <></>
-            ) : usuarioLegued?.idUsuario ? (
-                <>
-                    {usuarioLegued?.rol === 'admin' ? (
-                        <button onClick={toggleModal} className='btnSave'>
-                            <span>+</span> SubCategoria
-                        </button>
-                    ) : usuarioLegued?.rol === 'colaborador' ? (
-                        <button onClick={toggleModal} className='btnSave'>
-                            <span>+</span> SubCategoria
-                        </button>
-                    ) : (
-                        <></>
-                    )}
-                </>
-            ) : (
-                <button onClick={toggleModal} className='btnSave'>
-                    <span>+</span> SubCategoria
-                </button>
-            )}
+            <button onClick={toggleModal} className='btnSave'>
+                <span>+</span> SubCategoria
+            </button>
             {modalOpen && (
                 <div className='modal'>
                     <div className='modal-content'>

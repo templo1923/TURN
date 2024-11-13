@@ -32,7 +32,7 @@ a{
  body{
   background-color: var(--gris);
  }
- a,#btnSubmenu,.CategoriConten,.card, .detail-contain img, p,.modalNav,#SwiperSlide-scroll-products,  .categoriasInputs input,.cardProdcutSelected, .cardProdcutmasVendido,.cartIconFixed,.inputsGrap{
+ a,.btnFlotant,#btnSubmenu,.CategoriConten,.card, .detail-contain img, p,.modalNav,#SwiperSlide-scroll-products,  .categoriasInputs input,.cardProdcutSelected, .cardProdcutmasVendido,.cartIconFixed,.inputsGrap{
   opacity: 0;
   animation: slideFromLeft 1s ease-in-out forwards;
   -webkit-animation: slideFromLeft 1s ease-in-out forwards;
