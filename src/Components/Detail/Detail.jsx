@@ -4,13 +4,14 @@ import './Detail.css';
 import Modal from 'react-responsive-modal';
 import 'react-responsive-modal/styles.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faExternalLinkAlt, faStar, faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faExternalLinkAlt, faStar, faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 import baseURL from '../url';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import DetailLoading from "../DetailLoading/DetailLoading";
 import moneda from '../moneda';
 import Dias from "../Dias/Dias";
+import { Link as Anchor } from 'react-router-dom';
 export default function Detail() {
     const navigate = useNavigate();
     const { idServicio } = useParams();
@@ -151,27 +152,32 @@ export default function Detail() {
             </div>
 
             <div className="detail-contain">
-                {servicio.imagen1 && (
-                    <img
-                        src={servicio.imagen1}
-                        alt={servicio.titulo}
-                        className="imagen1"
-                        onClick={() => {
-                            setModalImage(servicio.imagen1);
-                            setIsModalOpen(true);
-                        }}
-                    />
-                )}
+                <div className="imgContain" onClick={() => {
+                    setModalImage(servicio.imagen1);
+                    setIsModalOpen(true);
+                }}>
+                    {servicio.imagen1 && (
+                        <img
+                            src={servicio.imagen1}
+                            alt={servicio.titulo}
+                            className="imagen1"
+                            onClick={() => {
+                                setModalImage(servicio.imagen1);
+                                setIsModalOpen(true);
+                            }}
+                        />
+                    )}
+                </div>
 
                 <div className="textDetail">
                     <h2 className="title">{servicio.titulo}</h2>
-                    <hr />
                     <div className="deFLexBuet">
                         {categorias
                             .filter(categoria => categoria.idCategoria === servicio.idCategoria)
                             .map(categoria => (
                                 <h4 key={categoria.idCategoria}>
                                     <FontAwesomeIcon icon={faStar} />
+                                    {`${servicio.tipo} > `}
                                     {categoria.categoria}
                                     {subcategorias
                                         .filter(sub => sub.idSubCategoria === servicio.idSubCategoria)
@@ -180,11 +186,22 @@ export default function Detail() {
                                 </h4>
                             ))
                         }
-                    </div>  <button className="wpp" onClick={handleWhatsappMessage}>
-                        WhatsApp
-                        <i className='fa fa-whatsapp'></i>
-                    </button>
-                    <p>{servicio.descripcion}</p>
+                    </div>
+
+                    <h4>   <FontAwesomeIcon icon={faUser} />Profesional {`>`}   {servicio.nombre}  </h4>
+
+                    <div className="deFlexBtnDetail">
+                        <Anchor href={`mailto:${servicio.email}`} className="emailBtn" target="_blank">
+                            Email <i className="fa fa-envelope"></i>
+                        </Anchor>
+
+                        <button className="wpp" onClick={handleWhatsappMessage}>
+                            WhatsApp
+                            <i className='fa fa-whatsapp'></i>
+                        </button>
+
+                    </div>
+                    <span>{servicio.descripcion}</span>
 
                 </div>
                 <Dias />

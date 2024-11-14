@@ -24,7 +24,7 @@ export default function NewServicio() {
     const [telefono, setTelefono] = useState('');
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
-
+    const [tipo, setTipo] = useState('');
     useEffect(() => {
         cargarCategoriasYSubcategorias();
     }, []);
@@ -149,8 +149,9 @@ export default function NewServicio() {
         }
         formData.append('nombre', nombre);
         formData.append('email', email);
-
-
+        formData.append('tipo', tipo);
+        formData.append('estado', 'Estandard');
+        formData.append('idUsuario', 1);
         try {
             const response = await fetch(`${baseURL}/serviciosPost.php`, {
                 method: 'POST',
@@ -171,11 +172,11 @@ export default function NewServicio() {
         }
     };
 
-    const handleEstado = (e) => {
-        setEstado(e.target.value);
+
+
+    const handleTipo = (e) => {
+        setTipo(e.target.value);
     };
-
-
 
 
     //Trae usuario logueado-----------------------------
@@ -317,7 +318,19 @@ export default function NewServicio() {
                                     </select>
                                 </fieldset>
 
-
+                                <fieldset>
+                                    <legend>Tipo (*)</legend>
+                                    <select
+                                        id="tipo"
+                                        name="tipo"
+                                        value={tipo}
+                                        onChange={handleTipo}
+                                    >
+                                        <option value="">Selecciona una tipo</option>
+                                        <option value="Hombre">Hombre</option>
+                                        <option value="Mujer">Mujer</option>
+                                    </select>
+                                </fieldset>
 
 
                                 <fieldset>
@@ -334,20 +347,6 @@ export default function NewServicio() {
                                     />
                                 </fieldset>
 
-
-                                <fieldset>
-                                    <legend>Estado (*)</legend>
-                                    <select
-                                        id="estado"
-                                        name="estado"
-                                        value={estado}
-                                        onChange={handleEstado}
-                                    >
-                                        <option value="">Selecciona opcion</option>
-                                        <option value="Disponible">Disponible</option>
-                                        <option value="No-Disponible">No-Disponible</option>
-                                    </select>
-                                </fieldset>
                                 <fieldset>
                                     <legend>Nombre (*)</legend>
                                     <input

@@ -29,9 +29,9 @@ try {
 
     if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         // Obtener el id de días y horarios desde la URL
-        $idDiaHorario = isset($_GET['idDiaHorario']) ? $_GET['idDiaHorario'] : null;
+        $idDiasHorarios = isset($_GET['idDiasHorarios']) ? $_GET['idDiasHorarios'] : null;
 
-        if (!$idDiaHorario) {
+        if (!$idDiasHorarios) {
             echo json_encode(["error" => "Se requiere proporcionar un ID de día y horario para eliminarlo."]);
             exit;
         }
@@ -41,9 +41,9 @@ try {
 
         try {
             // Eliminar el registro de la tabla dias_horarios
-            $sqlDelete = "DELETE FROM dias_horarios WHERE idDiaHorario = :idDiaHorario";
+            $sqlDelete = "DELETE FROM dias_horarios WHERE idDiasHorarios = :idDiasHorarios";
             $sentenciaDelete = $conexion->prepare($sqlDelete);
-            $sentenciaDelete->bindParam(':idDiaHorario', $idDiaHorario, PDO::PARAM_INT);
+            $sentenciaDelete->bindParam(':idDiasHorarios', $idDiasHorarios, PDO::PARAM_INT);
             $sentenciaDelete->execute();
 
             // Confirmar los cambios en la base de datos

@@ -67,10 +67,12 @@ try {
         telefono VARCHAR(20) NOT NULL,
         idCategoria INT(100) NOT NULL,
         idSubCategoria INT(100),
+        idUsuario INT(100) NOT NULL,
         imagen1 VARCHAR(900),
         estado VARCHAR(30) NOT NULL,
         nombre VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
+        tipo VARCHAR(10) NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     crearTablaSiNoExiste($conexion, 'servicios', $consultaServicios);

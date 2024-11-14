@@ -15,15 +15,19 @@ import { Link as Anchor } from "react-router-dom";
 import imageIcon from '../../../images/imageIcon.png';
 import { fetchUsuario, getUsuario } from '../../user';
 import NewDias from '../NewDias/NewDias';
-
+import DiasData from '../DiasData/DiasData';
+import { useNavigate, } from 'react-router';
 export default function ServiciosData() {
+    const navigate = useNavigate();
     const [servicios, setServicios] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible2, setModalVisible2] = useState(false);
     const [nuevoTitulo, setNuevoTitulo] = useState('');
     const [nuevoTelefono, setNuevoTelefono] = useState('');
     const [nuevaDescripcion, setNuevaDescripcion] = useState('');
     const [nuevoPrecio, setNuevoPrecio] = useState('');
     const [nuevoEstado, setNuevoEstado] = useState('');
+    const [nuevoTipo, setNuevoTipo] = useState('');
     const [nuevoNombre, setNuevoNombre] = useState('');
     const [nuevoEmail, setNuevoEmail] = useState('');
     const [servicio, setServicio] = useState({});
@@ -112,6 +116,7 @@ export default function ServiciosData() {
         setIdSubCategoria(servicio.idSubCategoria)
         setNuevoNombre(servicio.nombre);
         setNuevoEmail(servicio.email);
+        setNuevoTipo(servicio.tipo);
     }, [servicio]);
 
     const cargarServicios = () => {
@@ -171,7 +176,15 @@ export default function ServiciosData() {
     const cerrarModal = () => {
         setModalVisible(false);
     };
+    const abrirModal2 = (item) => {
+        setServicio(item);
+        setModalVisible2(true);
+    };
 
+    const cerrarModal2 = () => {
+        setModalVisible2(false);
+        navigate('/dashboard/servicios');
+    };
     const filtrados = servicios.filter(item => {
         const idMatch = item.idServicio.toString().includes(filtroId);
         const tituloMatch = !filtroTitulo || item.titulo.toLowerCase().includes(filtroTitulo.toLowerCase());
@@ -250,6 +263,8 @@ export default function ServiciosData() {
             nuevoTelefono: nuevoTelefono !== '' ? nuevoTelefono : servicio.telefono,
             nuevoNombre: nuevoNombre !== '' ? nuevoNombre : servicio.nombre,
             nuevoEmail: nuevoEmail !== undefined ? nuevoEmail : servicio.email,
+            nuevoTipo: nuevoTipo !== undefined ? nuevoTipo : servicio.tipo,
+
         };
 
         fetch(`${baseURL}/servicioTextPut.php?idServicio=${idServicio}`, {
@@ -398,7 +413,7 @@ export default function ServiciosData() {
         );
     }
     return (
-        <div>
+        <div id='NewDias'>
 
             <ToastContainer />
             <div className='deFlexContent'>
@@ -435,8 +450,8 @@ export default function ServiciosData() {
                     <div className='inputsColumn'>
                         <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
                             <option value="">Estado</option>
-                            <option value="Disponible">Disponible</option>
-                            <option value="No-Disponible">No-Disponible</option>
+                            <option value="Estandar">Estandar</option>
+                            <option value="Premiun">Premiun</option>
 
                         </select>
                     </div>
@@ -540,7 +555,17 @@ export default function ServiciosData() {
                                     />
                                 </fieldset>
 
-
+                                <fieldset>
+                                    <legend>Tipo (*)</legend>
+                                    <select
+                                        value={nuevoTipo !== '' ? nuevoTipo : servicio.tipo}
+                                        onChange={(e) => setNuevoTipo(e.target.value)}
+                                    >
+                                        <option value={servicio.tipo}>{servicio.tipo}</option>
+                                        <option value="Hombre">Hombre</option>
+                                        <option value="Mujer">Mujer</option>
+                                    </select>
+                                </fieldset>
                                 <fieldset>
                                     <legend>Estado (*)</legend>
                                     <select
@@ -548,8 +573,8 @@ export default function ServiciosData() {
                                         onChange={(e) => setNuevoEstado(e.target.value)}
                                     >
                                         <option value={servicio.estado}>{servicio.estado}</option>
-                                        <option value="Disponible">Disponible</option>
-                                        <option value="No-Disponible">No-Disponible</option>
+                                        <option value="Estandar">Estandar</option>
+                                        <option value="Premiun">Premiun</option>
                                     </select>
                                 </fieldset>
                                 <fieldset>
@@ -642,6 +667,31 @@ export default function ServiciosData() {
                     </div>
                 </div>
             )}
+            {modalVisible2 && (
+                <div className="modal" >
+                    <div className="modal-content">
+                        <div className='deFlexBtnsModal'>
+
+                            <div className='deFlexBtnsModal'>
+                                <button
+                                    className={selectedSection === 'texto' ? 'selected' : ''}
+                                    onClick={() => handleSectionChange('texto')}
+                                >
+                                    Editar Días
+                                </button>
+                            </div>
+                            <span className="close" onClick={cerrarModal2}>
+                                &times;
+                            </span>
+
+                        </div>
+                        <div id='crearForm' >
+                            <DiasData />
+
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className='table-container'>
                 <table className='table'>
                     <thead>
@@ -652,7 +702,6 @@ export default function ServiciosData() {
                             <th>Categoria</th>
                             <th>Subcategoria</th>
                             <th>Nombre</th>
-                            <th>Teléfono</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -704,12 +753,11 @@ export default function ServiciosData() {
                                     }
                                 </td>
                                 <td>{item.nombre}</td>
-                                <td>{item.telefono}</td>
 
 
-                                {item.estado === 'Disponible' ? (
+                                {item.estado === 'Estandard' ? (
                                     <td style={{ color: '#008000' }}>{item.estado}</td>
-                                ) : item.estado === 'No-Disponible' ? (
+                                ) : item.estado === 'Premiun' ? (
                                     <td style={{ color: 'red' }}>{item.estado}</td>
                                 ) : (
 
@@ -728,7 +776,9 @@ export default function ServiciosData() {
                                     <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
                                         <FontAwesomeIcon icon={faEye} />
                                     </Anchor>
-
+                                    <Anchor className='editar' onClick={() => abrirModal2(item)} to={`/dashboard/servicios/${item?.idServicio}`}>
+                                        +
+                                    </Anchor>
                                 </td>
                             </tr>
                         ))}

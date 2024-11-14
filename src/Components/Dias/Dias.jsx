@@ -181,6 +181,7 @@ export default function Dias() {
         <div className='Dias'>
             {dia ? (
                 <div>
+                    <hr />
                     <Swiper
                         effect={'coverflow'}
                         grabCursor={true}
@@ -190,7 +191,7 @@ export default function Dias() {
 
                         {generateMonthDays().map((monthDay, index) => {
                             const matchingDayInfo = dia?.dias?.find(d => d.dia === monthDay?.day);
-                            const disponibilidadText = matchingDayInfo ? "Disponible" : "No disponible";
+                            const disponibilidadText = matchingDayInfo ? <div className="green"></div> : <div className="red"></div>;
 
                             return (
                                 <SwiperSlide
@@ -202,7 +203,7 @@ export default function Dias() {
                                     <h5>{dayjs(monthDay.date)?.format('dddd')}</h5>
                                     <h4>{dayjs(monthDay.date)?.format('D')}</h4>
                                     <h5>{dayjs(monthDay.date)?.format('MMMM')}</h5>
-                                    <p>{disponibilidadText}</p>
+                                    {disponibilidadText}
                                 </SwiperSlide>
                             );
                         })}
@@ -224,7 +225,7 @@ export default function Dias() {
                             </div>
                         </div>
                     ) : (
-                        <p className="noHay">Selecciona un día para ver sus horarios.</p>
+                        <h4 className="textCenter">Selecciona un día para ver sus horarios.</h4>
                     )}
                     <hr />
 
@@ -300,7 +301,7 @@ export default function Dias() {
                     </Modal>
                 </div >
             ) : (
-                <div className="noHay">No se encontraron días para este servicio.</div>
+                <h4 className="textCenter">No se encontraron días para este servicio.</h4>
             )}
         </div >
     );

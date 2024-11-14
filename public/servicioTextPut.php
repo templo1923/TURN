@@ -41,6 +41,7 @@ try {
         $nuevoTelefono = isset($data['nuevoTelefono']) ? $data['nuevoTelefono'] : null;
         $nuevoEmail = isset($data['nuevoEmail']) ? $data['nuevoEmail'] : null;
         $nuevoNombre = isset($data['nuevoNombre']) ? $data['nuevoNombre'] : null;
+        $nuevoTipo = isset($data['nuevoTipo']) ? $data['nuevoTipo'] : null; // Nuevo campo tipo
 
         // Validar que el título no contenga '/' o '\'
         if (strpos($nuevoTitulo, '/') !== false || strpos($nuevoTitulo, '\\') !== false) {
@@ -57,7 +58,7 @@ try {
             $nuevaCategoria = $row['idCategoria'];
         }
 
-        $sqlUpdate = "UPDATE servicios SET descripcion = :descripcion, titulo = :titulo, idCategoria = :idCategoria, idSubCategoria = :idSubCategoria, precio = :precio, estado = :estado, telefono = :telefono, email = :email, nombre = :nombre
+        $sqlUpdate = "UPDATE servicios SET descripcion = :descripcion, titulo = :titulo, idCategoria = :idCategoria, idSubCategoria = :idSubCategoria, precio = :precio, estado = :estado, telefono = :telefono, email = :email, nombre = :nombre, tipo = :tipo
         WHERE idServicio = :idServicio";
         $sentenciaUpdate = $conexion->prepare($sqlUpdate);
         $sentenciaUpdate->bindParam(':descripcion', $nuevaDescripcion);
@@ -69,6 +70,7 @@ try {
         $sentenciaUpdate->bindParam(':telefono', $nuevoTelefono); 
         $sentenciaUpdate->bindParam(':email', $nuevoEmail);
         $sentenciaUpdate->bindParam(':nombre', $nuevoNombre);
+        $sentenciaUpdate->bindParam(':tipo', $nuevoTipo); // Vincular el nuevo campo tipo
         $sentenciaUpdate->bindParam(':idServicio', $idServicio, PDO::PARAM_INT);
 
         if ($sentenciaUpdate->execute()) {

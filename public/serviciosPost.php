@@ -4,14 +4,12 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-// Cargar variables de entorno desde el archivo .env
 require __DIR__.'/vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// Obtener los valores de las variables de entorno
 $servidor = $_ENV['DB_HOST'] . ':' . $_ENV['DB_PORT'];
 $usuario = $_ENV['DB_USER'];
 $contrasena = $_ENV['DB_PASS'];
@@ -34,27 +32,23 @@ try {
         $telefono = $_POST['telefono'];
         $email = $_POST['email'];
         $nombre = $_POST['nombre'];
+        $tipo = $_POST['tipo'];
+        $idUsuario = $_POST['idUsuario']; // Nuevo campo idUsuario
 
-        // Validar que el título no contenga caracteres prohibidos
         if (strpos($titulo, '/') !== false || strpos($titulo, '\\') !== false) {
             echo json_encode(["error" => "El título no debe contener caracteres como / o \\"]);
             exit;
         }
 
-        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado) && !empty($telefono) && !empty($email) && !empty($nombre)) {
-
-            // Verificar si se envió una imagen
+        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado) && !empty($telefono) && !empty($email) && !empty($nombre) && !empty($tipo) && !empty($idUsuario)) {
             $imagenPresente = isset($_FILES['imagen1']);
 
             if ($imagenPresente) {
-
-                // Crear carpeta para imágenes si no existe
                 $carpetaImagenes = './imagenes_servicios';
                 if (!file_exists($carpetaImagenes)) {
                     mkdir($carpetaImagenes, 0777, true);
                 }
 
-                // Subir imagen si está presente
                 $rutaImagenCompleta = '';
                 if ($_FILES['imagen1']['error'] === UPLOAD_ERR_OK) {
                     $nombreImagen = $_FILES['imagen1']['name'];
@@ -68,9 +62,8 @@ try {
                     exit;
                 }
 
-                // Almacenar datos en la tabla `servicios`
-                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1, telefono, email, nombre) 
-                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1, :telefono, :email, :nombre)";
+                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1, telefono, email, nombre, tipo, idUsuario) 
+                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1, :telefono, :email, :nombre, :tipo, :idUsuario)";
                 $stmt = $conexion->prepare($sqlInsert);
                 $stmt->bindParam(':titulo', $titulo);
                 $stmt->bindParam(':descripcion', $descripcion);
@@ -82,19 +75,18 @@ try {
                 $stmt->bindParam(':telefono', $telefono);
                 $stmt->bindParam(':email', $email);
                 $stmt->bindParam(':nombre', $nombre);
+                $stmt->bindParam(':tipo', $tipo);
+                $stmt->bindParam(':idUsuario', $idUsuario); // Bind del nuevo campo idUsuario
                 $stmt->execute();
 
-                // Obtener el ID de la última inserción
                 $lastId = $conexion->lastInsertId();
 
-                // Obtener la fecha de creación actualizada
                 $sqlSelect = "SELECT createdAt FROM `servicios` WHERE idServicio = :lastId";
                 $stmtSelect = $conexion->prepare($sqlSelect);
                 $stmtSelect->bindParam(':lastId', $lastId);
                 $stmtSelect->execute();
                 $createdAt = $stmtSelect->fetchColumn();
 
-                // Respuesta JSON con enlace de la imagen y fecha de creación
                 echo json_encode([
                     "mensaje" => "Servicio creado exitosamente",
                     "imagen1" => $rutaImagenCompleta,
