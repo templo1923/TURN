@@ -5,8 +5,9 @@ import 'moment/locale/es'; // Importar el locale de español
 import 'react-big-calendar/lib/css/react-big-calendar.css'; // Importar el estilo
 import baseURL from '../../url';
 import Modal from 'react-modal';
-import './TurnosData.css'
+import './TurnosData.css';
 import Swal from 'sweetalert2';
+import { fetchUsuario, getUsuario } from '../../user';
 // Configurar moment.js para usar el idioma español
 moment.locale('es'); // Establecer el idioma a español
 const localizer = momentLocalizer(moment);
@@ -30,9 +31,24 @@ export default function TurnosData() {
     const [turnoSeleccionado, setTurnoSeleccionado] = useState(null); // Estado para el turno seleccionado
     const [modalIsOpen, setModalIsOpen] = useState(false); // Estado para abrir o cerrar el modal
     const [nuevoEstado, setNuevoEstado] = useState('');
+    const [servicios, setServicios] = useState([]);
+    const [servicioSeleccionado, setServicioSeleccionado] = useState(null); // Establecer el servicio seleccionado por defecto
+
     useEffect(() => {
         cargarTurnos();
+        cargarServicios();
     }, []);
+    //Trae usuario logueado-----------------------------
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchUsuario();
+            setLoading(false);
+        };
+
+        fetchData();
+    }, []);
+    const usuarioLegued = getUsuario();
 
     const cargarTurnos = () => {
         fetch(`${baseURL}/turnoGet.php`, {
@@ -48,6 +64,20 @@ export default function TurnosData() {
                 setTurnos(turnosConDias);
             })
             .catch(error => console.error('Error al cargar turnos:', error));
+    };
+
+    const cargarServicios = () => {
+        fetch(`${baseURL}/serviciosGet.php`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then(data => {
+                setServicios(data.servicios || []);
+                if (data.servicios && data.servicios.length > 0) {
+                    setServicioSeleccionado(data.servicios[0].idServicio); // Selecciona el primer servicio por defecto
+                }
+            })
+            .catch(error => console.error('Error al cargar servicios:', error));
     };
 
     const handleSelectEvent = (event) => {
@@ -69,36 +99,72 @@ export default function TurnosData() {
         alert(`Seleccionado el rango: ${slotInfo.start} - ${slotInfo.end}`);
     };
 
-    const events = turnos?.map(item => {
-        const dias = item.dias ?? [];
-        return dias?.map(dia => {
-            // Determina el color según el estado del turno
-            const bgColor = item.estado === "Pendiente" ? "#0c71cf"
-                : item.estado === "Finalizado" ? "#008000"
-                    : item.estado === "Rechazado" ? "#FF0000"
-                        : "gray"; // Color predeterminado
+    // Inicialización de servicios del usuario logueado
+    const serviciosUsuario = usuarioLegued?.rol === "admin"
+        ? servicios
+        : servicios.filter(servicio => servicio.idUsuario === usuarioLegued?.idUsuario);
 
-            return {
-                title: `${item.nombre} (${dia.horaInicio} - ${dia.horaFin})`,
-                start: new Date(dia.dia + 'T' + dia.horaInicio),
-                end: new Date(dia.dia + 'T' + dia.horaFin),
-                allDay: false,
-                idTurno: item.idTurno,
-                estado: item.estado,
-                style: { backgroundColor: bgColor, color: 'white' } // Aplica el color de fondo y texto blanco
-            };
-        });
-    }).flat() ?? [];
+    // Selección inicial del servicio
+    const servicioSeleccionadoInicial = servicioSeleccionado || serviciosUsuario[0]?.idServicio;
+
+    // Filtro de turnos ajustado para admin y colaborador
+    const events = turnos
+        ?.filter(item => {
+            if (!usuarioLegued || !usuarioLegued.idUsuario) {
+                // Sin usuario logueado: mostrar todos los turnos
+                return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
+            }
+
+            if (usuarioLegued.rol === "admin") {
+                // Si es admin: mostrar todos los turnos y los del servicio seleccionado
+                return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
+            }
+
+            if (usuarioLegued.rol !== "admin") {
+                // Si es colaborador: mostrar solo los turnos vinculados a sus servicios
+                const serviciosFiltrados = serviciosUsuario.map(s => s.idServicio);
+                return serviciosFiltrados.includes(item.idServicio) &&
+                    item.idServicio === servicioSeleccionadoInicial;
+            }
+
+            return false; // Fallback de seguridad
+        })
+        .map(item => {
+            const dias = item.dias ?? [];
+            return dias?.map(dia => {
+                const bgColor =
+                    item.estado === "Pendiente"
+                        ? "#0c71cf"
+                        : item.estado === "Finalizado"
+                            ? "#008000"
+                            : item.estado === "Rechazado"
+                                ? "#FF0000"
+                                : "gray"; // Color predeterminado
+
+                return {
+                    title: `${item.nombre} (${dia.horaInicio} - ${dia.horaFin})`,
+                    start: new Date(dia.dia + "T" + dia.horaInicio),
+                    end: new Date(dia.dia + "T" + dia.horaFin),
+                    allDay: false,
+                    idTurno: item.idTurno,
+                    estado: item.estado,
+                    style: { backgroundColor: bgColor, color: "white" },
+                };
+            });
+        })
+        .flat() ?? [];
+
+
+
+
+
     useEffect(() => {
         // Actualiza el valor del select cuando cambia el estado nuevoEstado
-
-        setNuevoEstado(turnoSeleccionado?.estado)
-
+        setNuevoEstado(turnoSeleccionado?.estado);
     }, [turnoSeleccionado]);
 
     const handleUpdateText = async (idTurno) => {
         const payload = {
-
             idTurno: idTurno,
             estado: nuevoEstado !== '' ? nuevoEstado : turnoSeleccionado.estado,
         };
@@ -113,21 +179,19 @@ export default function TurnosData() {
             .then(response => response.json())
             .then(data => {
                 if (data.error) {
-
                     Swal.fire(
                         'Error!',
                         data.error,
                         'error'
                     );
                 } else {
-
                     Swal.fire(
                         'Editado!',
                         data.mensaje,
                         'success'
                     );
                     cargarTurnos();
-                    handleCloseModal()
+                    handleCloseModal();
                 }
             })
             .catch(error => {
@@ -140,11 +204,81 @@ export default function TurnosData() {
             });
     };
 
+    const handleSelectServicio = (idServicio) => {
+        setServicioSeleccionado(idServicio); // Establece el servicio seleccionado
+    };
+
+
+
     return (
         <div>
+            <div className='grapBtns'>
+                {loading ? (
+                    <></>
+                ) : usuarioLegued?.idUsuario ? (
+                    <>
+                        {usuarioLegued?.rol === 'admin' ? (
+                            <>
+                                {
+                                    servicios?.filter(item => usuarioLegued.rol === 'admin' || item.idUsuario === usuarioLegued.idUsuario).map(item => {
+                                        const turnosPorServicio = turnos?.filter(turno => turno.idServicio === item.idServicio).length; // Calcular la cantidad de turnos para el servicio
+                                        return (
+                                            <button
+                                                key={item.idServicio}
+                                                className={servicioSeleccionado === item.idServicio ? 'btnSelected' : 'btnNoSelected'}
+                                                onClick={() => handleSelectServicio(item.idServicio)}
+                                            >
+                                                ({turnosPorServicio})  <span>{item.titulo} </span>
+                                            </button>
+                                        );
+                                    })
+                                }
+                            </>
+                        ) : usuarioLegued?.rol === 'colaborador' ? (
+                            <>
+                                {
+                                    servicios?.filter(item => usuarioLegued.rol === 'admin' || item.idUsuario === usuarioLegued.idUsuario).map(item => {
+                                        const turnosPorServicio = turnos?.filter(turno => turno.idServicio === item.idServicio).length; // Calcular la cantidad de turnos para el servicio
+                                        return (
+                                            <button
+                                                key={item.idServicio}
+                                                className={servicioSeleccionado === item.idServicio ? 'btnSelected' : 'btnNoSelected'}
+                                                onClick={() => handleSelectServicio(item.idServicio)}
+                                            >
+                                                ({turnosPorServicio})  <span>{item.titulo} </span>
+                                            </button>
+                                        );
+                                    })
+                                }
+                            </>
+                        ) : (
+                            <></>
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {
+                            servicios?.map(item => {
+                                const turnosPorServicio = turnos?.filter(turno => turno.idServicio === item.idServicio).length; // Calcular la cantidad de turnos para el servicio
+                                return (
+                                    <button
+                                        key={item.idServicio}
+                                        className={servicioSeleccionado === item.idServicio ? 'btnSelected' : 'btnNoSelected'}
+                                        onClick={() => handleSelectServicio(item.idServicio)}
+                                    >
+                                        ({turnosPorServicio})  <span>{item.titulo} </span>
+                                    </button>
+                                );
+                            })
+                        }
+                    </>
+                )}
+
+            </div>
+
             <Calendar
                 localizer={localizer}
-                events={events}
+                events={events} // Usar los eventos filtrados
                 startAccessor="start"
                 endAccessor="end"
                 onSelectEvent={handleSelectEvent}
@@ -169,18 +303,10 @@ export default function TurnosData() {
                     overlayClassName="overlay-admin"
                 >
                     <div className='deFlexBtnsModal'>
-
                         <div className='deFlexBtnsModal'>
-                            <button
-                                className='selected'
-
-                            >
-                                Detalles del Turno
-                            </button>
+                            <button className='selected'>Detalles del Turno</button>
                         </div>
-                        <span className="close" onClick={handleCloseModal}>
-                            &times;
-                        </span>
+                        <span className="close" onClick={handleCloseModal}>&times;</span>
                     </div>
                     <div className='flexGrap'>
                         <fieldset>
@@ -211,15 +337,8 @@ export default function TurnosData() {
                                 <option value="Rechazado">Rechazado</option>
                             </select>
                         </fieldset>
-
-                        <fieldset>
-                            <legend>Fecha y hora </legend>
-                            <input disabled value={`${turnoSeleccionado.dias[0]?.dia} -  ${turnoSeleccionado.dias[0]?.horaInicio} -  ${turnoSeleccionado.dias[0]?.horaFin}`} />
-                        </fieldset>
                     </div>
-
-                    <button className='btnPost' onClick={() => handleUpdateText(turnoSeleccionado.idTurno)} >Guardar </button>
-
+                    <button className="btnPost" onClick={() => handleUpdateText(turnoSeleccionado.idTurno)}>Guardar</button>
                 </Modal>
             )}
         </div>

@@ -30,7 +30,53 @@
     border: none;
     color: var(--text-color2);
 }
-
+.btnSelected{
+    background-color: var(--color1);
+    color: var(--blanco);
+    padding: 7px 10px;
+    border: none;
+    font-size: 0.8em;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.btnNoSelected{
+    background-color: var(--gris2);
+    padding: 7px 10px;
+    border: none;
+    font-size: 0.8em;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.grapBtns button span{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20ch!important;
+}
+.grapBtns{
+    display: flex;
+    gap: 10px;
+    overflow-x: scroll;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+.grapBtns::-webkit-scrollbar{
+    width: 5px;
+    height: 5px;
+    cursor: pointer;
+    background-color: transparent;
+   
+}
+.grapBtns::-webkit-scrollbar-thumb {
+    background-color: var(--color1); 
+    border-radius: 10px;
+    margin-top: 3rem;
+    cursor: pointer;
+  }
 @media (max-width: 1000px){
     .overlay-admin {
         justify-content: end;

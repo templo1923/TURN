@@ -9,6 +9,8 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import SwiperCore, { Navigation, Pagination, Autoplay } from 'swiper/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 dayjs.locale('es');
@@ -30,10 +32,11 @@ export default function Dias() {
     const [telefono, setTelefono] = useState('');
     const [email, setEmail] = useState('');
     const [mensaje, setMensaje] = useState('');
-
+    const [turnos, setTurnos] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
     useEffect(() => {
         cargarDias();
+        cargarTurnos()
     }, []);
 
     const cargarDias = () => {
@@ -48,6 +51,24 @@ export default function Dias() {
                 setLoading(true);
             });
     };
+    const cargarTurnos = () => {
+        fetch(`${baseURL}/turnoGet.php`, {
+            method: 'GET',
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Filtrar turnos por idServicio y parsear los días
+                const turnosConDias = data.turnos
+                    ?.filter(turno => turno.idServicio === parseInt(idServicio)) // Filtrar por idServicio
+                    ?.map(turno => ({
+                        ...turno,
+                        dias: JSON.parse(turno.dias), // Convertir la cadena JSON en un objeto
+                    })) || [];
+                setTurnos(turnosConDias);
+            })
+            .catch(error => console.error('Error al cargar turnos:', error));
+    };
+
 
     useEffect(() => {
         if (dias?.length > 0) {
@@ -100,6 +121,76 @@ export default function Dias() {
         setModalIsOpen(false);
         setIsFocused(false);
     };
+    const descargarTurnoPDF = (detallesTurno) => {
+        const doc = new jsPDF();
+
+        // Títulos principales
+        doc.setFontSize(22);
+        doc.setTextColor("#2c3e50");
+        doc.text("Detalles del Turno", 105, 20, null, null, "center");
+
+        // Información del turno
+        doc.setFontSize(14);
+        doc.setTextColor("#34495e");
+        doc.text("Turno N°:", 20, 30);
+        doc.setFontSize(14);
+        doc.text(detallesTurno.idTurno, 60, 30);
+
+        doc.text("Servicio:", 20, 40);
+        doc.setFontSize(14);
+        doc.text(detallesTurno.servicio, 60, 40);
+
+        doc.setFontSize(16);
+        doc.text("Día:", 20, 50);
+        doc.setFontSize(14);
+        doc.text(detallesTurno.dia, 60, 50);
+
+        doc.setFontSize(16);
+        doc.text("Fecha:", 20, 60);
+        doc.setFontSize(14);
+        doc.text(detallesTurno.fecha, 60, 60);
+
+        doc.setFontSize(16);
+        doc.text("Horario:", 20, 70);
+        doc.setFontSize(14);
+        doc.text(`${detallesTurno.horarioInicio} - ${detallesTurno.horarioFin}`, 60, 70);
+
+        // Información del cliente
+        doc.setFontSize(18);
+        doc.setTextColor("#2c3e50");
+        doc.text("Datos del Cliente", 20, 90);
+
+        // Fondo para datos del cliente
+        doc.setFillColor("#f7f7f7");
+        doc.roundedRect(15, 95, 180, 40, 5, 5, "F");
+
+        doc.setFontSize(14);
+        doc.setTextColor("#34495e");
+        doc.text("Nombre:", 20, 110);
+        doc.text(detallesTurno.nombre, 60, 110);
+
+        doc.text("DNI:", 20, 120);
+        doc.text(detallesTurno.dni, 60, 120);
+
+        doc.text("Teléfono:", 20, 130);
+        doc.text(detallesTurno.telefono, 60, 130);
+
+        doc.text("Email:", 20, 140);
+        doc.text(detallesTurno.email, 60, 140);
+
+        // Pie de página
+        doc.setFontSize(12);
+        doc.setTextColor("#7f8c8d");
+        doc.text("Gracias por confiar en nosotros.", 105, 280, null, null, "center");
+        doc.text("Para cualquier consulta, contáctanos al 123-456-789.", 105, 285, null, null, "center");
+
+        // Crear nombre de archivo seguro (sin espacios ni caracteres especiales)
+        const nombreArchivo = `Turno_${detallesTurno.idTurno}_${detallesTurno.nombre.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}_${detallesTurno.fecha.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '')}.pdf`;
+
+        // Descargar el PDF
+        doc.save(nombreArchivo);
+    };
+
 
     const crearTurno = async () => {
         setMensaje('Procesando...');
@@ -123,6 +214,7 @@ export default function Dias() {
             formData.append('telefono', telefono);
             formData.append('email', email);
             formData.append('idServicio', idServicio);
+            formData.append('servicio', servicio);
             formData.append('estado', 'Pendiente');
             formData.append('dias', JSON.stringify(diasData));  // Agregar los días y horas como JSON
 
@@ -149,6 +241,26 @@ export default function Dias() {
                 setEmail('');
                 setMensaje('');
                 closeModal();
+                cargarDias();
+                cargarTurnos()
+                const detallesTurno = {
+                    idTurno: data.idTurno,
+                    servicio,
+                    dia: dayjs(selectedHorario?.date)?.format('dddd'),
+                    fecha: dayjs(selectedHorario?.date)?.format('dddd, D [de] MMMM [de] YYYY'),
+                    horarioInicio: selectedHorario?.horario?.horaInicio,
+                    horarioFin: selectedHorario?.horario?.horaFin,
+                    nombre,
+                    dni,
+                    telefono,
+                    email,
+                };
+
+                descargarTurnoPDF(detallesTurno);
+                setTimeout(() => {
+                    setSelectedHorario(null)
+                }, 100);
+
             } else if (data?.error) {
                 setMensaje('');
                 Swal.fire(
@@ -167,8 +279,6 @@ export default function Dias() {
             );
         }
     };
-
-
 
 
 
@@ -213,16 +323,34 @@ export default function Dias() {
                         <div className='horariosSeleccionados'>
                             <h4>Horarios disponibles para {dayjs(selectedDay?.date)?.format('dddd, D [de] MMMM [de] YYYY')}:</h4>
                             <div className="flexGrapHoras">
-                                {selectedDay?.horarios?.map((horario, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => handleHorarioClick(horario, selectedDay.date)}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        {horario.horaInicio} - {horario.horaFin}
-                                    </button>
-                                ))}
+                                {selectedDay?.horarios?.map((horario, idx) => {
+                                    // Verificar si el horario está ocupado por algún turno del mismo servicio
+                                    const isOcupado = turnos.some(turno =>
+                                        turno.dias.some(d =>
+                                            d.dia === selectedDay.date &&
+                                            d.horaInicio === horario.horaInicio &&
+                                            d.horaFin === horario.horaFin
+                                        )
+                                    );
+
+                                    return (
+                                        <button
+                                            key={idx}
+                                            onClick={() => !isOcupado && handleHorarioClick(horario, selectedDay.date)}
+                                            style={{
+                                                cursor: isOcupado ? 'not-allowed' : 'pointer',
+                                                backgroundColor: isOcupado ? '#a3a1a1' : '',
+                                                color: isOcupado ? '#fff' : '',
+                                            }}
+                                            disabled={isOcupado} // Desactivar si el horario está ocupado
+                                        >
+                                            {horario.horaInicio} - {horario.horaFin}
+                                        </button>
+                                    );
+                                })}
                             </div>
+
+
                         </div>
                     ) : (
                         <h4 className="textCenter">Selecciona un día para ver sus horarios.</h4>

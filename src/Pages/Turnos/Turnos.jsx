@@ -36,7 +36,7 @@ export default function Servicios() {
                             ) : usuarioLegued?.rol === 'colaborador' ? (
                                 <TurnosData />
                             ) : (
-                                <SinPermisos />
+                                <TurnosData />
                             )}
                         </>
                     ) : (

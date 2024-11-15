@@ -152,13 +152,7 @@ export default function CardsCantidad() {
                                     <h2>{servicios.length}</h2>
                                 </div>
                             </Anchor>
-                            <Anchor to={`/dashboard/categorias`} className='cardCantidad' id='cardCantidad2'>
-                                <FontAwesomeIcon icon={faList} className='icons' />
-                                <div className='deColumn'>
-                                    <h3>Categorías</h3>
-                                    <h2>{categorias.length}</h2>
-                                </div>
-                            </Anchor>
+
                             <Anchor to={`/dashboard/turnos`} className='cardCantidad' id='cardCantidad2' >
                                 <FontAwesomeIcon icon={faRectangleList} className='icons' />
                                 <div className='deColumn'>

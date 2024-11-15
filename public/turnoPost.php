@@ -31,12 +31,13 @@ try {
         $email = $_POST['email'];
         $telefono = $_POST['telefono'];
         $dni = $_POST['dni']; // Nuevo campo DNI
+        $servicio = $_POST['servicio']; // Nuevo campo Servicio
 
         // Validar que los campos requeridos no estén vacíos
-        if (!empty($dias) && !empty($idServicio) && !empty($nombre) && !empty($email) && !empty($telefono) && !empty($dni)) {
+        if (!empty($dias) && !empty($idServicio) && !empty($nombre) && !empty($email) && !empty($telefono) && !empty($dni) && !empty($servicio)) {
             // Preparar la inserción para la tabla 'turnos'
-            $sqlInsert = "INSERT INTO `turnos` (dias, estado, idServicio, nombre, email, telefono, dni) 
-                          VALUES (:dias, :estado, :idServicio, :nombre, :email, :telefono, :dni)";
+            $sqlInsert = "INSERT INTO `turnos` (dias, estado, idServicio, nombre, email, telefono, dni, servicio) 
+                          VALUES (:dias, :estado, :idServicio, :nombre, :email, :telefono, :dni, :servicio)";
             $stmt = $conexion->prepare($sqlInsert);
 
             // Convertir el array de días a JSON
@@ -50,6 +51,7 @@ try {
             $stmt->bindParam(':email', $email);
             $stmt->bindParam(':telefono', $telefono);
             $stmt->bindParam(':dni', $dni); // Asociar el parámetro DNI
+            $stmt->bindParam(':servicio', $servicio); // Asociar el parámetro Servicio
 
             // Ejecutar la consulta e informar del resultado
             if ($stmt->execute()) {
@@ -62,7 +64,7 @@ try {
                 echo json_encode(["error" => "Error al crear el turno"]);
             }
         } else {
-            echo json_encode(["error" => "Por favor, proporcione todos los datos requeridos (dias, idServicio, nombre, email, telefono, dni)"]);
+            echo json_encode(["error" => "Por favor, proporcione todos los datos requeridos (dias, idServicio, nombre, email, telefono, dni, servicio)"]);
         }
     } else {
         echo json_encode(["error" => "Método no permitido"]);

@@ -3,8 +3,7 @@ import './NewDias.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import baseURL from '../../url';
-import Swal from 'sweetalert2';
-
+import { fetchUsuario, getUsuario } from '../../user';
 export default function NewDias() {
     const [mensaje, setMensaje] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
@@ -127,7 +126,17 @@ export default function NewDias() {
             toast.error('Error de conexión. Inténtelo de nuevo.');
         }
     };
+    //Trae usuario logueado-----------------------------
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchUsuario();
+            setLoading(false);
+        };
 
+        fetchData();
+    }, []);
+    const usuarioLegued = getUsuario();
     return (
         <div className='NewContain' id='NewDias'>
             <ToastContainer />
@@ -152,13 +161,46 @@ export default function NewDias() {
                                     onChange={handleServicio}
                                 >
                                     <option value="">Selecciona opción</option>
-                                    {
-                                        servicios.map(item => (
-                                            <option value={item.idServicio} key={item.idServicio}>
-                                                {item.titulo}
-                                            </option>
-                                        ))
-                                    }
+                                    {loading ? (
+                                        <></>
+                                    ) : usuarioLegued?.idUsuario ? (
+                                        <>
+                                            {usuarioLegued?.rol === 'admin' ? (
+                                                <>
+                                                    {
+                                                        servicios?.filter(item => usuarioLegued.rol === 'admin' || item.idUsuario === usuarioLegued.idUsuario)?.map(item => (
+                                                            <option value={item.idServicio} key={item.idServicio}>
+                                                                {item.titulo}
+                                                            </option>
+                                                        ))
+                                                    }
+                                                </>
+                                            ) : usuarioLegued?.rol === 'colaborador' ? (
+                                                <>
+                                                    {
+                                                        servicios?.filter(item => usuarioLegued.rol === 'admin' || item.idUsuario === usuarioLegued.idUsuario)?.map(item => (
+                                                            <option value={item.idServicio} key={item.idServicio}>
+                                                                {item.titulo}
+                                                            </option>
+                                                        ))
+                                                    }
+                                                </>
+                                            ) : (
+                                                <></>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <>
+                                            {
+                                                servicios?.map(item => (
+                                                    <option value={item.idServicio} key={item.idServicio}>
+                                                        {item.titulo}
+                                                    </option>
+                                                ))
+                                            }
+                                        </>
+                                    )}
+
                                 </select>
                             </fieldset>
 

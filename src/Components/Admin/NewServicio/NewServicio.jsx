@@ -7,6 +7,7 @@ import imageIcon from '../../../images/imageIcon.png';
 import { fetchUsuario, getUsuario } from '../../user';
 import Swal from 'sweetalert2';
 import planes from '../../planes';
+
 export default function NewServicio() {
     const [mensaje, setMensaje] = useState('');
     const [imagenPreview, setImagenPreview] = useState([null, null, null, null]); // Arreglo para imágenes
@@ -126,6 +127,17 @@ export default function NewServicio() {
         }
     };
 
+    //Trae usuario logueado-----------------------------
+    const [loading, setLoading] = useState(true);
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchUsuario();
+            setLoading(false);
+        };
+
+        fetchData();
+    }, []);
+    const usuarioLegued = getUsuario();
 
 
 
@@ -151,7 +163,7 @@ export default function NewServicio() {
         formData.append('email', email);
         formData.append('tipo', tipo);
         formData.append('estado', 'Estandard');
-        formData.append('idUsuario', 1);
+        formData.append('idUsuario', usuarioLegued.idUsuario);
         try {
             const response = await fetch(`${baseURL}/serviciosPost.php`, {
                 method: 'POST',
@@ -179,24 +191,7 @@ export default function NewServicio() {
     };
 
 
-    //Trae usuario logueado-----------------------------
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        const fetchData = async () => {
-            await fetchUsuario();
-            setLoading(false);
-        };
 
-        fetchData();
-    }, []);
-    const usuarioLegued = getUsuario();
-    const alertPermiso = () => {
-        Swal.fire(
-            '¡Error!',
-            '¡No tienes permisos!',
-            'error'
-        );
-    }
 
 
     //Calcular limite de Plan-----------------------------

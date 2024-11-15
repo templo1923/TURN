@@ -30,26 +30,38 @@ try {
 
         // Validar que los campos requeridos no estén vacíos
         if (!empty($dias) && !empty($idServicio)) {
-            // Preparar la inserción para la tabla 'dias_horarios'
-            $sqlInsert = "INSERT INTO `dias_horarios` (dias, estado, idServicio) VALUES (:dias, :estado, :idServicio)";
-            $stmt = $conexion->prepare($sqlInsert);
+            // Verificar si ya existe un registro con el mismo idServicio
+            $sqlCheck = "SELECT COUNT(*) FROM `dias_horarios` WHERE idServicio = :idServicio";
+            $stmtCheck = $conexion->prepare($sqlCheck);
+            $stmtCheck->bindParam(':idServicio', $idServicio);
+            $stmtCheck->execute();
+            $count = $stmtCheck->fetchColumn();
 
-            // Aquí necesitamos almacenar el JSON del día y horarios como un string
-            $diasJson = json_encode($dias);
-
-            $stmt->bindParam(':dias', $diasJson);
-            $stmt->bindParam(':estado', $estado);
-            $stmt->bindParam(':idServicio', $idServicio);
-
-            // Ejecutar la consulta e informar del resultado
-            if ($stmt->execute()) {
-                $lastId = $conexion->lastInsertId();
-                echo json_encode([
-                    "mensaje" => "Días y horarios creados exitosamente",
-                    "idDiasHorarios" => $lastId
-                ]);
+            if ($count > 0) {
+                // Si ya existe un registro con el mismo idServicio
+                echo json_encode(["error" => "Ya existe datos para este servicio"]);
             } else {
-                echo json_encode(["error" => "Error al crear días y horarios"]);
+                // Preparar la inserción para la tabla 'dias_horarios'
+                $sqlInsert = "INSERT INTO `dias_horarios` (dias, estado, idServicio) VALUES (:dias, :estado, :idServicio)";
+                $stmt = $conexion->prepare($sqlInsert);
+
+                // Convertir el JSON del día y horarios a string
+                $diasJson = json_encode($dias);
+
+                $stmt->bindParam(':dias', $diasJson);
+                $stmt->bindParam(':estado', $estado);
+                $stmt->bindParam(':idServicio', $idServicio);
+
+                // Ejecutar la consulta e informar del resultado
+                if ($stmt->execute()) {
+                    $lastId = $conexion->lastInsertId();
+                    echo json_encode([
+                        "mensaje" => "Días y horarios creados exitosamente",
+                        "idDiasHorarios" => $lastId
+                    ]);
+                } else {
+                    echo json_encode(["error" => "Error al crear días y horarios"]);
+                }
             }
         } else {
             echo json_encode(["error" => "Por favor, proporcione todos los datos requeridos (dias, idServicio)"]);

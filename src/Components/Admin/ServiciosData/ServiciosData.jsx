@@ -413,7 +413,7 @@ export default function ServiciosData() {
         );
     }
     return (
-        <div id='NewDias'>
+        <div >
 
             <ToastContainer />
             <div className='deFlexContent'>
@@ -668,7 +668,7 @@ export default function ServiciosData() {
                 </div>
             )}
             {modalVisible2 && (
-                <div className="modal" >
+                <div className="modal" id='NewDias'>
                     <div className="modal-content">
                         <div className='deFlexBtnsModal'>
 
@@ -707,81 +707,235 @@ export default function ServiciosData() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filtrados?.slice(0, visibleCount)?.map(item => (
-                            <tr key={item.idServicio}>
+                        {loading ? (
+                            <></>
+                        ) : usuarioLegued?.idUsuario ? (
+                            <>
+                                {usuarioLegued?.rol === 'admin' ? (
+                                    <>
+                                        {filtrados?.slice(0, visibleCount)?.filter(item => usuarioLegued.rol === 'admin' || item.idUsuario === usuarioLegued.idUsuario).map(item => (
+                                            <tr key={item.idServicio}>
 
-                                <td>
-                                    {item.imagen1 ? (
-                                        <img src={item.imagen1} alt="imagen1" />
-                                    ) : (
-                                        <span className='imgNonetd'>
-                                            Sin imagen
-                                        </span>
-                                    )}
-                                </td>
-                                <td>{item.titulo}</td>
-                                <td style={{
-                                    color: '#008000',
-                                }}>
-                                    {moneda} {`${item?.precio}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
-                                </td>
-                                {categorias
-                                    ?.filter(categoriaFiltrada => categoriaFiltrada.idCategoria === item.idCategoria)
-                                    ?.map(categoriaFiltrada => (
-                                        <td
-                                            key={categoriaFiltrada.idCategoria}
-                                            style={{ color: '#DAA520' }}
-                                        >
-                                            {categoriaFiltrada.categoria}
-                                        </td>
-                                    ))
-                                }
-                                <td>
-                                    {item.idSubCategoria === 0
-                                        ? 'sin seleccionar'
-                                        :
-                                        <>
-                                            {subcategorias
-                                                ?.filter(subcategoriaFiltrada => subcategoriaFiltrada.idSubCategoria === item.idSubCategoria)
-                                                ?.map(subcategoriaFiltrada => (
-                                                    <>
-                                                        {subcategoriaFiltrada?.subcategoria}
-                                                    </>
-                                                ))
-                                            }
-                                        </>
-                                    }
-                                </td>
-                                <td>{item.nombre}</td>
+                                                <td>
+                                                    {item.imagen1 ? (
+                                                        <img src={item.imagen1} alt="imagen1" />
+                                                    ) : (
+                                                        <span className='imgNonetd'>
+                                                            Sin imagen
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td>{item.titulo}</td>
+                                                <td style={{
+                                                    color: '#008000',
+                                                }}>
+                                                    {moneda} {`${item?.precio}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                                                </td>
+                                                {categorias
+                                                    ?.filter(categoriaFiltrada => categoriaFiltrada.idCategoria === item.idCategoria)
+                                                    ?.map(categoriaFiltrada => (
+                                                        <td
+                                                            key={categoriaFiltrada.idCategoria}
+                                                            style={{ color: '#DAA520' }}
+                                                        >
+                                                            {categoriaFiltrada.categoria}
+                                                        </td>
+                                                    ))
+                                                }
+                                                <td>
+                                                    {item.idSubCategoria === 0
+                                                        ? 'sin seleccionar'
+                                                        :
+                                                        <>
+                                                            {subcategorias
+                                                                ?.filter(subcategoriaFiltrada => subcategoriaFiltrada.idSubCategoria === item.idSubCategoria)
+                                                                ?.map(subcategoriaFiltrada => (
+                                                                    <>
+                                                                        {subcategoriaFiltrada?.subcategoria}
+                                                                    </>
+                                                                ))
+                                                            }
+                                                        </>
+                                                    }
+                                                </td>
+                                                <td>{item.nombre}</td>
+                                                {item.estado === 'Estandard' ? (
+                                                    <td style={{ color: '#008000' }}>{item.estado}</td>
+                                                ) : item.estado === 'Premiun' ? (
+                                                    <td style={{ color: 'red' }}>{item.estado}</td>
+                                                ) : (
 
+                                                    <td>{item.estado}</td>
+                                                )}
+                                                <td>
+                                                    <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
+                                                        <FontAwesomeIcon icon={faTrash} />
+                                                    </button>
+                                                    <button className='editar' onClick={() => abrirModal(item)}>
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </button>
+                                                    <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
+                                                        <FontAwesomeIcon icon={faEye} />
+                                                    </Anchor>
+                                                    <Anchor className='editar' onClick={() => abrirModal2(item)} to={`/dashboard/servicios/${item?.idServicio}`}>
+                                                        +
+                                                    </Anchor>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </>
+                                ) : usuarioLegued?.rol === 'colaborador' ? (
+                                    <>
+                                        {filtrados?.slice(0, visibleCount)?.filter(item => usuarioLegued.rol === 'admin' || item.idUsuario === usuarioLegued.idUsuario).map(item => (
+                                            <tr key={item.idServicio}>
 
-                                {item.estado === 'Estandard' ? (
-                                    <td style={{ color: '#008000' }}>{item.estado}</td>
-                                ) : item.estado === 'Premiun' ? (
-                                    <td style={{ color: 'red' }}>{item.estado}</td>
+                                                <td>
+                                                    {item.imagen1 ? (
+                                                        <img src={item.imagen1} alt="imagen1" />
+                                                    ) : (
+                                                        <span className='imgNonetd'>
+                                                            Sin imagen
+                                                        </span>
+                                                    )}
+                                                </td>
+                                                <td>{item.titulo}</td>
+                                                <td style={{
+                                                    color: '#008000',
+                                                }}>
+                                                    {moneda} {`${item?.precio}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                                                </td>
+                                                {categorias
+                                                    ?.filter(categoriaFiltrada => categoriaFiltrada.idCategoria === item.idCategoria)
+                                                    ?.map(categoriaFiltrada => (
+                                                        <td
+                                                            key={categoriaFiltrada.idCategoria}
+                                                            style={{ color: '#DAA520' }}
+                                                        >
+                                                            {categoriaFiltrada.categoria}
+                                                        </td>
+                                                    ))
+                                                }
+                                                <td>
+                                                    {item.idSubCategoria === 0
+                                                        ? 'sin seleccionar'
+                                                        :
+                                                        <>
+                                                            {subcategorias
+                                                                ?.filter(subcategoriaFiltrada => subcategoriaFiltrada.idSubCategoria === item.idSubCategoria)
+                                                                ?.map(subcategoriaFiltrada => (
+                                                                    <>
+                                                                        {subcategoriaFiltrada?.subcategoria}
+                                                                    </>
+                                                                ))
+                                                            }
+                                                        </>
+                                                    }
+                                                </td>
+                                                <td>{item.nombre}</td>
+                                                {item.estado === 'Estandard' ? (
+                                                    <td style={{ color: '#008000' }}>{item.estado}</td>
+                                                ) : item.estado === 'Premiun' ? (
+                                                    <td style={{ color: 'red' }}>{item.estado}</td>
+                                                ) : (
+
+                                                    <td>{item.estado}</td>
+                                                )}
+                                                <td>
+                                                    <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
+                                                        <FontAwesomeIcon icon={faTrash} />
+                                                    </button>
+                                                    <button className='editar' onClick={() => abrirModal(item)}>
+                                                        <FontAwesomeIcon icon={faEdit} />
+                                                    </button>
+                                                    <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
+                                                        <FontAwesomeIcon icon={faEye} />
+                                                    </Anchor>
+                                                    <Anchor className='editar' onClick={() => abrirModal2(item)} to={`/dashboard/servicios/${item?.idServicio}`}>
+                                                        +
+                                                    </Anchor>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </>
                                 ) : (
-
-                                    <td>{item.estado}</td>
+                                    <></>
                                 )}
+                            </>
+                        ) : (
+                            <>
+                                {filtrados?.slice(0, visibleCount)?.map(item => (
+                                    <tr key={item.idServicio}>
 
+                                        <td>
+                                            {item.imagen1 ? (
+                                                <img src={item.imagen1} alt="imagen1" />
+                                            ) : (
+                                                <span className='imgNonetd'>
+                                                    Sin imagen
+                                                </span>
+                                            )}
+                                        </td>
+                                        <td>{item.titulo}</td>
+                                        <td style={{
+                                            color: '#008000',
+                                        }}>
+                                            {moneda} {`${item?.precio}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}
+                                        </td>
+                                        {categorias
+                                            ?.filter(categoriaFiltrada => categoriaFiltrada.idCategoria === item.idCategoria)
+                                            ?.map(categoriaFiltrada => (
+                                                <td
+                                                    key={categoriaFiltrada.idCategoria}
+                                                    style={{ color: '#DAA520' }}
+                                                >
+                                                    {categoriaFiltrada.categoria}
+                                                </td>
+                                            ))
+                                        }
+                                        <td>
+                                            {item.idSubCategoria === 0
+                                                ? 'sin seleccionar'
+                                                :
+                                                <>
+                                                    {subcategorias
+                                                        ?.filter(subcategoriaFiltrada => subcategoriaFiltrada.idSubCategoria === item.idSubCategoria)
+                                                        ?.map(subcategoriaFiltrada => (
+                                                            <>
+                                                                {subcategoriaFiltrada?.subcategoria}
+                                                            </>
+                                                        ))
+                                                    }
+                                                </>
+                                            }
+                                        </td>
+                                        <td>{item.nombre}</td>
+                                        {item.estado === 'Estandard' ? (
+                                            <td style={{ color: '#008000' }}>{item.estado}</td>
+                                        ) : item.estado === 'Premiun' ? (
+                                            <td style={{ color: 'red' }}>{item.estado}</td>
+                                        ) : (
 
+                                            <td>{item.estado}</td>
+                                        )}
+                                        <td>
+                                            <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
+                                                <FontAwesomeIcon icon={faTrash} />
+                                            </button>
+                                            <button className='editar' onClick={() => abrirModal(item)}>
+                                                <FontAwesomeIcon icon={faEdit} />
+                                            </button>
+                                            <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
+                                                <FontAwesomeIcon icon={faEye} />
+                                            </Anchor>
+                                            <Anchor className='editar' onClick={() => abrirModal2(item)} to={`/dashboard/servicios/${item?.idServicio}`}>
+                                                +
+                                            </Anchor>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </>
+                        )}
 
-                                <td>
-                                    <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
-                                        <FontAwesomeIcon icon={faTrash} />
-                                    </button>
-                                    <button className='editar' onClick={() => abrirModal(item)}>
-                                        <FontAwesomeIcon icon={faEdit} />
-                                    </button>
-                                    <Anchor className='editar' to={`/servicio/${item?.idServicio}/${item?.titulo?.replace(/\s+/g, '-')}`}>
-                                        <FontAwesomeIcon icon={faEye} />
-                                    </Anchor>
-                                    <Anchor className='editar' onClick={() => abrirModal2(item)} to={`/dashboard/servicios/${item?.idServicio}`}>
-                                        +
-                                    </Anchor>
-                                </td>
-                            </tr>
-                        ))}
                     </tbody>
 
                 </table>

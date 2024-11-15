@@ -12,6 +12,7 @@ import DetailLoading from "../DetailLoading/DetailLoading";
 import moneda from '../moneda';
 import Dias from "../Dias/Dias";
 import { Link as Anchor } from 'react-router-dom';
+import MiTurno from '../MiTurno/MiTurno'
 export default function Detail() {
     const navigate = useNavigate();
     const { idServicio } = useParams();
@@ -199,7 +200,7 @@ export default function Detail() {
                             WhatsApp
                             <i className='fa fa-whatsapp'></i>
                         </button>
-
+                        <MiTurno />
                     </div>
                     <span>{servicio.descripcion}</span>
 

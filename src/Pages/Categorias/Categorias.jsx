@@ -34,7 +34,7 @@ export default function Categorias() {
                             {usuarioLegued?.rol === 'admin' ? (
                                 <CategoriasData />
                             ) : usuarioLegued?.rol === 'colaborador' ? (
-                                <CategoriasData />
+                                <SinPermisos />
                             ) : (
                                 <SinPermisos />
                             )}

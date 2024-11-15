@@ -91,6 +91,7 @@ try {
     $consultaTurnos = "CREATE TABLE IF NOT EXISTS `turnos` (
         idTurno INT(11) AUTO_INCREMENT PRIMARY KEY,
         idServicio INT(100) NOT NULL,
+        servicio VARCHAR(255) NOT NULL,
         nombre VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
         dni VARCHAR(20) NOT NULL,

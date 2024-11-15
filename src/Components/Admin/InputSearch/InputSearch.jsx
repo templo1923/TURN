@@ -13,9 +13,11 @@ export default function InputSearch() {
         { title: 'Información de contacto', link: '/dashboard/contacto' },
         { title: 'Categorias', link: '/dashboard/categorias' },
         { title: 'Turnos', link: '/dashboard/turnos' },
+        { title: 'Servicios', link: '/dashboard/servicios' },
     ];
     const enlaces2 = [
-        { title: 'Categorias', link: '/dashboard/categorias' },
+        { title: 'Turnos', link: '/dashboard/turnos' },
+        { title: 'Servicios', link: '/dashboard/servicios' },
     ];
 
     const handleSearch = (event) => {

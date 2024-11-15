@@ -122,14 +122,6 @@ export default function Navbar() {
                             <Anchor to={`/dashboard`} className={location.pathname === '/dashboard' ? 'activeLink' : ''}>
                                 <FontAwesomeIcon icon={faGauge} /> Dashboard
                             </Anchor>
-                            <Anchor to={`/dashboard/contacto`} className={location.pathname === '/dashboard/contacto' ? 'activeLink' : ''}>
-                                <FontAwesomeIcon icon={faUsers} /> Contacto
-                            </Anchor>
-
-
-                            <Anchor to={`/dashboard/categorias`} className={location.pathname === '/dashboard/categorias' ? 'activeLink' : ''}>
-                                <FontAwesomeIcon icon={faList} /> Categorías
-                            </Anchor>
 
                             <Anchor to={`/dashboard/servicios`} className={location.pathname === '/dashboard/servicios' ? 'activeLink' : ''}>
                                 <FontAwesomeIcon icon={faProductHunt} /> Servicios
@@ -138,13 +130,7 @@ export default function Navbar() {
                             <Anchor to={`/dashboard/turnos`} className={location.pathname === '/dashboard/turnos' ? 'activeLink' : ''}>
                                 <FontAwesomeIcon icon={faRectangleList} /> Turnos
                             </Anchor>
-                            <Anchor to={`/dashboard/banners`} className={location.pathname === '/dashboard/banners' ? 'activeLink' : ''}>
-                                <FontAwesomeIcon icon={faImage} /> Banners
-                            </Anchor>
 
-                            <Anchor to={`/dashboard/usuarios`} className={location.pathname === '/dashboard/usuarios' ? 'activeLink' : ''}>
-                                <FontAwesomeIcon icon={faUser} /> Usuarios
-                            </Anchor>
                         </div>
                     ) : (
                         <div className='links'>
