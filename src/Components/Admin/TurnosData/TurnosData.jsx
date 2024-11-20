@@ -7,6 +7,11 @@ import baseURL from '../../url';
 import Modal from 'react-modal';
 import './TurnosData.css';
 import Swal from 'sweetalert2';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faEdit, faArrowUp, faArrowDown, faSync, faEye } from '@fortawesome/free-solid-svg-icons';
 import { fetchUsuario, getUsuario } from '../../user';
 // Configurar moment.js para usar el idioma español
 moment.locale('es'); // Establecer el idioma a español
@@ -208,11 +213,140 @@ export default function TurnosData() {
         setServicioSeleccionado(idServicio); // Establece el servicio seleccionado
     };
 
+    const eliminar = (idTurno) => {
+        // Reemplaza el window.confirm con SweetAlert2
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esto!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`${baseURL}/turnoDelete.php?idTurno=${idTurno}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            // Si el servidor devuelve un error, mostramos un mensaje de error
+                            Swal.fire(
+                                'Error',
+                                data.error,
+                                'error'
+                            );
+                        } else {
+                            // Si la categoría se eliminó correctamente, mostramos un mensaje de éxito
+                            Swal.fire(
+                                '¡Eliminado!',
+                                data.mensaje,
+                                'success'
+                            );
+                            cargarTurnos();
+                            handleCloseModal()
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al eliminar contacto:', error);
+                        Swal.fire(
+                            'Error',
+                            'Ocurrió un problema al intentar eliminar la categoría.',
+                            'error'
+                        );
+                    });
+            }
+        });
+    };
+    const exportarExcel = () => {
+        const servicioSeleccionadoNombre = servicios.find(s => s.idServicio === servicioSeleccionado)?.titulo || "Todos los servicios";
+
+        const turnosFiltrados = turnos.filter(item => {
+            if (!usuarioLegued || !usuarioLegued.idUsuario) {
+                return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
+            }
+
+            if (usuarioLegued.rol === "admin") {
+                return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
+            }
+
+            if (usuarioLegued.rol === "colaborador") {
+                const serviciosColaborador = servicios
+                    .filter(servicio => servicio.idUsuario === usuarioLegued.idUsuario)
+                    .map(servicio => servicio.idServicio);
+                return serviciosColaborador.includes(item.idServicio) && item.idServicio === servicioSeleccionado;
+            }
+
+            return false; // Fallback
+        });
+
+        const datos = turnosFiltrados.map(turno => ({
+            Nombre: turno.nombre,
+            DNI: turno.dni,
+            Email: turno.email,
+            Teléfono: turno.telefono,
+            Estado: turno.estado,
+            Días: turno.dias.map(dia => `${dia.dia} (${dia.horaInicio} - ${dia.horaFin})`).join(', ')
+        }));
+
+        const ws = XLSX.utils.json_to_sheet(datos);
+
+
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Turnos");
+        XLSX.writeFile(wb, `Turnos.xlsx`);
+    };
+
+    const exportarPDF = () => {
+        const turnosFiltrados = turnos.filter(item => {
+            if (!usuarioLegued || !usuarioLegued.idUsuario) {
+                return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
+            }
+
+            if (usuarioLegued.rol === "admin") {
+                return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
+            }
+
+            if (usuarioLegued.rol === "colaborador") {
+                const serviciosColaborador = servicios
+                    .filter(servicio => servicio.idUsuario === usuarioLegued.idUsuario)
+                    .map(servicio => servicio.idServicio);
+                return serviciosColaborador.includes(item.idServicio) && item.idServicio === servicioSeleccionado;
+            }
+
+            return false; // Fallback
+        });
+
+        const doc = new jsPDF();
+
+        const tableColumn = ["Nombre", "DNI", "Email", "Teléfono", "Estado", "Días"];
+        const tableRows = turnosFiltrados.map(turno => [
+            turno.nombre,
+            turno.dni,
+            turno.email,
+            turno.telefono,
+            turno.estado,
+            turno.dias.map(dia => `${dia.dia} (${dia.horaInicio} - ${dia.horaFin})`).join(', ')
+        ]);
+
+        doc.text("Turnos del Servicio", 14, 15);
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 20,
+        });
+        doc.save(`Turnos.pdf`);
+    };
 
 
     return (
         <div>
             <div className='grapBtns'>
+                <button onClick={exportarExcel} className="excel"> <FontAwesomeIcon icon={faArrowDown} /> Excel</button>
+                <button onClick={exportarPDF} className="pdf"><FontAwesomeIcon icon={faArrowDown} /> PDF</button>
+
                 {loading ? (
                     <></>
                 ) : usuarioLegued?.idUsuario ? (
@@ -338,7 +472,12 @@ export default function TurnosData() {
                             </select>
                         </fieldset>
                     </div>
-                    <button className="btnPost" onClick={() => handleUpdateText(turnoSeleccionado.idTurno)}>Guardar</button>
+                    <div className='deFlexBtnTienda'>
+                        <button className="btnPost" onClick={() => handleUpdateText(turnoSeleccionado.idTurno)}>Guardar</button>
+                        <button className='eliminarBtn' onClick={() => eliminar(turnoSeleccionado.idTurno)}>
+                            Eliminar
+                        </button>
+                    </div>
                 </Modal>
             )}
         </div>

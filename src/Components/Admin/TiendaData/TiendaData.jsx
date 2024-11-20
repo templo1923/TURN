@@ -302,7 +302,7 @@ export default function TiendaData() {
                         <button className='btnPost' onClick={() => guardarCambios(tienda.idTienda)} >Guardar </button>
 
                         <button className='eliminarBtn' onClick={() => eliminar(tienda.idTienda)}>
-                            <FontAwesomeIcon icon={faTrash} />
+                            Eliminar
                         </button>
 
                     </div>

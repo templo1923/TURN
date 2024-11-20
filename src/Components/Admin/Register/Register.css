@@ -337,7 +337,7 @@ button{
 }
 .pdf{
     padding: 6px 13px;
-    background-color: var(--color1);
+    background-color: red;
     color: var(--blanco);
     border-radius: 7px;
     border: none;

@@ -2,19 +2,17 @@ import React, { useState, useEffect } from 'react';
 import './GraficoPedidos.css';
 import { Chart } from 'primereact/chart';
 import baseURL from '../../url';
-import moneda from '../../moneda';
 
-export default function GraficoProductos() {
-    const [pedidos, setPedidos] = useState([]);
+export default function GraficoServicios() {
     const [chartData, setChartData] = useState({});
     const [chartOptions, setChartOptions] = useState({});
 
     useEffect(() => {
-        cargarPedidos();
+        cargarTurnos();
     }, []);
 
-    const cargarPedidos = () => {
-        fetch(`${baseURL}/pedidoGet.php`, {
+    const cargarTurnos = () => {
+        fetch(`${baseURL}/turnoGet.php`, {
             method: 'GET',
         })
             .then(response => {
@@ -24,118 +22,101 @@ export default function GraficoProductos() {
                 return response.json();
             })
             .then(data => {
-                // Filtra los pedidos pagados
-                const pedidosFiltrados = data.pedidos.filter(pedido => pedido.pagado === 'Si');
-                setPedidos(pedidosFiltrados?.reverse());
-                procesarDatosGrafico(pedidosFiltrados);
+                procesarDatosGrafico(data.turnos?.filter(filt => filt.estado === 'Finalizado'));
             })
             .catch(error => {
-                console.error('Error al cargar pedidos:', error);
-                // Establecer datos por defecto en caso de error o sin pedidos
+                console.error('Error al cargar turnos:', error);
                 establecerDatosPorDefecto();
             });
     };
 
-    const procesarDatosGrafico = (pedidos) => {
-        const contadorProductos = {};
+    const procesarDatosGrafico = (turnos) => {
+        const contadorServicios = {};
 
-        pedidos.forEach(pedido => {
-            JSON.parse(pedido.productos).forEach(producto => {
-                if (contadorProductos[producto.titulo]) {
-                    contadorProductos[producto.titulo] += producto.cantidad; // Sumar cantidades
-                } else {
-                    contadorProductos[producto.titulo] = producto.cantidad; // Inicializar cantidad
-                }
-            });
+        // Agrupar turnos por servicio y contar su frecuencia
+        turnos.forEach(turno => {
+            const servicio = turno.servicio;
+            if (contadorServicios[servicio]) {
+                contadorServicios[servicio] += 1;
+            } else {
+                contadorServicios[servicio] = 1;
+            }
         });
 
-        // Filtrar y ordenar los productos más vendidos (por ejemplo, más de 2 ventas)
-        const productosFiltrados = Object.keys(contadorProductos)
-            .filter(titulo => contadorProductos[titulo] > 3)
-            .map(titulo => ({
-                titulo,
-                cantidad: contadorProductos[titulo]
-            }))
-            .sort((a, b) => b.cantidad - a.cantidad) // Ordenar por cantidad de mayor a menor
-            .slice(0, 6); // Limitar a los 6 productos más vendidos
+        // Ordenar servicios por cantidad (de mayor a menor) y tomar los 6 más solicitados
+        const serviciosOrdenados = Object.entries(contadorServicios)
+            .sort(([, a], [, b]) => b - a)
+            .slice(0, 6);
 
-        // Crear datos para el gráfico
-        let labels, data;
-
-        if (productosFiltrados.length > 0) {
-            labels = productosFiltrados.map(producto => producto.titulo);
-            data = productosFiltrados.map(producto => producto.cantidad);
-        } else {
-            establecerDatosPorDefecto();
-            return; // Salir de la función para no establecer chartData con valores vacíos
-        }
+        const labels = serviciosOrdenados.map(([servicio]) => servicio);
+        const data = serviciosOrdenados.map(([, cantidad]) => cantidad);
 
         const documentStyle = getComputedStyle(document.documentElement);
         const textColor = documentStyle.getPropertyValue('--text-color');
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-        // Generar tonalidades desde #0c71cf (opaco) hasta rgba(31, 135, 233, 0.455)
-        const backgroundColors = generateColorShades('#0c71cf', productosFiltrados.length);
+        // Colores para el gráfico
+        const backgroundColors = generateColorShades('#0c71cf', labels.length);
 
         setChartData({
             labels: labels,
-            datasets: [{
-                label: 'Cantidad de productos vendidos',
-                data: data,
-                backgroundColor: backgroundColors, // Usar tonalidades generadas
-                borderColor: '#0c71cf', // Color del borde
-                fill: true // Llenar el área bajo la línea
-            }]
+            datasets: [
+                {
+                    label: 'Cantidad de turnos por servicio',
+                    data: data,
+                    backgroundColor: backgroundColors,
+                    borderColor: '#0c71cf',
+                    borderWidth: 1,
+                },
+            ],
         });
 
         setChartOptions({
             plugins: {
                 legend: {
                     labels: {
-                        color: textColor
-                    }
-                }
+                        color: textColor,
+                    },
+                },
             },
             scales: {
                 y: {
                     beginAtZero: true,
                     grid: {
-                        color: surfaceBorder
-                    }
-                }
-            }
+                        color: surfaceBorder,
+                    },
+                },
+            },
         });
     };
 
-
     const generateColorShades = (baseColor, count) => {
-        // Convertir el color base a RGB
         const r = parseInt(baseColor.slice(1, 3), 16);
         const g = parseInt(baseColor.slice(3, 5), 16);
         const b = parseInt(baseColor.slice(5, 7), 16);
 
         const shades = [];
         for (let i = 0; i < count; i++) {
-            // Asignar opacidad total al más vendido (índice 0) y decrecer para el resto
-            const alpha = i === 0 ? 0.9 : (0.5 - ((i - 1) * (0.6 / (count - 1)))); // Decrementar alpha
-            shades.push(`rgba(${r}, ${g}, ${b}, ${alpha < 0.1 ? 0.1 : alpha})`); // Asegurarse de que no baje de 0.1
+            const alpha = 0.7 - i * 0.1;
+            shades.push(`rgba(${r}, ${g}, ${b}, ${alpha})`);
         }
-        return shades; // Dejar el array en el orden original
+        return shades;
     };
 
     const establecerDatosPorDefecto = () => {
         const labels = ['Servicio A', 'Servicio B', 'Servicio C'];
-        const data = [5, 3, 8]; // Cantidades por defecto
+        const data = [5, 3, 8];
 
         setChartData({
             labels: labels,
-            datasets: [{
-                label: 'Servicios más solicitados',
-                data: data,
-                backgroundColor: 'rgba(31, 135, 233, 0.455)',
-                borderColor: '#0c71cf',
-                fill: true // Llenar el área bajo la línea
-            }]
+            datasets: [
+                {
+                    label: 'Cantidad de turnos por servicio',
+                    data: data,
+                    backgroundColor: 'rgba(31, 135, 233, 0.455)',
+                    borderColor: '#0c71cf',
+                },
+            ],
         });
 
         const documentStyle = getComputedStyle(document.documentElement);
@@ -145,21 +126,21 @@ export default function GraficoProductos() {
             plugins: {
                 legend: {
                     labels: {
-                        color: textColor
-                    }
-                }
+                        color: textColor,
+                    },
+                },
             },
             scales: {
                 y: {
                     beginAtZero: true,
-                }
-            }
+                },
+            },
         });
     };
 
     return (
         <div className="GraficoContent">
-            <h3 className='titleGrafico'>Servicios más solicitados</h3>
+            <h3 className="titleGrafico">Servicios más solicitados</h3>
             <div className="grafico-container-2">
                 <Chart type="polarArea" data={chartData} options={chartOptions} />
             </div>

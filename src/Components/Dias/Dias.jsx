@@ -226,6 +226,7 @@ export default function Dias() {
             const data = await response.json();
             if (data.idTurno) {
                 setMensaje('');
+
                 Swal.fire(
                     'Turno creado!',
                     `Turno N°${data.idTurno} creado con éxito.`,
@@ -301,7 +302,23 @@ export default function Dias() {
 
                         {generateMonthDays().map((monthDay, index) => {
                             const matchingDayInfo = dia?.dias?.find(d => d.dia === monthDay?.day);
-                            const disponibilidadText = matchingDayInfo ? <div className="green"></div> : <div className="red"></div>;
+
+                            // Verificar si todos los horarios de un día están ocupados
+                            const isDayFull = matchingDayInfo?.horarios?.every(horario =>
+                                turnos?.some(turno =>
+                                    turno?.dias?.some(d =>
+                                        d.dia === monthDay.date &&
+                                        d.horaInicio === horario.horaInicio &&
+                                        d.horaFin === horario.horaFin
+                                    )
+                                )
+                            );
+
+                            const disponibilidadText = matchingDayInfo
+                                ? isDayFull
+                                    ? <div className="red"></div> // Todos los horarios están ocupados
+                                    : <div className="green"></div> // Hay horarios disponibles
+                                : <div className="red"></div>; // Día no tiene horarios disponibles
 
                             return (
                                 <SwiperSlide
@@ -309,7 +326,6 @@ export default function Dias() {
                                     onClick={() => handleDayClick(monthDay, index)}
                                     id={selectedDayIndex === index ? 'selectedDay' : 'cardDay'}
                                 >
-                                    {/* <h4>{monthDay.day}</h4> */}
                                     <h5>{dayjs(monthDay.date)?.format('dddd')}</h5>
                                     <h4>{dayjs(monthDay.date)?.format('D')}</h4>
                                     <h5>{dayjs(monthDay.date)?.format('MMMM')}</h5>
@@ -317,6 +333,7 @@ export default function Dias() {
                                 </SwiperSlide>
                             );
                         })}
+
                     </Swiper>
                     <hr />
                     {selectedDay ? (

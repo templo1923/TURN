@@ -28,6 +28,7 @@ export default function Detail() {
     const categoriasInputRef = useRef(null);
     const [fixedCategories, setFixedCategories] = useState(false);
     const location = useLocation();
+    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
 
     useEffect(() => {
         cargarServicios();
@@ -134,6 +135,9 @@ export default function Detail() {
             localStorage.setItem('favoritos', JSON.stringify(favList));
         }
     };
+    const toggleDescriptionModal = () => {
+        setIsDescriptionModalOpen(!isDescriptionModalOpen);
+    };
 
     if (!servicio) {
         return <DetailLoading />;
@@ -202,7 +206,28 @@ export default function Detail() {
                         </button>
                         <MiTurno />
                     </div>
-                    <span>{servicio.descripcion}</span>
+                    <span>
+                        {servicio?.descripcion?.length > 80
+                            ? `${servicio.descripcion.substring(0, 80)}...`
+                            : servicio.descripcion
+                        }
+                        {servicio?.descripcion?.length > 80 && (
+                            <span onClick={toggleDescriptionModal} className="view-more-btn">
+                                Ver más
+                            </span>
+                        )}
+                    </span>
+                    <Modal
+                        open={isDescriptionModalOpen}
+                        onClose={toggleDescriptionModal}
+                        center
+                        classNames={{
+                            modal: 'custom-description-modal',
+                        }}
+                    >
+                        <h2>{servicio.titulo}</h2>
+                        <span>{servicio.descripcion}</span>
+                    </Modal>
 
                 </div>
                 <Dias />

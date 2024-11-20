@@ -3,25 +3,21 @@ import './GraficoPedidos.css';
 import { Chart } from 'primereact/chart';
 import baseURL from '../../url';
 
-export default function GraficoPedidos() {
+export default function GraficoTurnos() {
     const [chartDataDia, setChartDataDia] = useState({});
     const [chartDataSemana, setChartDataSemana] = useState({});
     const [chartDataMes, setChartDataMes] = useState({});
-    const [chartOptions, setChartOptions] = useState({});
     const [totalDia, setTotalDia] = useState(0);
     const [totalSemana, setTotalSemana] = useState(0);
     const [totalMes, setTotalMes] = useState(0);
     const [activeChart, setActiveChart] = useState('dia');
 
-    // Array de valores por defecto
-    const VALORES_DEFAULT = [0, 0];
-
     useEffect(() => {
-        cargarPedidos();
+        cargarTurnos();
     }, []);
 
-    const cargarPedidos = () => {
-        fetch(`${baseURL}/pedidoGet.php`, {
+    const cargarTurnos = () => {
+        fetch(`${baseURL}/turnoGet.php`, {
             method: 'GET',
         })
             .then(response => {
@@ -31,140 +27,90 @@ export default function GraficoPedidos() {
                 return response.json();
             })
             .then(data => {
-                const pedidosPagados = data.pedidos.filter(pedido => pedido.pagado === 'Si');
-                procesarDatos(pedidosPagados);
+                const turnos = data.turnos?.filter(filt => filt.estado === 'Finalizado');
+                procesarDatos(turnos);
             })
             .catch(error => {
-                console.error('Error al cargar pedidos:', error);
-                // Si hay un error, establecer valores por defecto
-                establecerValoresPorDefecto();
+                console.error('Error al cargar turnos:', error);
             });
     };
 
-    const procesarDatos = (pedidos) => {
-        if (pedidos.length === 0) {
-            // Si no hay pedidos, establecer valores por defecto
-            establecerValoresPorDefecto();
-            return; // Salir de la función si no hay pedidos
+    const procesarDatos = (turnos) => {
+        if (turnos.length === 0) {
+            console.warn('No hay turnos disponibles');
+            return;
         }
 
-        calcularTotalesPorDia(pedidos);
-        calcularTotalesPorSemanaConSemanasCompletas(pedidos);
-        calcularTotalesPorMes(pedidos);
+        calcularTotalesPorDia(turnos);
+        calcularTotalesPorSemana(turnos);
+        calcularTotalesPorMes(turnos);
     };
 
-    const establecerValoresPorDefecto = () => {
-        const diasPorDefecto = Array.from({ length: 7 }, (_, i) => `Día ${i + 1}`);
-        const semanasPorDefecto = Array.from({ length: 4 }, (_, i) => `Semana ${i + 1}`);
-        const mesesPorDefecto = ['Enero', 'Febrero', 'Marzo'];
+    const calcularTotalesPorDia = (turnos) => {
+        const totalesPorDia = {};
 
-        // Asignar valores por defecto aleatorios a los totales
-        const valorDia = VALORES_DEFAULT[Math.floor(Math.random() * VALORES_DEFAULT.length)];
-        const valorSemana = valorDia * 7; // Total por semana como un múltiplo del valor diario
-        const valorMes = valorDia * 30; // Total por mes como un múltiplo del valor diario
+        turnos.forEach(turno => {
+            const dias = JSON.parse(turno.dias); // Parsear el campo `dias`
+            dias.forEach(d => {
+                const fecha = d.dia; // Formato YYYY-MM-DD
+                if (!totalesPorDia[fecha]) {
+                    totalesPorDia[fecha] = 0;
+                }
+                totalesPorDia[fecha] += 1; // Contar el turno
+            });
+        });
 
-        setTotalDia(valorDia);
-        setTotalSemana(valorSemana);
-        setTotalMes(valorMes);
-
-        // Generar gráficos por defecto con valores aleatorios
-        generarGrafico(diasPorDefecto, Array(diasPorDefecto.length).fill(valorDia), 'Turnos por Día', setChartDataDia);
-        generarGrafico(semanasPorDefecto, Array(semanasPorDefecto.length).fill(valorSemana), 'Turnos por Semana', setChartDataSemana);
-        generarGrafico(mesesPorDefecto, Array(mesesPorDefecto.length).fill(valorMes), 'Turnos por Mes', setChartDataMes);
-    };
-
-    // Gráfico por día
-    const calcularTotalesPorDia = (pedidos) => {
-        const totalesPorDia = pedidos.reduce((acc, pedido) => {
-            const fecha = new Date(pedido.createdAt).toLocaleDateString('es-ES'); // Formato de fecha
-            if (!acc[fecha]) {
-                acc[fecha] = 0;
-            }
-            acc[fecha] += parseFloat(pedido.total);
-            return acc;
-        }, {});
-
-        // Ordenar por fechas más antiguas primero
         const fechasOrdenadas = Object.keys(totalesPorDia).sort((a, b) => new Date(a) - new Date(b));
+        const datos = fechasOrdenadas.map(fecha => totalesPorDia[fecha]);
 
-        // Calcular total global por día
-        const totalGlobalDia = Object.values(totalesPorDia).reduce((acc, val) => acc + val, 0);
-        setTotalDia(totalGlobalDia || VALORES_DEFAULT[Math.floor(Math.random() * VALORES_DEFAULT.length)]);
-
-        generarGrafico(fechasOrdenadas, fechasOrdenadas.map(fecha => totalesPorDia[fecha] || totalGlobalDia), 'Turnos por Día', setChartDataDia);
+        setTotalDia(datos.reduce((acc, val) => acc + val, 0));
+        generarGrafico(fechasOrdenadas, datos, 'Turnos por Día', setChartDataDia);
     };
 
-    // Gráfico por semana
-    const calcularTotalesPorSemanaConSemanasCompletas = (pedidos) => {
-        const fechaActual = new Date();
-        const añoActual = fechaActual.getFullYear();
-        const mesActual = fechaActual.getMonth();
+    const calcularTotalesPorSemana = (turnos) => {
+        const totalesPorSemana = {};
 
-        const semanasDelMes = generarSemanasDelMes(añoActual, mesActual);
+        turnos.forEach(turno => {
+            const dias = JSON.parse(turno.dias);
+            dias.forEach(d => {
+                const fecha = new Date(d.dia);
+                const semana = getNumeroSemana(fecha);
+                if (!totalesPorSemana[semana]) {
+                    totalesPorSemana[semana] = 0;
+                }
+                totalesPorSemana[semana] += 1;
+            });
+        });
 
-        const totalesPorSemana = pedidos.reduce((acc, pedido) => {
-            const fecha = new Date(pedido.createdAt);
-            const semana = getNumeroSemana(fecha);
-            const key = `Semana ${semana}`;
+        const semanasOrdenadas = Object.keys(totalesPorSemana).sort((a, b) => a - b);
+        const datos = semanasOrdenadas.map(semana => totalesPorSemana[semana]);
 
-            if (!acc[key]) {
-                acc[key] = 0;
-            }
-            acc[key] += parseFloat(pedido.total);
-            return acc;
-        }, {});
-
-        // Ordenar las semanas cronológicamente
-        const semanasOrdenadas = semanasDelMes.sort((a, b) => a - b);
-
-        // Calcular total global por semana
-        const totalGlobalSemana = Object.values(totalesPorSemana).reduce((acc, val) => acc + val, 0);
-        setTotalSemana(totalGlobalSemana || VALORES_DEFAULT[Math.floor(Math.random() * VALORES_DEFAULT.length)] * 7);
-
-        const datosCompletosPorSemana = semanasOrdenadas.map(semana => totalesPorSemana[`Semana ${semana}`] || totalGlobalSemana);
-
-        generarGrafico(semanasOrdenadas.map(semana => `Semana ${semana}`), datosCompletosPorSemana, 'Turnos por Semana', setChartDataSemana);
+        setTotalSemana(datos.reduce((acc, val) => acc + val, 0));
+        generarGrafico(semanasOrdenadas.map(s => `Semana ${s}`), datos, 'Turnos por Semana', setChartDataSemana);
     };
 
-    // Gráfico por mes
-    const calcularTotalesPorMes = (pedidos) => {
-        const totalesPorMesODia = pedidos.reduce((acc, pedido) => {
-            const fecha = new Date(pedido.createdAt);
-            const mes = fecha.toLocaleString('default', { month: 'long' });
+    const calcularTotalesPorMes = (turnos) => {
+        const totalesPorMes = {};
 
-            if (!acc.meses[mes]) {
-                acc.meses[mes] = 0;
-            }
-            acc.meses[mes] += parseFloat(pedido.total);
-            return acc;
-        }, { meses: {} });
+        turnos.forEach(turno => {
+            const dias = JSON.parse(turno.dias);
+            dias.forEach(d => {
+                const fecha = new Date(d.dia);
+                const mes = fecha.toLocaleString('default', { month: 'long' });
+                if (!totalesPorMes[mes]) {
+                    totalesPorMes[mes] = 0;
+                }
+                totalesPorMes[mes] += 1;
+            });
+        });
 
-        const mesesOrdenados = Object.keys(totalesPorMesODia.meses).sort((a, b) => new Date(`1 ${a}`) - new Date(`1 ${b}`));
+        const mesesOrdenados = Object.keys(totalesPorMes);
+        const datos = mesesOrdenados.map(mes => totalesPorMes[mes]);
 
-        const totalGlobalMes = Object.values(totalesPorMesODia.meses).reduce((acc, val) => acc + val, 0);
-        setTotalMes(totalGlobalMes || VALORES_DEFAULT[Math.floor(Math.random() * VALORES_DEFAULT.length)] * 30);
-
-        generarGrafico(mesesOrdenados, mesesOrdenados.map(mes => totalesPorMesODia.meses[mes] || totalGlobalMes), 'Turnos por Mes', setChartDataMes);
+        setTotalMes(datos.reduce((acc, val) => acc + val, 0));
+        generarGrafico(mesesOrdenados, datos, 'Turnos por Mes', setChartDataMes);
     };
 
-    // Generar todas las semanas del mes actual
-    const generarSemanasDelMes = (año, mes) => {
-        const fechaInicioMes = new Date(año, mes, 1);
-        const fechaFinMes = new Date(año, mes + 1, 0);
-        const semanas = [];
-
-        let semanaActual = getNumeroSemana(fechaInicioMes);
-
-        while (fechaInicioMes <= fechaFinMes) {
-            semanas.push(semanaActual);
-            fechaInicioMes.setDate(fechaInicioMes.getDate() + 7);
-            semanaActual = getNumeroSemana(fechaInicioMes);
-        }
-
-        return semanas;
-    };
-
-    // Función para obtener el número de la semana
     const getNumeroSemana = (fecha) => {
         const primeraFechaAño = new Date(fecha.getFullYear(), 0, 1);
         const diasDesdePrimeroEnero = Math.floor((fecha - primeraFechaAño) / (24 * 60 * 60 * 1000));
@@ -173,7 +119,7 @@ export default function GraficoPedidos() {
 
     const generarGrafico = (labels, data, labelGrafico, setChartData) => {
         const chartData = {
-            labels: labels, // Días, semanas o meses
+            labels: labels,
             datasets: [
                 {
                     label: labelGrafico,
@@ -187,9 +133,11 @@ export default function GraficoPedidos() {
         };
         setChartData(chartData);
     };
+
     const manejarCambioGrafico = (tipoGrafico) => {
         setActiveChart(tipoGrafico);
     };
+
     return (
         <div className="GraficoContent">
             <h3 className='titleGrafico'>Turnos Finalizados</h3>
@@ -213,10 +161,10 @@ export default function GraficoPedidos() {
                     Mes
                 </button>
             </div>
-            <div className="grafico-container"> {/* Contenedor para el gráfico */}
-                {activeChart === 'dia' && <Chart type="line" data={chartDataDia} options={chartOptions} />}
-                {activeChart === 'semana' && <Chart type="line" data={chartDataSemana} options={chartOptions} />}
-                {activeChart === 'mes' && <Chart type="line" data={chartDataMes} options={chartOptions} />}
+            <div className="grafico-container">
+                {activeChart === 'dia' && <Chart type="line" data={chartDataDia} />}
+                {activeChart === 'semana' && <Chart type="line" data={chartDataSemana} />}
+                {activeChart === 'mes' && <Chart type="line" data={chartDataMes} />}
             </div>
         </div>
     );

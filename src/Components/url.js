@@ -2,9 +2,9 @@
 const getBaseURL = () => {
     const currentHost = window.location.hostname; // Obtiene el host actual
     if (currentHost.startsWith('www.')) {
-        return 'http://turnos.stechdev.com/';
+        return 'http://sistema-turnos.encatalogo.com/';
     } else {
-        return 'https://turnos.stechdev.com/';
+        return 'https://sistema-turnos.encatalogo.com/';
     }
 };
 
