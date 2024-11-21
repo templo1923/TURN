@@ -165,7 +165,7 @@ export default function MiTurno() {
 
     return (
         <div>
-            <button onClick={openModal} className='emailBtn'>Mi turno    <FontAwesomeIcon icon={faSearch} /></button>
+            <button onClick={openModal} className='emailBtn'><span>Mi turno </span>   <FontAwesomeIcon icon={faSearch} /></button>
             <ToastContainer />
             <Modal
                 isOpen={modalIsOpen}

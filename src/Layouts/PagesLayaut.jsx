@@ -16,12 +16,10 @@ export default function IndexLayout() {
             {isScreenLarge ?
                 <>
                     <Outlet />
-                    <Footer />
                 </> :
                 <>
 
                     <Outlet />
-                    <Footer />
                 </>}
 
             <div className='espaciobg2'>

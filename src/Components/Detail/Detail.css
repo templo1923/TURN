@@ -121,7 +121,7 @@ hr{
     gap: 2rem;
 }
 .title {
-    font-size: 1.7;
+    font-size: 1.7em;
     color: var(--blanco);
 }
 .detail-contain span{
@@ -300,17 +300,19 @@ hr{
 .wpp{
      padding: 8px 20px;
      font-size: 12px;
-     width: 6rem;
+     width: 4rem;
      border-radius:5px ;
 }
  .emailBtn{
      padding: 8px 10px;
      font-size: 12px;
-     width: 7rem;
+     width: 4rem;
      border-radius:5px ;
  }
  .imgContain{
     height: 55vh;
 }
-
+.deFlexBtnDetail span{
+    display: none;
+}
 }

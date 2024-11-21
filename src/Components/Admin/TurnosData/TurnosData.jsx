@@ -142,7 +142,7 @@ export default function TurnosData() {
                         ? "#0c71cf"
                         : item.estado === "Finalizado"
                             ? "#008000"
-                            : item.estado === "Rechazado"
+                            : item.estado === "Cancelado"
                                 ? "#FF0000"
                                 : "gray"; // Color predeterminado
 
@@ -468,7 +468,7 @@ export default function TurnosData() {
                                 <option value={turnoSeleccionado.estado}>{turnoSeleccionado.estado}</option>
                                 <option value="Pendiente">Pendiente</option>
                                 <option value="Finalizado">Finalizado</option>
-                                <option value="Rechazado">Rechazado</option>
+                                <option value="Cancelado">Cancelado</option>
                             </select>
                         </fieldset>
                     </div>

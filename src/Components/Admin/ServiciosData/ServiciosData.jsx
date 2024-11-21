@@ -564,6 +564,7 @@ export default function ServiciosData() {
                                         <option value={servicio.tipo}>{servicio.tipo}</option>
                                         <option value="Hombre">Hombre</option>
                                         <option value="Mujer">Mujer</option>
+                                        <option value="Mixto">Mixto</option>
                                     </select>
                                 </fieldset>
                                 <fieldset>

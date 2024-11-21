@@ -5,9 +5,10 @@ import Swal from 'sweetalert2';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useParams } from "react-router-dom";
-import { useNavigate, } from 'react-router';
+import { useNavigate } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
+
 export default function DiasData() {
     const [dias, setDias] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -47,20 +48,57 @@ export default function DiasData() {
             });
     };
 
-    const agregarHorario = (diaNombre) => {
-        const nuevoHorario = {
-            horaInicio: '09:00',
-            horaFin: '10:00',
-        };
-
+    const agregarHorarioAcorde = (diaNombre) => {
         const nuevosDias = { ...dias };
         const diaSeleccionado = nuevosDias.dias.find(d => d.dia === diaNombre);
 
         if (diaSeleccionado) {
+            const ultimoHorario = diaSeleccionado.horarios[diaSeleccionado.horarios.length - 1];
+
+            let nuevaHoraInicio = '09:00'; // Valor predeterminado para el primer horario
+            let nuevaHoraFin = '09:30';    // Valor predeterminado para el primer horario
+
+            if (ultimoHorario) {
+                // Extrae y calcula el nuevo horario basado en el último horario
+                const [horaFinHoras, horaFinMinutos] = ultimoHorario.horaFin.split(':').map(Number);
+                const nuevaHoraInicioDate = new Date();
+                nuevaHoraInicioDate.setHours(horaFinHoras, horaFinMinutos);
+
+                const nuevaHoraFinDate = new Date(nuevaHoraInicioDate);
+                nuevaHoraFinDate.setMinutes(nuevaHoraInicioDate.getMinutes() + 30); // Incrementa 30 minutos
+
+                nuevaHoraInicio = nuevaHoraInicioDate.toTimeString().slice(0, 5);
+                nuevaHoraFin = nuevaHoraFinDate.toTimeString().slice(0, 5);
+            }
+
+            const nuevoHorario = {
+                horaInicio: nuevaHoraInicio,
+                horaFin: nuevaHoraFin,
+            };
+
             diaSeleccionado.horarios.push(nuevoHorario);
             diaSeleccionado.selected = true;
             setDias(nuevosDias);
         }
+    };
+
+
+    const replicarHorarios = (diaNombre) => {
+        const diaSeleccionado = dias.dias.find(d => d.dia === diaNombre);
+        if (!diaSeleccionado || diaSeleccionado.horarios.length === 0) {
+            toast.error(`No hay horarios para replicar desde ${diaNombre}.`, { autoClose: 500 });
+            return;
+        }
+
+        const nuevosDias = { ...dias };
+        dias.dias.forEach(dia => {
+            if (dia.dia !== diaNombre && dia.selected) {
+                dia.horarios = [...diaSeleccionado.horarios];
+            }
+        });
+
+        setDias(nuevosDias);
+        toast.success(`Horarios replicados desde ${diaNombre}.`, { autoClose: 500 });
     };
 
     const handleHorarioChange = (diaNombre, horarioIndex, field, value) => {
@@ -92,7 +130,6 @@ export default function DiasData() {
             setDias(nuevosDias);
         }
     };
-
     const handleUpdate = async () => {
         // Validar que cada día seleccionado tenga al menos un horario
         for (const dia of dias.dias) {
@@ -208,16 +245,21 @@ export default function DiasData() {
                                                 className='btnMenosHora'
                                                 onClick={() => eliminarHorario(diaItem.dia, index)}
                                             >
-                                                x
+                                                Eliminar
                                             </button>
                                         </div>
                                     ))}
-                                    <button type="button" className='btnMoreHora' onClick={() => agregarHorario(diaItem.dia)}>
-                                        +
+                                    <button type="button" className='btnMoreHora' onClick={() => agregarHorarioAcorde(diaItem.dia)}>
+                                        Agregar
+                                    </button>
+                                    <button type="button" className='btnReplicar' onClick={() => replicarHorarios(diaItem.dia)}>
+                                        Replicar
                                     </button>
                                 </div>
+
                             </div>
                         ))}
+
                     </div>
                     <div className='deFlexBtnTienda'>
                         <button type="button" className='btnPost' onClick={handleUpdate}>
@@ -227,7 +269,6 @@ export default function DiasData() {
                             <FontAwesomeIcon icon={faTrash} />
                         </button>
                     </div>
-
                 </div>
             ) : (
                 <p>No se encontraron datos para este servicio.</p>

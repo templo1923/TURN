@@ -186,22 +186,24 @@ export default function Detail() {
                                     {categoria.categoria}
                                     {subcategorias
                                         .filter(sub => sub.idSubCategoria === servicio.idSubCategoria)
-                                        .map(sub => ` > ${sub.subcategoria}`)
+                                        .map(sub => ` > ${sub.subcategoria} `)
                                     }
+
+
                                 </h4>
                             ))
                         }
                     </div>
 
-                    <h4>   <FontAwesomeIcon icon={faUser} />Profesional {`>`}   {servicio.nombre}  </h4>
+                    <h4>   <FontAwesomeIcon icon={faUser} />Profesional {`>`}   {servicio.nombre}    {` > ${moneda} ${String(servicio?.precio)?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`} </h4>
 
                     <div className="deFlexBtnDetail">
-                        <Anchor href={`mailto:${servicio.email}`} className="emailBtn" target="_blank">
-                            Email <i className="fa fa-envelope"></i>
+                        <Anchor to={`mailto:${servicio.email}`} className="emailBtn" >
+                            <span>Email</span> <i className="fa fa-envelope"></i>
                         </Anchor>
 
                         <button className="wpp" onClick={handleWhatsappMessage}>
-                            WhatsApp
+                            <span>WhatsApp</span>
                             <i className='fa fa-whatsapp'></i>
                         </button>
                         <MiTurno />

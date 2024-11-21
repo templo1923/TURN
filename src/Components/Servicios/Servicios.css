@@ -1,8 +1,9 @@
 #Servicios{
-    padding: 100px  10%;
+    padding: 30px  10%;
     background-color: var(--blanco);
-    border-radius: 5rem 0 0 0;
-    margin-top: -4rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 .categoriaSection{
     display: flex;
@@ -13,39 +14,55 @@
     width: 100%;
 }
 #cardServicio{
-    width: 20rem;
+    width: 23rem;
+    height: 15rem;
     background-color: var(--blanco);
     box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.071);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border-radius: 10px;
-   padding: 6px;
-   margin: 1rem 1rem 2rem 1rem;
+    border-radius: 20px;
+    margin: 1rem 1rem 2rem 1rem;
+    position: relative;
+    z-index: 2;
 }
 
 
 #cardServicio img{
     width: 100%;
-    height: 10rem;
-    border-radius: 10px;
+    height: 15rem;
     object-fit: cover;
-
+}
+.imgCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgb(0, 0, 0), rgba(255, 255, 255, 0) 80%); 
+    z-index: 1;
 }
 
 .cardServicioText{
-    padding: 8px;
     display: flex;
     flex-direction: column;
     gap: 5px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    padding: 20px;
+    position: absolute;
 }
+
 .cardServicioText span {
     font-size: 0.8em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 40ch;
-    color: var(--text-color2);
+    max-width: 45ch;
+    color: var(--blanco);
 }
 .cardServicioText h3{
     font-size: 1.2em;
@@ -54,12 +71,11 @@
     text-overflow: ellipsis;
     max-width: 28ch;
     font-weight: 600;
-    color: var(--text-color2);
+    color: var(--blanco);
 }
 .cardServicioText strong{
     font-size: 1em;
-  
-    color: var(--color1);
+    color: var(--blanco);
 }
 .categoriaSection h2{
     font-weight: 600;
@@ -76,22 +92,6 @@
 .iconCardh2{
     font-size: 15px;
 }
-#cardServicio:hover{
-    background-color: var(--color1);
-}
-#cardServicio:hover span{
-    color: var(--blanco);
-}
-#cardServicio:hover strong{
-    color: var(--blanco);
-}
-#cardServicio:hover h3{
-   color: var(--blanco);
-}
-#cardServicio:hover .iconCard{
-    background-color: var(--blanco);
-    color: var(--color1);
- }
 .deFlexCard{
     display: flex;
     justify-content: space-between;
@@ -104,20 +104,132 @@
     border-radius: 3px;
     font-size: 12px;
 }
+
+.filtrosTipos {
+    display: flex;
+    gap: 10px;
+    background-color: var(--gris2);
+    display: flex;
+    justify-content: center;
+    place-content: center;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    border-radius: 10rem;
+    margin: 0 30%;
+}
+
+.filtroBoton {
+    padding: 10px 35px;
+    border: none;
+    color: var(--text-color2);
+    cursor: pointer;
+    border-radius: 10rem;
+    font-size: 14px;
+    width: 100%;
+}
+
+.filtroBoton.activo {
+    background-color: var(--color1);
+    color: var(--blanco);
+    width: 100%;
+}
+.subcategoria {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 5px;
+}
+.subcategoria{
+    background-color: var(--color1);
+    color: var(--blanco);
+    padding: 5px 10px;
+    font-size: 0.7em;
+    border-radius: 10px 0 10px 0;
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    margin: 0;
+    
+}
+
+.serviciosLista {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+   
+}
+
+.cardServicio {
+    width: 30%;
+    margin-bottom: 20px;
+}
+
+.categoriaBoton{
+    background-color: var(--gris2);
+    color: var(--text-color2);
+    padding: 10px 20px ;
+    border-radius: 10rem;
+    border: 1px solid var(--gris2);
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.activeCategoria {
+    background-color: var(--color1);
+    color: var(--blanco);
+    padding: 10px 20px ;
+    text-align: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.filtrosCategorias{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    overflow-x: scroll;
+    width: 100%;
+    margin-top: 1rem;
+}
+.filtrosCategorias::-webkit-scrollbar{
+    width: 5px;
+    height: 5px;
+    cursor: pointer;
+    background-color: transparent;
+   
+}
+
+ 
+.filtrosCategorias::-webkit-scrollbar-thumb {
+    background-color: var(--color1); 
+    border-radius: 10px;
+    margin-top: 3rem;
+  }
 @media (max-width: 1000px) {
     #Servicios{
-        padding: 30px 0%;
-        background-color: var(--blanco);
-        border-radius: 2rem 0 0 0;
-        margin-top: -2rem;
+        padding: 15px 0%;
+        border-radius: 20px 20px 0 0;
+        margin-top: -3rem;
+        z-index: 2;
+     
+
+       
+}
+#cardsServicio{
+    padding-left: 10px;
+
 }
 #cardServicio{
-    width: 14rem;
-    margin: 0 0 2rem 1rem;
+    width: 45%;
+    height: 13rem;
+    margin: 0 10px 1rem 5px;
 }
 #cardServicio img{
-    height: 7rem;
+    height: 13rem;
    
+}
+.cardServicioText{
+    padding: 15px;
 }
 .cardServicioText h3{
     font-size: 1em;
@@ -137,8 +249,42 @@
 .categoriaSection h2{
     margin: 10px 6%;
     margin-bottom: 1rem;
-    margin-top: 2rem;
+    margin-top: 1rem;
     width: auto;
-    font-size: 1.3em;
+    font-size: 1.1em;
+}
+.filtroBoton {
+    padding: 10px 20px;
+   
+}
+.filtrosCategorias{
+    margin-top: 15px;
+    gap: 10px;
+    padding-left: 3%;
+}
+
+ 
+.filtrosCategorias::-webkit-scrollbar-thumb {
+    background-color: transparent;
+  }
+  .filtrosTipos{
+    justify-content: space-around;
+    margin: 3%;
+    width: auto;
+  }
+  .serviciosLista {
+    gap: 0;
+    justify-content: center;
+    padding: 1%;
+    margin-top: 10px;
+}
+
+  .serviciosLista #cardServicio{
+    width: 45%;
+    height: 13rem;
+    margin: 0 10px 1rem 5px;
+}
+.serviciosLista #cardServicio img{
+    height: 13rem;
 }
 }

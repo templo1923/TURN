@@ -8,7 +8,7 @@
     margin-bottom: 3rem;
     margin: 20px;
 }
-    
+
 #cardDay{
     background-color: var(--blanco);
     width: 8rem;
@@ -86,8 +86,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 1rem;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-around;
     
 }
 .flexGrapHoras button{
@@ -141,9 +140,9 @@
     position: fixed;
     bottom: 40px;
     right: 0;
-    left: 79.4%;
-    width: 9rem;
+    left: 70%;
     z-index: 2;
+    width: 17rem;
     cursor: pointer;
     box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.196);
 }
@@ -162,20 +161,23 @@
 }
 @media (max-width: 1000px) {
     .flexGrapHoras button{
-        width: 100%;
+        width: 45%;
         
     }
-
+    .flexGrapHoras{
+        gap: 10px;
+        
+    }
     #selectedDay {
         background-color: var(--color1); 
         width: 6rem;
         padding: 6px;
-        margin: 10px 10px 1rem 0;
+        margin: 10px 0 20px 10px;
         border: 1px solid var(--gris2);
     }
     #cardDay{
         width: 6rem;
-        margin: 10px 10px 1rem 0;
+        margin: 10px 0 20px 10px;
     }
     .Dias{
         border-radius: 20px 20px 0 0;
@@ -213,5 +215,12 @@
 .horariosSeleccionados{
     
     padding: 2vh 20px;
+}
+.Dias hr{
+    margin-bottom: 0;
+    margin: 0px 20px 10px;
+}
+#cardsServicio{
+    padding-left: 10px;
 }
 }

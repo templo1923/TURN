@@ -324,6 +324,7 @@ export default function NewServicio() {
                                         <option value="">Selecciona una tipo</option>
                                         <option value="Hombre">Hombre</option>
                                         <option value="Mujer">Mujer</option>
+                                        <option value="Mixto">Mixto</option>
                                     </select>
                                 </fieldset>
 

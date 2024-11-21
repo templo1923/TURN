@@ -338,7 +338,7 @@ export default function Dias() {
                     <hr />
                     {selectedDay ? (
                         <div className='horariosSeleccionados'>
-                            <h4>Horarios disponibles para {dayjs(selectedDay?.date)?.format('dddd, D [de] MMMM [de] YYYY')}:</h4>
+                            <h4>{dayjs(selectedDay?.date)?.format('dddd, D [de] MMMM [de] YYYY')}:</h4>
                             <div className="flexGrapHoras">
                                 {selectedDay?.horarios?.map((horario, idx) => {
                                     // Verificar si el horario está ocupado por algún turno del mismo servicio
@@ -356,8 +356,8 @@ export default function Dias() {
                                             onClick={() => !isOcupado && handleHorarioClick(horario, selectedDay.date)}
                                             style={{
                                                 cursor: isOcupado ? 'not-allowed' : 'pointer',
-                                                backgroundColor: isOcupado ? '#a3a1a1' : '',
-                                                color: isOcupado ? '#fff' : '',
+                                                backgroundColor: isOcupado ? '#0076e430' : '',
+                                                color: isOcupado ? '#0c71cf' : '',
                                             }}
                                             disabled={isOcupado} // Desactivar si el horario está ocupado
                                         >
@@ -376,7 +376,12 @@ export default function Dias() {
 
 
                     {selectedHorario && (
-                        <button className="btnFlotant" onClick={openModal} >Agendar turno</button>
+                        <button className="btnFlotant" onClick={openModal} >Agendar turno de {selectedHorario && (
+                            <>
+                                {selectedHorario?.horario?.horaInicio} - {selectedHorario?.horario?.horaFin}
+                            </>
+                        )}
+                        </button>
                     )}
                     <Modal
                         isOpen={modalIsOpen}

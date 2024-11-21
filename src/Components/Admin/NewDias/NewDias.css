@@ -65,6 +65,19 @@
 #NewDias .modal-content{
     width: 80%;
 }
+.btnReplicar {
+    margin-top: 5px;
+    background-color: #ffc107; /* Amarillo */
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btnReplicar:hover {
+    background-color: #e0a800;
+}
 
 @media (max-width: 1000px){
     #NewDias .modal-content{

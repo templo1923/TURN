@@ -59,14 +59,50 @@ export default function NewDias() {
     };
 
     const agregarHorario = (dia) => {
+        const ultimoHorario = horarios[dia]?.[horarios[dia].length - 1];
+        let nuevaHoraInicio = '09:00'; // Valor predeterminado para el primer horario
+        let nuevaHoraFin = '09:30';    // Valor predeterminado para el primer horario
+
+        if (ultimoHorario) {
+            // Calcula el nuevo horario basado en el último horario
+            const [horaFinHoras, horaFinMinutos] = ultimoHorario.horaFin.split(':').map(Number);
+            const nuevaHoraInicioDate = new Date();
+            nuevaHoraInicioDate.setHours(horaFinHoras, horaFinMinutos);
+
+            const nuevaHoraFinDate = new Date(nuevaHoraInicioDate);
+            nuevaHoraFinDate.setMinutes(nuevaHoraInicioDate.getMinutes() + 30); // Incrementa 1 hora
+
+            nuevaHoraInicio = nuevaHoraInicioDate.toTimeString().slice(0, 5);
+            nuevaHoraFin = nuevaHoraFinDate.toTimeString().slice(0, 5);
+        }
+
         const nuevaHora = {
-            horaInicio: '09:00', // Valor por defecto, puedes cambiarlo según lo que necesites
-            horaFin: '10:00', // Valor por defecto
+            horaInicio: nuevaHoraInicio,
+            horaFin: nuevaHoraFin,
         };
+
         setHorarios({
             ...horarios,
             [dia]: [...horarios[dia], nuevaHora],
         });
+    };
+    const replicarHorarios = (dia) => {
+        if (!dia || !horarios[dia] || horarios[dia].length === 0) {
+            toast.error(`No hay horarios para replicar desde ${dia}.`, { autoClose: 500 });
+            return;
+        }
+
+        const horariosAReplicar = horarios[dia];
+        const nuevosHorarios = { ...horarios };
+
+        Object.keys(diasSeleccionados).forEach((otroDia) => {
+            if (otroDia !== dia && diasSeleccionados[otroDia]) {
+                nuevosHorarios[otroDia] = [...horariosAReplicar];
+            }
+        });
+
+        setHorarios(nuevosHorarios);
+        toast.success(`Horarios replicados desde ${dia}.`, { autoClose: 500 });
     };
 
     const handleHorarioChange = (dia, index, field, value) => {
@@ -234,11 +270,13 @@ export default function NewDias() {
                                                             value={horario.horaFin}
                                                             onChange={(e) => handleHorarioChange(dia, index, 'horaFin', e.target.value)}
                                                         />
-                                                        <button type="button" className='btnMenosHora' onClick={() => eliminarHorario(dia, index)}>x</button>
+                                                        <button type="button" className='btnMenosHora' onClick={() => eliminarHorario(dia, index)}>Eliminar</button>
                                                     </div>
                                                 ))}
-                                                <button type="button" className='btnMoreHora' onClick={() => agregarHorario(dia)}>+</button>
+                                                <button type="button" className='btnMoreHora' onClick={() => agregarHorario(dia)}>Agregar</button>
+                                                <button type="button" className='btnReplicar' onClick={() => replicarHorarios(dia)}>Replicar</button>
                                             </div>
+
                                         )}
                                     </div>
                                 ))}

@@ -5,6 +5,7 @@ import './Banners.css';
 import SwiperCore, { Navigation, Pagination, Autoplay } from 'swiper/core';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/swiper-bundle.css';
+import Servicios from '../Servicios/Servicios'
 SwiperCore.use([Navigation, Pagination, Autoplay]);
 
 export default function Banners() {
@@ -69,8 +70,10 @@ export default function Banners() {
                     ))}
                 </Swiper>
             )}
+            <Swiper id='Servicios'>
+                <Servicios />
 
-
+            </Swiper>
         </div>
     );
 }
