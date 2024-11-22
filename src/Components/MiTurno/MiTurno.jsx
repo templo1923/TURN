@@ -16,7 +16,7 @@ export default function MiTurno() {
     const [idTurno, setIdTurno] = useState(localStorage.getItem('idTurno') || '');
     const [turnoDetalle, setTurnoDetalle] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
+    const [nuevoEstado, setNuevoEstado] = useState('Cancelado');
     useEffect(() => {
         cargarTurnos();
     }, []);
@@ -161,6 +161,64 @@ export default function MiTurno() {
         doc.save(`Turno_${detallesTurno.idTurno}_${detallesTurno.nombre}_${detallesTurno.fecha}.pdf`);
     };
 
+    const handleUpdateText = async (idTurno) => {
+        // Mostrar una alerta de confirmación
+        const result = await Swal.fire({
+            title: '¿Estás seguro?',
+            text: '¿Deseas cancelar este turno? Esta acción no se puede deshacer.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí, cancelar',
+            cancelButtonText: 'No, volver',
+        });
+
+        if (result.isConfirmed) {
+            // Si el usuario confirma, procede a cancelar el turno
+            const payload = {
+                idTurno: idTurno,
+                estado: 'Cancelado', // Cambia esto si necesitas otro estado
+            };
+
+            fetch(`${baseURL}/turnoPut.php?idTurno=${idTurno}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        Swal.fire(
+                            'Error!',
+                            data.error,
+                            'error'
+                        );
+                    } else {
+                        Swal.fire(
+                            '¡Cancelado!',
+                            'El turno fue cancelado correctamente.',
+                            'success'
+                        );
+                        cargarTurnos();
+                        setTimeout(() => {
+                            window.location.reload();
+
+                        }, 2000);
+                    }
+                })
+                .catch(error => {
+                    console.log(error.message);
+                    Swal.fire(
+                        'Error!',
+                        error.message,
+                        'error'
+                    );
+                });
+        }
+    };
 
 
     return (
@@ -221,7 +279,15 @@ export default function MiTurno() {
 
 
                             </div>
-                            <button onClick={() => descargarTurnoPDF(turnoDetalle)} className='btn'>Descargar PDF</button>
+                            <div className='deFlexBtnTienda'>
+                                <button onClick={() => descargarTurnoPDF(turnoDetalle)} className='btn'>Descargar </button>
+                                {
+                                    turnoDetalle.estado !== 'Cancelado' &&
+                                    <button className="btn" onClick={() => handleUpdateText(turnoDetalle.idTurno)}>Cancelar</button>
+
+                                }
+                            </div>
+
                         </div>
                     </div>
                 )}

@@ -261,6 +261,10 @@ export default function Dias() {
                 setTimeout(() => {
                     setSelectedHorario(null)
                 }, 100);
+                setTimeout(() => {
+                    window.location.reload();
+
+                }, 2000);
 
             } else if (data?.error) {
                 setMensaje('');
