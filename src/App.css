@@ -13,7 +13,7 @@
   --gris2:#f3eeee;
   --color1:#0c71cf;
   --color2:#752FB5;
-  --color3:rgba(31, 135, 233, 0.455);
+  --color3:rgba(31, 135, 233, 0.114);
   --blanco: #fff;
   --input:#c1bfbf;
   --loading:#0076e479;
@@ -33,7 +33,7 @@ a{
  body{
   background-color: var(--gris);
  }
- a,.btnFlotant,#btnSubmenu,.CategoriConten,.card, .detail-contain img, p,.modalNav,#SwiperSlide-scroll-products,  .categoriasInputs input,.cardProdcutSelected, .cardProdcutmasVendido,.cartIconFixed,.inputsGrap{
+ a,#cardServicio,.btnFlotant,#btnSubmenu,.CategoriConten,.card, .detail-contain img, p,.modalNav,#SwiperSlide-scroll-products,  .categoriasInputs input,.cardProdcutSelected, .cardProdcutmasVendido,.cartIconFixed,.inputsGrap{
   opacity: 0;
   animation: slideFromLeft 1s ease-in-out forwards;
   -webkit-animation: slideFromLeft 1s ease-in-out forwards;

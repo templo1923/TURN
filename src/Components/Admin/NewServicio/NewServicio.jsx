@@ -14,7 +14,7 @@ export default function NewServicio() {
     const [isImageSelected, setIsImageSelected] = useState([false, false, false, false]); // Arreglo para selección de imágenes
     const [descripcion, setDescripcion] = useState('');
     const [titulo, setTitulo] = useState('');
-    const [estado, setEstado] = useState('');
+    const [direccion, setDireccion] = useState('');
     const [precio, setPrecio] = useState('');
     const [modalOpen, setModalOpen] = useState(false);
     const [categorias, setCategoras] = useState([]);
@@ -163,6 +163,7 @@ export default function NewServicio() {
         formData.append('email', email);
         formData.append('tipo', tipo);
         formData.append('estado', 'Estandard');
+        formData.append('direccion', direccion);
         formData.append('idUsuario', usuarioLegued.idUsuario);
         try {
             const response = await fetch(`${baseURL}/serviciosPost.php`, {
@@ -227,49 +228,9 @@ export default function NewServicio() {
     return (
         <div className='NewContain'>
             <ToastContainer />
-            {loading ? (
-                <></>
-            ) : usuarioLegued?.idUsuario ? (
-                <>
-                    {usuarioLegued?.rol === 'admin' ? (
-                        <button onClick={toggleModal} className='btnSave'>
-                            <span>+</span> Agregar
-                        </button>
-                    ) : usuarioLegued?.rol === 'colaborador' ? (
-                        <>
-                            {
-                                productos?.length < limitePlan ? (
-                                    <button onClick={toggleModal} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-
-                                ) : (
-                                    <button onClick={alertPlan} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-                                )
-                            }
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                </>
-            ) : (
-                <>
-                    {
-                        productos?.length < limitePlan ? (
-                            <button onClick={toggleModal} className='btnSave'>
-                                <span>+</span> Agregar
-                            </button>
-
-                        ) : (
-                            <button onClick={alertPlan} className='btnSave'>
-                                <span>+</span> Agregar
-                            </button>
-                        )
-                    }
-                </>
-            )}
+            <button onClick={toggleModal} className='btnSave'>
+                <span>+</span> Agregar
+            </button>
             {modalOpen && (
                 <div className="modal">
                     <div className="modal-content">
@@ -379,6 +340,18 @@ export default function NewServicio() {
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </fieldset>
+                                <fieldset>
+                                    <legend>Dirección (*)</legend>
+                                    <input
+                                        type="text"
+                                        id="direccion"
+                                        name="direccion"
+                                        required
+                                        value={direccion}
+                                        onChange={(e) => setDireccion(e.target.value)}
+                                    />
+                                </fieldset>
+
                                 <fieldset id='descripcion'>
                                     <legend>Descripción  </legend>
                                     <textarea

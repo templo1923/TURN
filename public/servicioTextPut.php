@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 // Cargar variables de entorno desde el archivo .env
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
@@ -41,7 +41,8 @@ try {
         $nuevoTelefono = isset($data['nuevoTelefono']) ? $data['nuevoTelefono'] : null;
         $nuevoEmail = isset($data['nuevoEmail']) ? $data['nuevoEmail'] : null;
         $nuevoNombre = isset($data['nuevoNombre']) ? $data['nuevoNombre'] : null;
-        $nuevoTipo = isset($data['nuevoTipo']) ? $data['nuevoTipo'] : null; // Nuevo campo tipo
+        $nuevoTipo = isset($data['nuevoTipo']) ? $data['nuevoTipo'] : null;
+        $nuevaDireccion = isset($data['nuevaDireccion']) ? $data['nuevaDireccion'] : null; // Nuevo campo dirección
 
         // Validar que el título no contenga '/' o '\'
         if (strpos($nuevoTitulo, '/') !== false || strpos($nuevoTitulo, '\\') !== false) {
@@ -58,8 +59,20 @@ try {
             $nuevaCategoria = $row['idCategoria'];
         }
 
-        $sqlUpdate = "UPDATE servicios SET descripcion = :descripcion, titulo = :titulo, idCategoria = :idCategoria, idSubCategoria = :idSubCategoria, precio = :precio, estado = :estado, telefono = :telefono, email = :email, nombre = :nombre, tipo = :tipo
-        WHERE idServicio = :idServicio";
+        $sqlUpdate = "UPDATE servicios 
+                      SET descripcion = :descripcion, 
+                          titulo = :titulo, 
+                          idCategoria = :idCategoria, 
+                          idSubCategoria = :idSubCategoria, 
+                          precio = :precio, 
+                          estado = :estado, 
+                          telefono = :telefono, 
+                          email = :email, 
+                          nombre = :nombre, 
+                          tipo = :tipo, 
+                          direccion = :direccion 
+                      WHERE idServicio = :idServicio";
+
         $sentenciaUpdate = $conexion->prepare($sqlUpdate);
         $sentenciaUpdate->bindParam(':descripcion', $nuevaDescripcion);
         $sentenciaUpdate->bindParam(':titulo', $nuevoTitulo);
@@ -70,7 +83,8 @@ try {
         $sentenciaUpdate->bindParam(':telefono', $nuevoTelefono); 
         $sentenciaUpdate->bindParam(':email', $nuevoEmail);
         $sentenciaUpdate->bindParam(':nombre', $nuevoNombre);
-        $sentenciaUpdate->bindParam(':tipo', $nuevoTipo); // Vincular el nuevo campo tipo
+        $sentenciaUpdate->bindParam(':tipo', $nuevoTipo);
+        $sentenciaUpdate->bindParam(':direccion', $nuevaDireccion); // Vincular el nuevo campo dirección
         $sentenciaUpdate->bindParam(':idServicio', $idServicio, PDO::PARAM_INT);
 
         if ($sentenciaUpdate->execute()) {

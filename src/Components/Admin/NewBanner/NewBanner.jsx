@@ -4,9 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import baseURL from '../../url';
 import imageIcon from '../../../images/imageIcon.png';
-import Swal from 'sweetalert2';
-import { fetchUsuario, getUsuario } from '../../user';
-import planes from '../../planes';
+
 export default function NewBanner() {
     const [mensaje, setMensaje] = useState('');
     const [imagenPreview, setImagenPreview] = useState(null);
@@ -72,113 +70,15 @@ export default function NewBanner() {
             toast.error('Error de conexión. Por favor, inténtelo de nuevo.');
         }
     };
-    //Trae usuario logueado-----------------------------
-    const [loading, setLoading] = useState(true);
-    useEffect(() => {
-        const fetchData = async () => {
-            await fetchUsuario();
-            setLoading(false);
-        };
 
-        fetchData();
-    }, []);
-    const usuarioLegued = getUsuario();
-    const alertPermiso = () => {
-        Swal.fire(
-            '¡Error!',
-            '¡No tienes permisos!',
-            'error'
-        );
-    }
 
-    //Calcular limite de Plan-----------------------------
-    const plan = planes[0]?.plan
-    const limitePlan = planes[0]?.limiteBanner
-    const mensagePlan = `¡Alcanzaste el límite del plan ${plan}! <br/>Tu límite son ${limitePlan} banners`
-    const [banners, setBanners] = useState([]);
-    const alertPlan = () => {
-        cargarBanners();
-        Swal.fire(
-            '¡Error!',
-            mensagePlan,
-            'error'
-        );
-    };
-    useEffect(() => {
-        cargarBanners();
 
-    }, []);
-    const cargarBanners = () => {
-        fetch(`${baseURL}/bannersGet.php`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then(data => {
-                setBanners(data.banner);
-                setLoading(false);
-            })
-            .catch(error => {
-                console.error('Error al cargar banners:', error)
-
-            });
-    };
     return (
         <div className='NewContain'>
             <ToastContainer />
-            {loading ? (
-                <></>
-            ) : usuarioLegued?.idUsuario ? (
-                <>
-                    {usuarioLegued?.rol === 'admin' ? (
-                        <>
-                            {
-                                banners?.length < limitePlan ? (
-                                    <button onClick={toggleModal} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-
-                                ) : (
-                                    <button onClick={alertPlan} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-                                )
-                            }
-                        </>
-                    ) : usuarioLegued?.rol === 'colaborador' ? (
-                        <>
-                            {
-                                banners?.length < limitePlan ? (
-                                    <button onClick={toggleModal} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-
-                                ) : (
-                                    <button onClick={alertPlan} className='btnSave'>
-                                        <span>+</span> Agregar
-                                    </button>
-                                )
-                            }
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                </>
-            ) : (
-                <>
-                    {
-                        banners?.length < limitePlan ? (
-                            <button onClick={toggleModal} className='btnSave'>
-                                <span>+</span> Agregar
-                            </button>
-
-                        ) : (
-                            <button onClick={alertPlan} className='btnSave'>
-                                <span>+</span> Agregar
-                            </button>
-                        )
-                    }
-                </>
-            )}
+            <button onClick={toggleModal} className='btnSave'>
+                <span>+</span> Agregar
+            </button>
             {modalOpen && (
                 <div className="modal">
                     <div className="modal-content">

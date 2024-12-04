@@ -73,7 +73,7 @@ export default function Footer() {
                 <h3>Categorias</h3>
                 {
                     categorias?.map((item, index) => (
-                        <Anchor key={index} to={`/categoria/${item.idCategoria}`}>{item.categoria}</Anchor>
+                        <Anchor key={index} >{item.categoria}</Anchor>
                     ))
                 }
             </div>

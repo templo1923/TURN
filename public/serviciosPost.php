@@ -4,7 +4,7 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__);
@@ -33,14 +33,17 @@ try {
         $email = $_POST['email'];
         $nombre = $_POST['nombre'];
         $tipo = $_POST['tipo'];
-        $idUsuario = $_POST['idUsuario']; // Nuevo campo idUsuario
+        $idUsuario = $_POST['idUsuario'];
+        $direccion = $_POST['direccion']; // Nuevo campo dirección
 
+        // Validación de caracteres no permitidos en el título
         if (strpos($titulo, '/') !== false || strpos($titulo, '\\') !== false) {
             echo json_encode(["error" => "El título no debe contener caracteres como / o \\"]);
             exit;
         }
 
-        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado) && !empty($telefono) && !empty($email) && !empty($nombre) && !empty($tipo) && !empty($idUsuario)) {
+        // Validación de campos obligatorios
+        if (!empty($titulo) && !empty($precio) && !empty($idCategoria) && !empty($estado) && !empty($telefono) && !empty($email) && !empty($nombre) && !empty($tipo) && !empty($idUsuario) && !empty($direccion)) {
             $imagenPresente = isset($_FILES['imagen1']);
 
             if ($imagenPresente) {
@@ -62,8 +65,8 @@ try {
                     exit;
                 }
 
-                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1, telefono, email, nombre, tipo, idUsuario) 
-                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1, :telefono, :email, :nombre, :tipo, :idUsuario)";
+                $sqlInsert = "INSERT INTO `servicios` (titulo, descripcion, precio, idCategoria, idSubCategoria, estado, imagen1, telefono, email, nombre, tipo, idUsuario, direccion) 
+                              VALUES (:titulo, :descripcion, :precio, :idCategoria, :idSubCategoria, :estado, :imagen1, :telefono, :email, :nombre, :tipo, :idUsuario, :direccion)";
                 $stmt = $conexion->prepare($sqlInsert);
                 $stmt->bindParam(':titulo', $titulo);
                 $stmt->bindParam(':descripcion', $descripcion);
@@ -76,7 +79,8 @@ try {
                 $stmt->bindParam(':email', $email);
                 $stmt->bindParam(':nombre', $nombre);
                 $stmt->bindParam(':tipo', $tipo);
-                $stmt->bindParam(':idUsuario', $idUsuario); // Bind del nuevo campo idUsuario
+                $stmt->bindParam(':idUsuario', $idUsuario);
+                $stmt->bindParam(':direccion', $direccion); // Bind del nuevo campo dirección
                 $stmt->execute();
 
                 $lastId = $conexion->lastInsertId();

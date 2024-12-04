@@ -72,6 +72,7 @@ try {
         estado VARCHAR(30) NOT NULL,
         nombre VARCHAR(255) NOT NULL,
         email VARCHAR(255) NOT NULL,
+        direccion VARCHAR(255) NOT NULL,
         tipo VARCHAR(10) NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";

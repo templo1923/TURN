@@ -13,6 +13,7 @@ import moneda from '../moneda';
 import Dias from "../Dias/Dias";
 import { Link as Anchor } from 'react-router-dom';
 import MiTurno from '../MiTurno/MiTurno'
+import { useMediaQuery } from '@react-hook/media-query';
 export default function Detail() {
     const navigate = useNavigate();
     const { idServicio } = useParams();
@@ -28,8 +29,13 @@ export default function Detail() {
     const categoriasInputRef = useRef(null);
     const [fixedCategories, setFixedCategories] = useState(false);
     const location = useLocation();
-    const [isDescriptionModalOpen, setIsDescriptionModalOpen] = useState(false);
+    const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
+    const toggleDescriptionExpanded = () => {
+        setIsDescriptionExpanded(!isDescriptionExpanded);
+    };
+
+    const isScreenLarge = useMediaQuery('(min-width: 1024px)');
     useEffect(() => {
         cargarServicios();
         cargarTienda();
@@ -135,9 +141,7 @@ export default function Detail() {
             localStorage.setItem('favoritos', JSON.stringify(favList));
         }
     };
-    const toggleDescriptionModal = () => {
-        setIsDescriptionModalOpen(!isDescriptionModalOpen);
-    };
+
 
     if (!servicio) {
         return <DetailLoading />;
@@ -175,7 +179,6 @@ export default function Detail() {
                 </div>
 
                 <div className="textDetail">
-                    <h2 className="title">{servicio.titulo}</h2>
                     <div className="deFLexBuet">
                         {categorias
                             .filter(categoria => categoria.idCategoria === servicio.idCategoria)
@@ -188,48 +191,59 @@ export default function Detail() {
                                         .filter(sub => sub.idSubCategoria === servicio.idSubCategoria)
                                         .map(sub => ` > ${sub.subcategoria} `)
                                     }
-
-
+                                    {` > ${moneda} ${String(servicio?.precio)?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`}
                                 </h4>
                             ))
                         }
                     </div>
+                    <h2 className="title">{servicio.titulo}</h2>
+                    <div className="deFlexContentDetail">
+                        <div className="userProfile">
+                            <FontAwesomeIcon icon={faUser} className="iconUser" />
+                            <div>
+                                <h4> Profesional </h4>
+                                <h5>
+                                    {servicio.nombre}
+                                </h5>
+                            </div>
+                        </div>
+                        <div className="deFlexBtnDetail">
 
-                    <h4>   <FontAwesomeIcon icon={faUser} />Profesional {`>`}   {servicio.nombre}    {` > ${moneda} ${String(servicio?.precio)?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`} </h4>
+                            <Anchor className="emailBtn" to={`https://www.google.com/maps?q=${encodeURIComponent(servicio.direccion)}`} target="_blank">
+                                <span>Dirección</span> <i className="fa fa-map-marker"></i>
+                            </Anchor>
 
-                    <div className="deFlexBtnDetail">
-                        <Anchor to={`mailto:${servicio.email}`} className="emailBtn" >
-                            <span>Email</span> <i className="fa fa-envelope"></i>
-                        </Anchor>
+                            <Anchor to={`mailto:${servicio.email}`} className="emailBtn" >
+                                <span>Email</span> <i className="fa fa-envelope"></i>
+                            </Anchor>
 
-                        <button className="wpp" onClick={handleWhatsappMessage}>
-                            <span>WhatsApp</span>
-                            <i className='fa fa-whatsapp'></i>
-                        </button>
-                        <MiTurno />
+                            <button className="wpp" onClick={handleWhatsappMessage}>
+                                <span>WhatsApp</span>
+                                <i className='fa fa-whatsapp'></i>
+                            </button>
+                            <MiTurno />
+                        </div>
                     </div>
-                    <span>
-                        {servicio?.descripcion?.length > 80
-                            ? `${servicio.descripcion.substring(0, 80)}...`
-                            : servicio.descripcion
-                        }
-                        {servicio?.descripcion?.length > 80 && (
-                            <span onClick={toggleDescriptionModal} className="view-more-btn">
-                                Ver más
-                            </span>
-                        )}
-                    </span>
-                    <Modal
-                        open={isDescriptionModalOpen}
-                        onClose={toggleDescriptionModal}
-                        center
-                        classNames={{
-                            modal: 'custom-description-modal',
-                        }}
-                    >
-                        <h2>{servicio.titulo}</h2>
-                        <span>{servicio.descripcion}</span>
-                    </Modal>
+                    {isScreenLarge ? (
+                        <span>
+                            {servicio.descripcion}
+                        </span>
+                    ) : (
+                        <span onClick={toggleDescriptionExpanded} className="description-span">
+                            {isDescriptionExpanded
+                                ? servicio.descripcion
+                                : servicio.descripcion.length > 80
+                                    ? `${servicio.descripcion.substring(0, 80)}...`
+                                    : servicio.descripcion
+                            }
+                            {servicio.descripcion.length > 80 && (
+                                <span className="view-more-btn">
+                                    {isDescriptionExpanded ? " Ver menos" : " Ver más"}
+                                </span>
+                            )}
+                        </span>
+                    )}
+
 
                 </div>
                 <Dias />

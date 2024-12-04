@@ -129,7 +129,7 @@ export default function Servicios() {
                                     ?.map(servicio => (
                                         <SwiperSlide key={servicio.idServicio} id="cardServicio">
                                             <Anchor
-                                                to={`servicio/${servicio.idServicio}/${servicio.titulo}`}
+                                                to={`servicio/${servicio.idServicio}/${servicio?.titulo?.replace(/\s+/g, '-')}`}
                                             >
                                                 {subcategorias?.filter(subcategoria => subcategoria.idCategoria === categoria.idCategoria && subcategoria.idSubCategoria === servicio.idSubCategoria)?.map(item => (
                                                     <h6 className="subcategoria">
@@ -162,7 +162,7 @@ export default function Servicios() {
                                     ?.filter(servicio => servicio.idCategoria === categoria.idCategoria)
                                     ?.map(servicio => (
                                         <div key={servicio.idServicio} id="cardServicio">
-                                            <Anchor to={`servicio/${servicio.idServicio}/${servicio.titulo}`}>
+                                            <Anchor to={`servicio/${servicio.idServicio}/${servicio?.titulo?.replace(/\s+/g, '-')}`}>
                                                 {subcategorias?.filter(subcategoria => subcategoria.idCategoria === categoria.idCategoria && subcategoria.idSubCategoria === servicio.idSubCategoria)?.map(item => (
                                                     <h6 className="subcategoria">
                                                         {item.subcategoria}

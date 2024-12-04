@@ -122,15 +122,26 @@ hr{
 }
 .title {
     font-size: 1.7em;
-    color: var(--blanco);
+    color: var(--text-color2);
+    font-family: 'Poppins';
+    font-weight: 600;
 }
+
 .detail-contain span{
-    color: var(--blanco);
+    color: var(--text-color2);
     white-space: pre-line;
     font-size: 0.9em;
+    font-family: 'Poppins';
+
 }
-
-
+.detail-contain button span{
+    color: var(--blanco);
+   
+}
+.detail-contain a span{
+    color: var(--blanco);
+   
+}
 .deColumn{
     display: flex;
     flex-direction: column;
@@ -158,33 +169,31 @@ hr{
 .wpp{
    background-color: rgb(30, 184, 30);
    color: var(--blanco);
-   padding: 10px 20px;
+   padding: 7px 10px;
    display: flex;
    justify-content: center;
    align-items: center;
    border: none;
-   font-size: 15px;
+   font-size: 13px;
    cursor: pointer;
-   box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.196);
    border-radius: 10px;
    gap: 10px;
-   width: 8rem;
+   width: 7rem;
    
 }
 .emailBtn{
     background-color: var(--color1);
     color: var(--blanco);
-    padding: 9px 20px;
+    padding: 7px 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: none;
-    font-size: 15px;
+    font-size: 13px;
     cursor: pointer;
-    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.196);
     border-radius: 10px;
     gap: 10px;
-    width: 8rem;
+    width: 7rem;
 }
 .deFlexBtnDetail{
     display: flex;
@@ -197,10 +206,9 @@ hr{
 .textDetail{
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.3rem;
     width: 100%;
     padding:  10px 20px;
-    margin-top: -17rem;
     z-index: 1;
 }
 .back{
@@ -216,10 +224,19 @@ hr{
     display: flex;
     gap: 10px;
     align-items: center;
-    color: var(--blanco);
+    color: var(--text-color2);
     font-weight: 500;
-    font-size: 1em;
-
+    font-size: 0.9em;
+    font-family: 'Poppins';
+}
+.textDetail h5{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    color: var(--text-color2);
+    font-weight: 500;
+    font-size: 0.7em;
+    font-family: 'Poppins';
 }
 .deFLexBuet{
     display: flex;
@@ -227,7 +244,13 @@ hr{
     justify-content: space-between;
     width: 100%;
 }
-
+.deFLexBuet h4{
+    color: var(--color1);
+    background-color: var(--color3);
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 13px;
+}
 .custom-description-modal{
     display: flex;
     flex-direction: column;
@@ -245,6 +268,24 @@ hr{
 }
 .custom-description-modal button{
    cursor: pointer;
+}
+.view-more-btn{
+    color: var(--color1)!important;
+}
+.userProfile{
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.iconUser{
+    background-color: var(--gris2);
+    color: var(--text-color2);
+    padding: 10px;
+    border-radius: 100%;
+}
+.deFlexContentDetail{
+    display: flex;
+    justify-content: space-between;
 }
 @media (max-width: 1024px) {
     .fixedHeader{
@@ -283,9 +324,11 @@ hr{
         gap: 0;
     }
     .textDetail{
-        margin-top: -17rem;
-        padding: 20px;
-       
+       padding: 20px;
+       margin-top: -2rem;
+       background-color: var(--blanco);
+       border-radius:20px 20px 0 0;
+       gap: 1rem;
 }
 .title {
     font-size: 1.2em;
@@ -298,21 +341,43 @@ hr{
 
 
 .wpp{
-     padding: 8px 20px;
-     font-size: 12px;
-     width: 4rem;
-     border-radius:5px ;
+    padding:  7px;
+     font-size: 9px;
+     width: 1.6rem;
+     border-radius:100% ;
+   
 }
  .emailBtn{
-     padding: 8px 10px;
-     font-size: 12px;
-     width: 4rem;
-     border-radius:5px ;
+    padding:  7px;
+    font-size: 9px;
+    width: 1.6rem;
+    border-radius:100% ;
  }
  .imgContain{
-    height: 55vh;
+    height: 40vh;
 }
 .deFlexBtnDetail span{
     display: none;
+}
+
+
+.textDetail h5{
+    font-size: 10px;
+}
+.textDetail h4{
+    font-size: 11px;
+}
+.deFLexBuet h4{
+    padding: 3px 7px;
+    font-size: 10px;
+}
+.iconUser{
+    background-color: var(--gris2);
+    color: var(--text-color2);
+    padding: 8px;
+    font-size: 10px;
+}
+.detail-contain span{
+    font-size: 10px;
 }
 }

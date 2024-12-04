@@ -76,11 +76,26 @@ export default function Dias() {
             if (diasFilt) {
                 const parsedDias = JSON.parse(diasFilt.dias);
                 setDia({ ...diasFilt, dias: parsedDias });
+
+                // Seleccionar el día actual automáticamente
+                const today = dayjs();
+                const todayInfo = generateMonthDays()?.find(day => day.date === today.format('YYYY-MM-DD'));
+
+                if (todayInfo) {
+                    const todayIndex = generateMonthDays()?.findIndex(day => day.date === today.format('YYYY-MM-DD'));
+                    const matchingDayInfo = parsedDias?.find(d => d.dia === todayInfo.day);
+
+                    if (matchingDayInfo) {
+                        setSelectedDay({ ...matchingDayInfo, date: todayInfo.date });
+                        setSelectedDayIndex(todayIndex);
+                    }
+                }
             } else {
                 setDia(null);
             }
         }
     }, [idServicio, dias]);
+
 
     const generateMonthDays = () => {
         const daysInMonth = [];
@@ -296,7 +311,10 @@ export default function Dias() {
         <div className='Dias'>
             {dia ? (
                 <div>
-                    <hr />
+                    {selectedDay && <div className='horariosSeleccionados'>
+                        <h4>{dayjs(selectedDay?.date)?.format('dddd, D [de] MMMM [de] YYYY')}:</h4>
+                    </div>
+                    }
                     <Swiper
                         effect={'coverflow'}
                         grabCursor={true}
@@ -339,10 +357,9 @@ export default function Dias() {
                         })}
 
                     </Swiper>
-                    <hr />
                     {selectedDay ? (
                         <div className='horariosSeleccionados'>
-                            <h4>{dayjs(selectedDay?.date)?.format('dddd, D [de] MMMM [de] YYYY')}:</h4>
+                            {/* <h4>{dayjs(selectedDay?.date)?.format('dddd, D [de] MMMM [de] YYYY')}:</h4> */}
                             <div className="flexGrapHoras">
                                 {selectedDay?.horarios?.map((horario, idx) => {
                                     // Verificar si el horario está ocupado por algún turno del mismo servicio
@@ -376,7 +393,6 @@ export default function Dias() {
                     ) : (
                         <h4 className="textCenter">Selecciona un día para ver sus horarios.</h4>
                     )}
-                    <hr />
 
 
                     {selectedHorario && (
@@ -404,7 +420,7 @@ export default function Dias() {
                                 {selectedHorario && (
                                     <div className='deFLexRadio'>
                                         <p>Servicio: {servicio}</p>
-                                        <p>Día: {dayjs(selectedHorario?.date)?.format('dddd')}</p>
+                                        {/* <p>Día: {dayjs(selectedHorario?.date)?.format('dddd')}</p> */}
                                         <p>Fecha: {dayjs(selectedHorario?.date)?.format('dddd, D [de] MMMM [de] YYYY')}</p>
                                         <p>Horario: {selectedHorario?.horario?.horaInicio} - {selectedHorario?.horario?.horaFin}</p>
                                     </div>

@@ -27,6 +27,7 @@ export default function ServiciosData() {
     const [nuevaDescripcion, setNuevaDescripcion] = useState('');
     const [nuevoPrecio, setNuevoPrecio] = useState('');
     const [nuevoEstado, setNuevoEstado] = useState('');
+    const [nuevaDireccion, setnuevaDireccion] = useState('');
     const [nuevoTipo, setNuevoTipo] = useState('');
     const [nuevoNombre, setNuevoNombre] = useState('');
     const [nuevoEmail, setNuevoEmail] = useState('');
@@ -117,6 +118,7 @@ export default function ServiciosData() {
         setNuevoNombre(servicio.nombre);
         setNuevoEmail(servicio.email);
         setNuevoTipo(servicio.tipo);
+        setnuevaDireccion(servicio.direccion)
     }, [servicio]);
 
     const cargarServicios = () => {
@@ -264,7 +266,7 @@ export default function ServiciosData() {
             nuevoNombre: nuevoNombre !== '' ? nuevoNombre : servicio.nombre,
             nuevoEmail: nuevoEmail !== undefined ? nuevoEmail : servicio.email,
             nuevoTipo: nuevoTipo !== undefined ? nuevoTipo : servicio.tipo,
-
+            nuevaDireccion: nuevaDireccion !== undefined ? nuevaDireccion : servicio.direccion,
         };
 
         fetch(`${baseURL}/servicioTextPut.php?idServicio=${idServicio}`, {
@@ -602,6 +604,15 @@ export default function ServiciosData() {
                                         onChange={(e) => setNuevoEmail(e.target.value)}
                                     />
                                 </fieldset>
+
+                                <fieldset>
+                                    <legend>Dirección (*)</legend>
+                                    <input
+                                        type="text"
+                                        value={nuevaDireccion}
+                                        onChange={(e) => setnuevaDireccion(e.target.value)}
+                                    />
+                                </fieldset>
                                 <fieldset id='descripcion'>
                                     <legend>Descripcion </legend>
                                     <textarea
@@ -702,7 +713,6 @@ export default function ServiciosData() {
                             <th>Precio</th>
                             <th>Categoria</th>
                             <th>Subcategoria</th>
-                            <th>Nombre</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -759,7 +769,6 @@ export default function ServiciosData() {
                                                         </>
                                                     }
                                                 </td>
-                                                <td>{item.nombre}</td>
                                                 {item.estado === 'Estandard' ? (
                                                     <td style={{ color: '#008000' }}>{item.estado}</td>
                                                 ) : item.estado === 'Premiun' ? (
@@ -832,7 +841,6 @@ export default function ServiciosData() {
                                                         </>
                                                     }
                                                 </td>
-                                                <td>{item.nombre}</td>
                                                 {item.estado === 'Estandard' ? (
                                                     <td style={{ color: '#008000' }}>{item.estado}</td>
                                                 ) : item.estado === 'Premiun' ? (
@@ -909,7 +917,6 @@ export default function ServiciosData() {
                                                 </>
                                             }
                                         </td>
-                                        <td>{item.nombre}</td>
                                         {item.estado === 'Estandard' ? (
                                             <td style={{ color: '#008000' }}>{item.estado}</td>
                                         ) : item.estado === 'Premiun' ? (
