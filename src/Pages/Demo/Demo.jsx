@@ -9,7 +9,7 @@ export default function Demo() {
     return (
         <section className='demo'>
             <Banners />
-            {/* <Servicios /> */}
+            <Servicios />
             <Footer />
             <Developer />
             <BtnWhatsapp />

@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './MiTurno.css';
-import 'jspdf-autotable';
 import { jsPDF } from 'jspdf';
 import baseURL from '../url';
 import Modal from 'react-modal';
@@ -13,30 +12,23 @@ import Swal from 'sweetalert2';
 export default function MiTurno() {
     const [turnos, setTurnos] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
-    const [idTurno, setIdTurno] = useState(localStorage.getItem('idTurno') || '');
+    const [dni, setDni] = useState(localStorage.getItem('dni') || '');
     const [turnoDetalle, setTurnoDetalle] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [nuevoEstado, setNuevoEstado] = useState('Cancelado');
+
     useEffect(() => {
         cargarTurnos();
     }, []);
 
     useEffect(() => {
-        // Si existe un idTurno en localStorage, intenta buscarlo automáticamente al abrir el modal
-        if (idTurno) {
-            buscarTurno();
-        }
+        if (dni) buscarTurno();
     }, [modalIsOpen]);
 
     const cargarTurnos = () => {
-        fetch(`${baseURL}/turnoGet.php`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then(data => {
-                setTurnos(data.turnos.reverse() || []);
-            })
-            .catch(error => console.error('Error al cargar turnos:', error));
+        fetch(`${baseURL}/turnoGet.php`, { method: 'GET' })
+            .then((response) => response.json())
+            .then((data) => setTurnos(data.turnos.reverse() || []))
+            .catch((error) => console.error('Error al cargar turnos:', error));
     };
 
     const openModal = () => {
@@ -50,42 +42,33 @@ export default function MiTurno() {
         setTurnoDetalle(null);
     };
 
-    const handleInputChange = (e) => {
-        setIdTurno(e.target.value);
-    };
+    const handleInputChange = (e) => setDni(e.target.value);
 
     const buscarTurnoConAlerta = () => {
-        const idTurnoInt = parseInt(idTurno, 10);
-        const turnoEncontrado = turnos?.find(turno => turno.idTurno === idTurnoInt);
+        const turnoEncontrado = turnos?.find((turno) => turno.dni === dni);
 
         if (turnoEncontrado) {
             setTurnoDetalle(turnoEncontrado);
             Swal.fire({
                 title: 'Turno encontrado',
-                text: `ID Turno: ${turnoEncontrado.idTurno}, Nombre: ${turnoEncontrado.nombre}`,
+                text: `DNI: ${turnoEncontrado.dni}, Nombre: ${turnoEncontrado.nombre}`,
                 icon: 'success',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
         } else {
             Swal.fire({
                 title: 'Turno no encontrado',
-                text: 'El ID del turno no corresponde a ningún turno existente.',
+                text: 'El DNI no corresponde a ningún turno existente.',
                 icon: 'error',
-                confirmButtonText: 'Aceptar'
+                confirmButtonText: 'Aceptar',
             });
             setTurnoDetalle(null);
         }
     };
 
     const buscarTurno = () => {
-        const idTurnoInt = parseInt(idTurno, 10);
-        const turnoEncontrado = turnos?.find(turno => turno.idTurno === idTurnoInt);
-
-        if (turnoEncontrado) {
-            setTurnoDetalle(turnoEncontrado);
-        } else {
-            setTurnoDetalle(null);
-        }
+        const turnoEncontrado = turnos?.find((turno) => turno.dni === dni);
+        setTurnoDetalle(turnoEncontrado || null);
     };
 
     // Función para generar y descargar el PDF
@@ -155,14 +138,11 @@ export default function MiTurno() {
         doc.setFontSize(12);
         doc.setTextColor("#7f8c8d");
         doc.text("Gracias por confiar en nosotros.", 105, 280, null, null, "center");
-        doc.text("Para cualquier consulta, contáctanos al 123-456-789.", 105, 285, null, null, "center");
 
         // Descargar el PDF
-        doc.save(`Turno_${detallesTurno.idTurno}_${detallesTurno.nombre}_${detallesTurno.fecha}.pdf`);
+        doc.save(`Turno_${detallesTurno.idTurno}_${detallesTurno.nombre}.pdf`);
     };
-
     const handleUpdateText = async (idTurno) => {
-        // Mostrar una alerta de confirmación
         const result = await Swal.fire({
             title: '¿Estás seguro?',
             text: '¿Deseas cancelar este turno? Esta acción no se puede deshacer.',
@@ -175,33 +155,18 @@ export default function MiTurno() {
         });
 
         if (result.isConfirmed) {
-            // Si el usuario confirma, procede a cancelar el turno
-            const payload = {
-                idTurno: idTurno,
-                estado: 'Cancelado', // Cambia esto si necesitas otro estado
-            };
-
+            const payload = { idTurno, estado: 'Cancelado' };
             fetch(`${baseURL}/turnoPut.php?idTurno=${idTurno}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
             })
-                .then(response => response.json())
-                .then(data => {
+                .then((response) => response.json())
+                .then((data) => {
                     if (data.error) {
-                        Swal.fire(
-                            'Error!',
-                            data.error,
-                            'error'
-                        );
+                        Swal.fire('Error!', data.error, 'error');
                     } else {
-                        Swal.fire(
-                            '¡Cancelado!',
-                            'El turno fue cancelado correctamente.',
-                            'success'
-                        );
+                        Swal.fire('¡Cancelado!', 'El turno fue cancelado correctamente.', 'success');
                         cargarTurnos();
                         setTimeout(() => {
                             window.location.reload();
@@ -209,21 +174,15 @@ export default function MiTurno() {
                         }, 2000);
                     }
                 })
-                .catch(error => {
-                    console.log(error.message);
-                    Swal.fire(
-                        'Error!',
-                        error.message,
-                        'error'
-                    );
-                });
+                .catch((error) => Swal.fire('Error!', error.message, 'error'));
         }
     };
 
-
     return (
         <div>
-            <button onClick={openModal} className='emailBtn'><span>Mi turno </span>   <FontAwesomeIcon icon={faSearch} /></button>
+            <button onClick={openModal} className="emailBtn">
+                <span>Mi turno</span> <FontAwesomeIcon icon={faSearch} />
+            </button>
             <ToastContainer />
             <Modal
                 isOpen={modalIsOpen}
@@ -231,63 +190,50 @@ export default function MiTurno() {
                 overlayClassName="overlay-cart"
                 onRequestClose={closeModal}
             >
-                <div className='deFLex'>
+                <div className="deFLex">
                     <button onClick={closeModal}>
                         <FontAwesomeIcon icon={faArrowLeft} />
                     </button>
-                    <button className='deleteToCart'>Mi turno</button>
+                    <button className="deleteToCart">Mi turno</button>
                 </div>
-                <div className='paddingConten'>
-                    <fieldset className='inputSearch'>
+                <div className="paddingConten">
+                    <fieldset className="inputSearch">
                         <input
-                            type="number"
-                            placeholder="Ingrese N° de Turno"
-                            value={idTurno}
+                            type="text"
+                            placeholder="Ingrese DNI"
+                            value={dni}
                             onChange={handleInputChange}
                             className="input"
                         />
-                        <FontAwesomeIcon icon={faSearch} onClick={buscarTurnoConAlerta} className="search-icon" />
+                        <FontAwesomeIcon
+                            icon={faSearch}
+                            onClick={buscarTurnoConAlerta}
+                            className="search-icon"
+                        />
                     </fieldset>
                 </div>
                 {turnoDetalle && (
-                    <div className='MiPedidoContain'>
+                    <div className="MiPedidoContain">
                         <div className="modal-content-cart">
-                            <div className='deFlexSpanPedido'>
+                            <div className="deFlexSpanPedido">
                                 <span><strong>Turno N°:</strong> {turnoDetalle.idTurno}</span>
                                 <span><strong>Servicio:</strong> {turnoDetalle.servicio}</span>
-                                {JSON.parse(turnoDetalle.dias).map((dia, index) => (
-                                    <div key={index} className='deFlexSpanPedido'>
-                                        <span>
-                                            <strong> Día: </strong>{new Date(dia.dia).toLocaleDateString('es-ES', {
-                                                weekday: 'long',
-                                                day: '2-digit',
-                                                month: 'long',
-                                                year: 'numeric'
-                                            })}
-                                        </span>
-                                        <span>
-                                            <strong> Horario:</strong> {dia.horaInicio} - {dia.horaFin}
-                                        </span>
-                                    </div>
-                                ))}
-
                                 <span><strong>Estado:</strong> {turnoDetalle.estado}</span>
                                 <span><strong>Nombre:</strong> {turnoDetalle.nombre}</span>
                                 <span><strong>DNI:</strong> {turnoDetalle.dni}</span>
                                 <span><strong>Email:</strong> {turnoDetalle.email}</span>
                                 <span><strong>Teléfono:</strong> {turnoDetalle.telefono}</span>
-
-
                             </div>
-                            <div className='deFlexBtnTienda'>
-                                <button onClick={() => descargarTurnoPDF(turnoDetalle)} className='btn'>Descargar </button>
-                                {
-                                    turnoDetalle.estado !== 'Cancelado' &&
-                                    <button className="btn" onClick={() => handleUpdateText(turnoDetalle.idTurno)}>Cancelar</button>
-
-                                }
+                            <div className="deFlexBtnTienda">
+                                <button onClick={() => descargarTurnoPDF(turnoDetalle)} className="btn">
+                                    Descargar
+                                </button>
+                                {turnoDetalle.estado !== 'Cancelado' && (
+                                    <button className="btn" onClick={() => handleUpdateText(turnoDetalle.idTurno)}>
+                                        Cancelar
+                                    </button>
+                                )}
                             </div>
-
                         </div>
                     </div>
                 )}

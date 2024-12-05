@@ -4,6 +4,7 @@
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 100%;
 }
 .categoriaSection{
     display: flex;
@@ -15,6 +16,7 @@
 }
 #cardServicio{
     width: 23rem;
+    height: 18.7rem;
     background-color: var(--blanco);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.107);
     display: flex;
@@ -61,7 +63,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 28ch;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-color2);
     font-family: 'Poppins';
 }
@@ -77,11 +79,13 @@
     border-bottom: 1px solid #4140403d;
     margin-bottom: 2rem;
     margin-top: 2rem;
-    padding-bottom: 1rem;
+    padding-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    font-family: 'Poppins';
+    font-weight: 500;
 }
 .iconCardh2{
     font-size: 15px;
@@ -108,11 +112,9 @@
     display: flex;
     justify-content: center;
     place-content: center;
-    align-items: center;
-    align-content: center;
-    align-self: center;
     border-radius: 10rem;
     margin: 0 30%;
+    
 }
 
 .filtroBoton {
@@ -123,6 +125,7 @@
     border-radius: 10rem;
     font-size: 14px;
     width: 100%;
+    font-family: 'Poppins';
 }
 
 .filtroBoton.activo {
@@ -170,6 +173,7 @@
     text-align: center;
     justify-content: center;
     cursor: pointer;
+    font-family: 'Poppins';
 }
 .activeCategoria {
     background-color: var(--color1);
@@ -203,13 +207,9 @@
   }
 @media (max-width: 1000px) {
     #Servicios{
-        padding: 15px 0%;
-        border-radius: 20px 20px 0 0;
-        margin-top: -3rem;
+        padding: 5px 0%;
         z-index: 2;
-     
-
-       
+        width: 100%;
 }
 #cardsServicio{
     padding-left: 10px;
@@ -219,6 +219,7 @@
     width: 60%;
     margin: 0 10px 1rem 5px;
     padding: 8px;
+    height: 13.4rem;
 }
 #cardServicio img{
     height:7rem;
@@ -244,17 +245,16 @@
 }
 .categoriaSection h2{
     margin: 10px 6%;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
+
     width: auto;
     font-size: 1.1em;
 }
 .filtroBoton {
-    padding: 10px 20px;
+    padding: 8px 20px ;
    
 }
 .filtrosCategorias{
-    margin-top: 15px;
+    margin-top: 0;
     gap: 10px;
     padding-left: 3%;
 }
@@ -277,6 +277,7 @@
 
   .serviciosLista #cardServicio {
     width: 100%;
+    height: auto;
     margin: 0 10px 1rem 5px;
     display: flex;
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0);
@@ -305,5 +306,11 @@
 }
 .serviciosLista .cardServicioText strong{
     max-width: 28ch;
+}
+.categoriaBoton{
+    padding: 8px 20px ;
+}
+.activeCategoria {
+    padding: 8px 20px ;
 }
 }

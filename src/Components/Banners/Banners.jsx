@@ -70,10 +70,7 @@ export default function Banners() {
                     ))}
                 </Swiper>
             )}
-            <Swiper id='Servicios'>
-                <Servicios />
 
-            </Swiper>
         </div>
     );
 }

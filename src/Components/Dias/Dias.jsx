@@ -250,6 +250,7 @@ export default function Dias() {
 
                 // Guardar el idTurno en localStorage
                 localStorage.setItem('idTurno', data.idTurno);
+                localStorage.setItem('dni', dni);
                 // Limpiar campos y cerrar modal
                 setNombre('');
                 setDni('');
@@ -304,7 +305,45 @@ export default function Dias() {
 
 
     if (loading) {
-        return <div>Cargando...</div>;
+        return <Swiper
+            effect={'coverflow'}
+            grabCursor={true}
+            slidesPerView={'auto'}
+            id="cardsServicio"
+        >
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+            <SwiperSlide id="cardDayLoading">
+
+            </SwiperSlide>
+        </Swiper>;
     }
 
     return (

@@ -8,7 +8,15 @@
     margin-bottom: 3rem;
     margin: 20px;
 }
-
+#cardDayLoading{
+    width: 8rem;
+    height: 7rem;
+    border-radius: 15px;
+    margin: 0rem 0 2rem 1rem;
+    background: linear-gradient(90deg, #e8e6e6, #fff, #fff);
+    background-size: 400% 400%;
+    animation: gradientMove 1s linear infinite;
+}
 #cardDay{
     background-color: var(--blanco);
     width: 8rem;
@@ -176,6 +184,11 @@
     }
     #cardDay{
         width: 6rem;
+        margin: 10px 0 20px 10px;
+    }
+    #cardDayLoading{
+        width: 6rem;
+        height: 6rem;
         margin: 10px 0 20px 10px;
     }
     .Dias{
