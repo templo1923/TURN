@@ -52,3 +52,13 @@
     border-radius: 10px;
     padding: 20px;
 }
+#servicioSelect{
+    border: 2px solid var(--gris2);
+    padding: 7px;
+    color: var(--text-color2);
+    border-radius: 7px;
+    
+}
+.GraficoContent .deFlexMore{
+    margin: 0;
+}

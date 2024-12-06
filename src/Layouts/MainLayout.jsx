@@ -30,7 +30,7 @@ export default function MainLayout() {
                     ) : usuarioLegued?.rol === 'colaborador' ? (
                         <Outlet />
                     ) : (
-                        <Outlet />
+                        <Auth />
                     )}
                 </>
             ) : (

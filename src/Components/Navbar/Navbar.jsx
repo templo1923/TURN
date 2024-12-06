@@ -66,7 +66,7 @@ export default function Navbar() {
                         {tienda?.nombre ? (
                             <h2>{tienda?.nombre}</h2>
                         ) : (
-                            <h2>Mi Tienda</h2>
+                            <h2>Sistema</h2>
                         )}
                         {tienda?.eslogan ? (
                             <strong>{tienda?.eslogan}</strong>

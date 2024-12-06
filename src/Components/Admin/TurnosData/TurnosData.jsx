@@ -38,7 +38,7 @@ export default function TurnosData() {
     const [nuevoEstado, setNuevoEstado] = useState('');
     const [servicios, setServicios] = useState([]);
     const [servicioSeleccionado, setServicioSeleccionado] = useState(null); // Establecer el servicio seleccionado por defecto
-
+    const [filterText, setFilterText] = useState('');
     useEffect(() => {
         cargarTurnos();
         cargarServicios();
@@ -99,10 +99,10 @@ export default function TurnosData() {
         setModalIsOpen(false); // Cerrar el modal
     };
 
-    const handleSelectSlot = (slotInfo) => {
-        // Mostrar un mensaje cuando se selecciona un rango de fechas
-        alert(`Seleccionado el rango: ${slotInfo.start} - ${slotInfo.end}`);
-    };
+    // const handleSelectSlot = (slotInfo) => {
+    //     // Mostrar un mensaje cuando se selecciona un rango de fechas
+    //     alert(`Seleccionado el rango: ${slotInfo.start} - ${slotInfo.end}`);
+    // };
 
     // Inicialización de servicios del usuario logueado
     const serviciosUsuario = usuarioLegued?.rol === "admin"
@@ -112,8 +112,20 @@ export default function TurnosData() {
     // Selección inicial del servicio
     const servicioSeleccionadoInicial = servicioSeleccionado || serviciosUsuario[0]?.idServicio;
 
+    const handleFilterChange = (e) => {
+        setFilterText(e.target.value.toLowerCase());
+    };
+
+    const filteredTurnos = turnos?.filter(
+        (turno) =>
+            turno?.nombre?.toLowerCase()?.includes(filterText) ||
+            turno?.dni?.includes(filterText) ||
+            turno?.telefono?.includes(filterText)
+    );
+
+
     // Filtro de turnos ajustado para admin y colaborador
-    const events = turnos
+    const events = filteredTurnos
         ?.filter(item => {
             if (!usuarioLegued || !usuarioLegued.idUsuario) {
                 // Sin usuario logueado: mostrar todos los turnos
@@ -346,7 +358,18 @@ export default function TurnosData() {
             <div className='grapBtns'>
                 <button onClick={exportarExcel} className="excel"> <FontAwesomeIcon icon={faArrowDown} /> Excel</button>
                 <button onClick={exportarPDF} className="pdf"><FontAwesomeIcon icon={faArrowDown} /> PDF</button>
+                <div className='inputsColumn'>
+                    <input
+                        type="text"
+                        placeholder="Buscar por DNI, nombre o teléfono"
+                        value={filterText}
+                        onChange={handleFilterChange}
+                        style={{
+                            width: '15rem',
 
+                        }}
+                    />
+                </div>
                 {loading ? (
                     <></>
                 ) : usuarioLegued?.idUsuario ? (
@@ -416,7 +439,7 @@ export default function TurnosData() {
                 startAccessor="start"
                 endAccessor="end"
                 onSelectEvent={handleSelectEvent}
-                onSelectSlot={handleSelectSlot}
+                // onSelectSlot={handleSelectSlot}
                 selectable
                 views={['month', 'week', 'day']}
                 defaultView="month"

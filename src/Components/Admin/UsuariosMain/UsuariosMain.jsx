@@ -38,7 +38,6 @@ export default function UsuariosData() {
             <table className='table'>
                 <thead>
                     <tr>
-                        <th>ID Usuario</th>
                         <th>Nombre</th>
                         <th>Email</th>
                         <th>Rol</th>
@@ -48,7 +47,6 @@ export default function UsuariosData() {
                 <tbody>
                     {usuarios.map(usuario => (
                         <tr key={usuario.idUsuario}>
-                            <td>{usuario.idUsuario}</td>
                             <td>{usuario.nombre}</td>
                             <td>{usuario.email}</td>
 

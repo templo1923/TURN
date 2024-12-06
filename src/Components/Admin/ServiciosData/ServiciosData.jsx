@@ -423,8 +423,30 @@ export default function ServiciosData() {
                 <div className='deFlex2'>
                     <NewServicio />
                     <NewDias />
-                    <button className='excel' onClick={descargarExcel}><FontAwesomeIcon icon={faArrowDown} /> Excel</button>
-                    <button className='pdf' onClick={descargarPDF}><FontAwesomeIcon icon={faArrowDown} /> PDF</button>
+
+                    {loading ? (
+                        <></>
+                    ) : usuarioLegued?.idUsuario ? (
+                        <>
+                            {usuarioLegued?.rol === 'admin' ? (
+                                <>
+                                    <button className='excel' onClick={descargarExcel}><FontAwesomeIcon icon={faArrowDown} /> Excel</button>
+                                    <button className='pdf' onClick={descargarPDF}><FontAwesomeIcon icon={faArrowDown} /> PDF</button>
+
+                                </>
+                            ) : usuarioLegued?.rol === 'colaborador' ? (
+                                <></>
+                            ) : (
+                                <></>
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <button className='excel' onClick={descargarExcel}><FontAwesomeIcon icon={faArrowDown} /> Excel</button>
+                            <button className='pdf' onClick={descargarPDF}><FontAwesomeIcon icon={faArrowDown} /> PDF</button>
+
+                        </>
+                    )}
                 </div>
                 <div className='filtrosContain'>
                     <div className='inputsColumn'>
@@ -449,14 +471,7 @@ export default function ServiciosData() {
                         </select>
                     </div>
 
-                    <div className='inputsColumn'>
-                        <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
-                            <option value="">Estado</option>
-                            <option value="Estandar">Estandar</option>
-                            <option value="Premiun">Premiun</option>
 
-                        </select>
-                    </div>
 
                     <button className='reload' onClick={recargar}><FontAwesomeIcon icon={faSync} /></button>
                     <button className='reverse' onClick={invertirOrden}>
@@ -569,17 +584,7 @@ export default function ServiciosData() {
                                         <option value="Mixto">Mixto</option>
                                     </select>
                                 </fieldset>
-                                <fieldset>
-                                    <legend>Estado (*)</legend>
-                                    <select
-                                        value={nuevoEstado !== '' ? nuevoEstado : servicio.estado}
-                                        onChange={(e) => setNuevoEstado(e.target.value)}
-                                    >
-                                        <option value={servicio.estado}>{servicio.estado}</option>
-                                        <option value="Estandar">Estandar</option>
-                                        <option value="Premiun">Premiun</option>
-                                    </select>
-                                </fieldset>
+
                                 <fieldset>
                                     <legend>Nombre  (*)</legend>
                                     <input
@@ -713,7 +718,6 @@ export default function ServiciosData() {
                             <th>Precio</th>
                             <th>Categoria</th>
                             <th>Subcategoria</th>
-                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -769,14 +773,7 @@ export default function ServiciosData() {
                                                         </>
                                                     }
                                                 </td>
-                                                {item.estado === 'Estandard' ? (
-                                                    <td style={{ color: '#008000' }}>{item.estado}</td>
-                                                ) : item.estado === 'Premiun' ? (
-                                                    <td style={{ color: 'red' }}>{item.estado}</td>
-                                                ) : (
 
-                                                    <td>{item.estado}</td>
-                                                )}
                                                 <td>
                                                     <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
                                                         <FontAwesomeIcon icon={faTrash} />
@@ -841,14 +838,7 @@ export default function ServiciosData() {
                                                         </>
                                                     }
                                                 </td>
-                                                {item.estado === 'Estandard' ? (
-                                                    <td style={{ color: '#008000' }}>{item.estado}</td>
-                                                ) : item.estado === 'Premiun' ? (
-                                                    <td style={{ color: 'red' }}>{item.estado}</td>
-                                                ) : (
 
-                                                    <td>{item.estado}</td>
-                                                )}
                                                 <td>
                                                     <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
                                                         <FontAwesomeIcon icon={faTrash} />
@@ -917,14 +907,7 @@ export default function ServiciosData() {
                                                 </>
                                             }
                                         </td>
-                                        {item.estado === 'Estandard' ? (
-                                            <td style={{ color: '#008000' }}>{item.estado}</td>
-                                        ) : item.estado === 'Premiun' ? (
-                                            <td style={{ color: 'red' }}>{item.estado}</td>
-                                        ) : (
 
-                                            <td>{item.estado}</td>
-                                        )}
                                         <td>
                                             <button className='eliminar' onClick={() => eliminarProducto(item.idServicio)}>
                                                 <FontAwesomeIcon icon={faTrash} />

@@ -5,15 +5,17 @@ import HeaderDash from '../../Components/Admin/HeaderDash/HeaderDash'
 import UsuariosMain from '../../Components/Admin/UsuariosMain/UsuariosMain'
 import CardsCantidad from '../../Components/Admin/CardsCantidad/CardsCantidad'
 import InfoUserMain from '../../Components/Admin/InfoUserMain/InfoUserMain'
-import GraficoPedidos from '../../Components/Admin/Graficos/GraficoPedidos'
-import GraficoProductos from '../../Components/Admin/Graficos/GraficoProductos'
+import Grafico1 from '../../Components/Admin/Graficos/Grafico1'
+import Grafico2 from '../../Components/Admin/Graficos/Grafico2'
 import { fetchUsuario, getUsuario } from '../../Components/user';
+import ServiciosData from '../../Components/Admin/ServiciosData/ServiciosData'
+import TurnosData from '../../Components/Admin/TurnosData/TurnosData'
 export default function Main() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
-            await fetchUsuario(); // Llama a la función para obtener datos del usuario
+            await fetchUsuario();
             setLoading(false);
         };
 
@@ -39,35 +41,26 @@ export default function Main() {
                                     <div className='deFLexMain'>
                                         <CardsCantidad />
                                         <UsuariosMain />
-                                    </div>
-                                    <div className='graficosFlex'>
-                                        <GraficoPedidos />
-                                        <GraficoProductos />
-                                    </div>
-                                    <div className='deFLexMain'>
                                         <InfoUserMain />
                                     </div>
-
+                                    <div className='graficosFlex'>
+                                        <Grafico1 />
+                                        <Grafico2 />
+                                    </div>
                                 </div>
-
                             </>
                         ) : usuarioLegued?.rol === 'colaborador' ? (
                             <>
-                                <div className='containerMain'>
-                                    <div className='deFLexMain'>
-                                        <CardsCantidad />
-                                    </div>
-
-                                    <div className='deFLexMain'>
-                                        <InfoUserMain />
-                                    </div>
+                                <div className='container'>
+                                    <TurnosData />
+                                </div>
+                                <div className='container'>
+                                    <ServiciosData />
                                 </div>
                             </>
                         ) : (
-                            <div className='containerMain'>
-                                <div className='deFLexMain'>
-                                    <InfoUserMain />
-                                </div>
+                            <div>
+
                             </div>
                         )}
                     </>
@@ -77,21 +70,15 @@ export default function Main() {
                             <div className='deFLexMain'>
                                 <CardsCantidad />
                                 <UsuariosMain />
-                            </div>
-                            <div className='graficosFlex'>
-                                <GraficoPedidos />
-                                <GraficoProductos />
-                            </div>
-                            <div className='deFLexMain'>
                                 <InfoUserMain />
                             </div>
-
+                            <div className='graficosFlex'>
+                                <Grafico1 />
+                                <Grafico2 />
+                            </div>
                         </div>
-
                     </>
                 )}
-
-
                 <div>
 
                 </div>

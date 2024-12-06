@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './GraficoPedidos.css';
+import './Grafico.css';
 import { Chart } from 'primereact/chart';
 import baseURL from '../../url';
-
-export default function GraficoTurnos() {
+import { Link as Anchor } from "react-router-dom";
+export default function Grafico1() {
     const [chartDataDia, setChartDataDia] = useState({});
     const [chartDataSemana, setChartDataSemana] = useState({});
     const [chartDataMes, setChartDataMes] = useState({});
@@ -27,7 +27,7 @@ export default function GraficoTurnos() {
                 return response.json();
             })
             .then(data => {
-                const turnos = data.turnos?.filter(filt => filt.estado === 'Finalizado');
+                const turnos = data.turnos;
                 procesarDatos(turnos);
             })
             .catch(error => {
@@ -36,8 +36,9 @@ export default function GraficoTurnos() {
     };
 
     const procesarDatos = (turnos) => {
-        if (turnos.length === 0) {
-            console.warn('No hay turnos disponibles');
+        if (!turnos || turnos.length === 0) {
+            console.warn('No hay turnos disponibles, mostrando datos por defecto');
+            establecerDatosPorDefecto();
             return;
         }
 
@@ -45,6 +46,27 @@ export default function GraficoTurnos() {
         calcularTotalesPorSemana(turnos);
         calcularTotalesPorMes(turnos);
     };
+
+    const establecerDatosPorDefecto = () => {
+        // Datos por defecto para el gráfico diario
+        const fechasDefault = ['2024-12-01', '2024-12-02', '2024-12-03'];
+        const datosDefaultDia = [5, 3, 4];
+        setTotalDia(datosDefaultDia.reduce((acc, val) => acc + val, 0));
+        generarGrafico(fechasDefault, datosDefaultDia, 'Turnos por Día (Defecto)', setChartDataDia);
+
+        // Datos por defecto para el gráfico semanal
+        const semanasDefault = ['Semana 1', 'Semana 2', 'Semana 3'];
+        const datosDefaultSemana = [10, 15, 8];
+        setTotalSemana(datosDefaultSemana.reduce((acc, val) => acc + val, 0));
+        generarGrafico(semanasDefault, datosDefaultSemana, 'Turnos por Semana (Defecto)', setChartDataSemana);
+
+        // Datos por defecto para el gráfico mensual
+        const mesesDefault = ['Enero', 'Febrero', 'Marzo'];
+        const datosDefaultMes = [20, 25, 30];
+        setTotalMes(datosDefaultMes.reduce((acc, val) => acc + val, 0));
+        generarGrafico(mesesDefault, datosDefaultMes, 'Turnos por Mes (Defecto)', setChartDataMes);
+    };
+
 
     const calcularTotalesPorDia = (turnos) => {
         const totalesPorDia = {};
@@ -140,7 +162,12 @@ export default function GraficoTurnos() {
 
     return (
         <div className="GraficoContent">
-            <h3 className='titleGrafico'>Turnos Finalizados</h3>
+            <div className='deFlexMore'>
+                <h3>Turnos agendados</h3>
+                <Anchor to={`/dashboard/turnos`} className='logo'>
+                    Ver más
+                </Anchor>
+            </div>
             <div className="botones-grafico">
                 <button
                     className={activeChart === 'dia' ? 'activeBtnGraf' : 'desactiveBtn'}

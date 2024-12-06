@@ -64,15 +64,15 @@ export default function Navbar() {
                         <img src={logo} alt="logo" />
                     )}
                     <div className='deColumnNav'>
-                        {tienda?.nombre ? (
-                            <ss>{tienda?.nombre}</ss>
+                        {usuarioLegued?.nombre ? (
+                            <ss>{usuarioLegued?.nombre}</ss>
                         ) : (
-                            <ss>Tienda</ss>
+                            <ss>Sistema</ss>
                         )}
-                        {tienda?.email ? (
-                            <ss>{tienda?.email}</ss>
+                        {usuarioLegued?.email ? (
+                            <ss>{usuarioLegued?.email}</ss>
                         ) : (
-                            <ss>email@gmail.com</ss>
+                            <ss>sistema@gmail.com</ss>
                         )}
                     </div>
                 </div>
