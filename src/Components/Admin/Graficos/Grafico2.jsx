@@ -120,7 +120,7 @@ export default function Grafico2() {
                 {
                     label: `Turnos del servicio: ${servicioSeleccionado}`,
                     data: estados.map(estado => contadorPorEstado[estado]),
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                    backgroundColor: ['#0c71cf', '#008000', '#FF6384'],
                 },
             ],
         });

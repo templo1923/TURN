@@ -618,6 +618,16 @@ export default function ServiciosData() {
                                         onChange={(e) => setnuevaDireccion(e.target.value)}
                                     />
                                 </fieldset>
+                                <fieldset >
+                                    <legend>Mostrar en Banner</legend>
+                                    <select
+                                        value={nuevoEstado}
+                                        onChange={(e) => setNuevoEstado(e.target.value)}
+                                    >
+                                        <option value="Mostrar">Mostrar</option>
+                                        <option value="No-Mostrar">No-Mostrar</option>
+                                    </select>
+                                </fieldset>
                                 <fieldset id='descripcion'>
                                     <legend>Descripcion </legend>
                                     <textarea

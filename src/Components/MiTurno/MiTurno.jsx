@@ -8,14 +8,14 @@ import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
-
+import { useParams } from "react-router-dom";
 export default function MiTurno() {
     const [turnos, setTurnos] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
     const [dni, setDni] = useState(localStorage.getItem('dni') || '');
     const [turnoDetalle, setTurnoDetalle] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
+    const { idServicio } = useParams();
     useEffect(() => {
         cargarTurnos();
     }, []);
@@ -27,7 +27,12 @@ export default function MiTurno() {
     const cargarTurnos = () => {
         fetch(`${baseURL}/turnoGet.php`, { method: 'GET' })
             .then((response) => response.json())
-            .then((data) => setTurnos(data.turnos.reverse() || []))
+            .then((data) => {
+                const turnosFiltrados = data.turnos.filter(
+                    (turno) => turno.idServicio === parseInt(idServicio)
+                );
+                setTurnos(turnosFiltrados.reverse() || []);
+            })
             .catch((error) => console.error('Error al cargar turnos:', error));
     };
 
@@ -45,7 +50,9 @@ export default function MiTurno() {
     const handleInputChange = (e) => setDni(e.target.value);
 
     const buscarTurnoConAlerta = () => {
-        const turnoEncontrado = turnos?.find((turno) => turno.dni === dni);
+        const turnoEncontrado = turnos?.find(
+            (turno) => turno.dni === dni && turno.idServicio === parseInt(idServicio)
+        );
 
         if (turnoEncontrado) {
             setTurnoDetalle(turnoEncontrado);
@@ -58,7 +65,7 @@ export default function MiTurno() {
         } else {
             Swal.fire({
                 title: 'Turno no encontrado',
-                text: 'El DNI no corresponde a ningún turno existente.',
+                text: 'El DNI no corresponde a ningún turno existente para este servicio.',
                 icon: 'error',
                 confirmButtonText: 'Aceptar',
             });
@@ -67,9 +74,12 @@ export default function MiTurno() {
     };
 
     const buscarTurno = () => {
-        const turnoEncontrado = turnos?.find((turno) => turno.dni === dni);
+        const turnoEncontrado = turnos?.find(
+            (turno) => turno.dni === dni && turno.idServicio === parseInt(idServicio)
+        );
         setTurnoDetalle(turnoEncontrado || null);
     };
+
 
     // Función para generar y descargar el PDF
     const descargarTurnoPDF = (detallesTurno) => {
@@ -84,12 +94,10 @@ export default function MiTurno() {
         doc.setFontSize(14);
         doc.setTextColor("#34495e");
         doc.text("Turno N°:", 20, 30);
-        doc.setFontSize(14);
-        doc.text(String(detallesTurno.idTurno), 60, 30); // Asegúrate de convertirlo en cadena
+        doc.text(String(detallesTurno.idTurno), 60, 30);
 
         doc.text("Servicio:", 20, 40);
-        doc.setFontSize(14);
-        doc.text(String(detallesTurno.servicio), 60, 40); // Asegúrate de convertirlo en cadena
+        doc.text(String(detallesTurno.servicio), 60, 40);
 
         doc.setFontSize(16);
         doc.text("Días y Horarios:", 20, 50);
@@ -123,16 +131,30 @@ export default function MiTurno() {
         doc.setFontSize(14);
         doc.setTextColor("#34495e");
         doc.text("Nombre:", 20, yPos + 30);
-        doc.text(String(detallesTurno.nombre), 60, yPos + 30); // Asegúrate de convertirlo en cadena
+        doc.text(String(detallesTurno.nombre), 60, yPos + 30);
 
         doc.text("DNI:", 20, yPos + 40);
-        doc.text(String(detallesTurno.dni), 60, yPos + 40); // Asegúrate de convertirlo en cadena
+        doc.text(String(detallesTurno.dni), 60, yPos + 40);
 
         doc.text("Teléfono:", 20, yPos + 50);
-        doc.text(String(detallesTurno.telefono), 60, yPos + 50); // Asegúrate de convertirlo en cadena
+        doc.text(String(detallesTurno.telefono), 60, yPos + 50);
 
         doc.text("Email:", 20, yPos + 60);
-        doc.text(String(detallesTurno.email), 60, yPos + 60); // Asegúrate de convertirlo en cadena
+        doc.text(String(detallesTurno.email), 60, yPos + 60);
+
+        // Información del pago
+        doc.setFontSize(18);
+        doc.setTextColor("#2c3e50");
+        doc.text("Detalles del Pago", 20, yPos + 80);
+
+        // Fondo para detalles del pago
+        doc.setFillColor("#f7f7f7");
+        doc.roundedRect(15, yPos + 85, 180, 20, 5, 5, "F");
+
+        doc.setFontSize(14);
+        doc.setTextColor("#34495e");
+        doc.text("Método de Pago:", 20, yPos + 100);
+        doc.text(String(detallesTurno.pago), 70, yPos + 100);
 
         // Pie de página
         doc.setFontSize(12);
@@ -140,8 +162,10 @@ export default function MiTurno() {
         doc.text("Gracias por confiar en nosotros.", 105, 280, null, null, "center");
 
         // Descargar el PDF
-        doc.save(`Turno_${detallesTurno.idTurno}_${detallesTurno.nombre}.pdf`);
+        const nombreArchivo = `Turno_${detallesTurno.idTurno}_${detallesTurno?.nombre?.replace(/\s+/g, '_')}.pdf`;
+        doc.save(nombreArchivo);
     };
+
     const handleUpdateText = async (idTurno) => {
         const result = await Swal.fire({
             title: '¿Estás seguro?',
@@ -223,6 +247,7 @@ export default function MiTurno() {
                                 <span><strong>DNI:</strong> {turnoDetalle.dni}</span>
                                 <span><strong>Email:</strong> {turnoDetalle.email}</span>
                                 <span><strong>Teléfono:</strong> {turnoDetalle.telefono}</span>
+                                <span><strong>Pago:</strong> {turnoDetalle.pago}</span>
                             </div>
                             <div className="deFlexBtnTienda">
                                 <button onClick={() => descargarTurnoPDF(turnoDetalle)} className="btn">

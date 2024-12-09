@@ -34,6 +34,8 @@ export default function Dias() {
     const [mensaje, setMensaje] = useState('');
     const [turnos, setTurnos] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
+    const [pago, setPago] = useState('');
+
     useEffect(() => {
         cargarDias();
         cargarTurnos()
@@ -99,20 +101,21 @@ export default function Dias() {
 
     const generateMonthDays = () => {
         const daysInMonth = [];
-        const startOfMonth = dayjs().startOf('month');
-        const endOfMonth = dayjs().endOf('month');
         const today = dayjs();
 
-        for (let date = startOfMonth; date?.isBefore(endOfMonth); date = date.add(1, 'day')) {
-            if (date?.isSame(today, 'day') || date?.isAfter(today)) {
-                daysInMonth?.push({
-                    day: date.format('ddd').replace('.', '').toLowerCase(),
-                    date: date.format('YYYY-MM-DD'),
-                });
-            }
+        // Vamos a generar los días a partir de hoy hasta 30 días después
+        const endDate = today.add(30, 'day'); // 30 días después de hoy
+
+        for (let date = today; date.isBefore(endDate); date = date.add(1, 'day')) {
+            daysInMonth.push({
+                day: date.format('ddd').replace('.', '').toLowerCase(),
+                date: date.format('YYYY-MM-DD'),
+            });
         }
+
         return daysInMonth;
     };
+
 
     const handleDayClick = (monthDay, index) => {
         const selectedDayInfo = dia?.dias?.find(d => d.dia === monthDay.day);
@@ -148,26 +151,19 @@ export default function Dias() {
         doc.setFontSize(14);
         doc.setTextColor("#34495e");
         doc.text("Turno N°:", 20, 30);
-        doc.setFontSize(14);
         doc.text(detallesTurno.idTurno, 60, 30);
 
         doc.text("Servicio:", 20, 40);
-        doc.setFontSize(14);
         doc.text(detallesTurno.servicio, 60, 40);
 
         doc.setFontSize(16);
         doc.text("Día:", 20, 50);
-        doc.setFontSize(14);
         doc.text(detallesTurno.dia, 60, 50);
 
-        doc.setFontSize(16);
         doc.text("Fecha:", 20, 60);
-        doc.setFontSize(14);
         doc.text(detallesTurno.fecha, 60, 60);
 
-        doc.setFontSize(16);
         doc.text("Horario:", 20, 70);
-        doc.setFontSize(14);
         doc.text(`${detallesTurno.horarioInicio} - ${detallesTurno.horarioFin}`, 60, 70);
 
         // Información del cliente
@@ -177,7 +173,7 @@ export default function Dias() {
 
         // Fondo para datos del cliente
         doc.setFillColor("#f7f7f7");
-        doc.roundedRect(15, 95, 180, 40, 5, 5, "F");
+        doc.roundedRect(15, 95, 180, 60, 5, 5, "F");
 
         doc.setFontSize(14);
         doc.setTextColor("#34495e");
@@ -192,6 +188,20 @@ export default function Dias() {
 
         doc.text("Email:", 20, 140);
         doc.text(detallesTurno.email, 60, 140);
+
+        // Información del pago
+        doc.setFontSize(18);
+        doc.setTextColor("#2c3e50");
+        doc.text("Detalles del Pago", 20, 165);
+
+        // Fondo para detalles del pago
+        doc.setFillColor("#f7f7f7");
+        doc.roundedRect(15, 170, 180, 30, 5, 5, "F");
+
+        doc.setFontSize(14);
+        doc.setTextColor("#34495e");
+        doc.text("Método de Pago:", 20, 185);
+        doc.text(detallesTurno.pago, 70, 185);
 
         // Pie de página
         doc.setFontSize(12);
@@ -231,6 +241,7 @@ export default function Dias() {
             formData.append('idServicio', idServicio);
             formData.append('servicio', servicio);
             formData.append('estado', 'Pendiente');
+            formData.append('pago', pago);
             formData.append('dias', JSON.stringify(diasData));  // Agregar los días y horas como JSON
 
             // Enviar la solicitud con los datos
@@ -271,6 +282,7 @@ export default function Dias() {
                     dni,
                     telefono,
                     email,
+                    pago,
                 };
 
                 descargarTurnoPDF(detallesTurno);
@@ -496,6 +508,17 @@ export default function Dias() {
                                     onChange={(e) => setEmail(e.target.value)}
                                     placeholder='Correo electronico (*)'
                                 />
+                                <select
+                                    id="pago"
+                                    name="pago"
+                                    onChange={(e) => setPago(e.target.value)}
+                                    defaultValue=""
+                                >
+                                    <option value="" disabled>Selecciona un método de pago (*)</option>
+                                    <option value="Efectivo">Efectivo</option>
+                                    <option value="Transferencia Bancaria">Transferencia Bancaria</option>
+                                    <option value="Billetera Virtual">Billetera Virtual</option>
+                                </select>
                                 {mensaje ? (
                                     <button type='button' className='btn' disabled>
                                         {mensaje}

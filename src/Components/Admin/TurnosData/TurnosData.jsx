@@ -155,7 +155,7 @@ export default function TurnosData() {
                         : item.estado === "Finalizado"
                             ? "#008000"
                             : item.estado === "Cancelado"
-                                ? "#FF0000"
+                                ? "#FF6384"
                                 : "gray"; // Color predeterminado
 
                 return {
@@ -275,7 +275,7 @@ export default function TurnosData() {
     const exportarExcel = () => {
         const servicioSeleccionadoNombre = servicios.find(s => s.idServicio === servicioSeleccionado)?.titulo || "Todos los servicios";
 
-        const turnosFiltrados = turnos.filter(item => {
+        const turnosFiltrados = filteredTurnos.filter(item => {
             if (!usuarioLegued || !usuarioLegued.idUsuario) {
                 return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
             }
@@ -312,7 +312,7 @@ export default function TurnosData() {
     };
 
     const exportarPDF = () => {
-        const turnosFiltrados = turnos.filter(item => {
+        const turnosFiltrados = filteredTurnos.filter(item => {
             if (!usuarioLegued || !usuarioLegued.idUsuario) {
                 return servicioSeleccionado ? item.idServicio === servicioSeleccionado : true;
             }
@@ -481,6 +481,10 @@ export default function TurnosData() {
                         <fieldset>
                             <legend>Teléfono </legend>
                             <input disabled value={turnoSeleccionado.telefono} />
+                        </fieldset>
+                        <fieldset>
+                            <legend>Pago </legend>
+                            <input disabled value={turnoSeleccionado.pago} />
                         </fieldset>
                         <fieldset>
                             <legend>Estado (*)</legend>

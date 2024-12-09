@@ -99,6 +99,7 @@ try {
         telefono VARCHAR(255) NOT NULL,
         estado VARCHAR(30) NOT NULL,
         dias JSON NOT NULL,
+        pago VARCHAR(100) NOT NULL,
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )";
     crearTablaSiNoExiste($conexion, 'turnos', $consultaTurnos);

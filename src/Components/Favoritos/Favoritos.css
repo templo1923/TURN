@@ -45,6 +45,13 @@
     padding: 13px;
     border: none;
 }
+.modal-send-form select {
+    background-color: var(--gris2);
+    border-radius: 6px;
+    padding: 13px;
+    border: none;
+    color: var(--text-color2);
+}
 .overlay-cart {
     position: fixed;
     top: 0;

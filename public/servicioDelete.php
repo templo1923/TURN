@@ -21,7 +21,6 @@ $servidor = $_ENV['DB_HOST'] . ':' . $_ENV['DB_PORT'];
 $usuario = $_ENV['DB_USER'];
 $contrasena = $_ENV['DB_PASS'];
 $dbname = $_ENV['DB_NAME'];
-$mensaje = "";
 
 try {
     $dsn = "mysql:host=$servidor;dbname=$dbname";
@@ -43,6 +42,12 @@ try {
         $sentenciaSelectImagen->execute();
         $imagen = $sentenciaSelectImagen->fetch(PDO::FETCH_ASSOC);
 
+        // Eliminar los turnos asociados al idServicio
+        $sqlDeleteTurnos = "DELETE FROM turnos WHERE idServicio = :idServicio";
+        $sentenciaDeleteTurnos = $conexion->prepare($sqlDeleteTurnos);
+        $sentenciaDeleteTurnos->bindParam(':idServicio', $idServicio, PDO::PARAM_INT);
+        $sentenciaDeleteTurnos->execute();
+
         // Eliminar el servicio de la base de datos
         $sqlDelete = "DELETE FROM servicios WHERE idServicio = :idServicio";
         $sentenciaDelete = $conexion->prepare($sqlDelete);
@@ -58,7 +63,7 @@ try {
                 }
             }
 
-            echo json_encode(["mensaje" => "Servicio y la imagen1 asociada eliminados correctamente"]);
+            echo json_encode(["mensaje" => "Servicio, turnos asociados y la imagen1 eliminados correctamente"]);
         } else {
             echo json_encode(["error" => "Error al eliminar el servicio"]);
         }

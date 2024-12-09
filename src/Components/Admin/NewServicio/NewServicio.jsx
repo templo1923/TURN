@@ -162,7 +162,7 @@ export default function NewServicio() {
         formData.append('nombre', nombre);
         formData.append('email', email);
         formData.append('tipo', tipo);
-        formData.append('estado', 'Estandard');
+        formData.append('estado', 'Mostrar');
         formData.append('direccion', direccion);
         formData.append('idUsuario', usuarioLegued.idUsuario);
         try {
@@ -189,39 +189,6 @@ export default function NewServicio() {
 
     const handleTipo = (e) => {
         setTipo(e.target.value);
-    };
-
-
-
-
-
-    //Calcular limite de Plan-----------------------------
-    const plan = planes[0]?.plan
-    const limitePlan = planes[0]?.limiteProducto
-    const mensagePlan = `¡Alcanzaste el límite del plan ${plan}! <br/>Tu límite son ${limitePlan} productos`
-    const [productos, setProductos] = useState([]);
-    const alertPlan = () => {
-        cargarProductos();
-        Swal.fire(
-            '¡Error!',
-            mensagePlan,
-            'error'
-        );
-    };
-    useEffect(() => {
-        cargarProductos();
-
-    }, []);
-    const cargarProductos = () => {
-        fetch(`${baseURL}/productosGet.php`, {
-            method: 'GET',
-        })
-            .then(response => response.json())
-            .then(data => {
-                setProductos(data.productos || []);
-                console.log(data.productos)
-            })
-            .catch(error => console.error('Error al cargar productos:', error));
     };
 
 
