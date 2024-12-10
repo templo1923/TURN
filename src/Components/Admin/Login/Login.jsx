@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import './Login.css';
 import { useNavigate, } from 'react-router';
 import baseURL from '../../url';
-import logo from '../../../images/logo.png'
 import { Link as Anchor } from 'react-router-dom';
 export default function Login() {
     const [email, setEmail] = useState('');

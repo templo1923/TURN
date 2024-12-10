@@ -51,12 +51,10 @@ export default function Main() {
                             </>
                         ) : usuarioLegued?.rol === 'colaborador' ? (
                             <>
-                                <div className='container'>
+                                <div className='container2'>
                                     <TurnosData />
                                 </div>
-                                <div className='container'>
-                                    <ServiciosData />
-                                </div>
+
                             </>
                         ) : (
                             <div>

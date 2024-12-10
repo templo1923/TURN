@@ -52,19 +52,19 @@ export default function Grafico1() {
         const fechasDefault = ['2024-12-01', '2024-12-02', '2024-12-03'];
         const datosDefaultDia = [5, 3, 4];
         setTotalDia(datosDefaultDia.reduce((acc, val) => acc + val, 0));
-        generarGrafico(fechasDefault, datosDefaultDia, 'Turnos por Día (Defecto)', setChartDataDia);
+        generarGrafico(fechasDefault, datosDefaultDia, 'Turnos por Día (Ejemplo)', setChartDataDia);
 
         // Datos por defecto para el gráfico semanal
         const semanasDefault = ['Semana 1', 'Semana 2', 'Semana 3'];
         const datosDefaultSemana = [10, 15, 8];
         setTotalSemana(datosDefaultSemana.reduce((acc, val) => acc + val, 0));
-        generarGrafico(semanasDefault, datosDefaultSemana, 'Turnos por Semana (Defecto)', setChartDataSemana);
+        generarGrafico(semanasDefault, datosDefaultSemana, 'Turnos por Semana (Ejemplo)', setChartDataSemana);
 
         // Datos por defecto para el gráfico mensual
         const mesesDefault = ['Enero', 'Febrero', 'Marzo'];
         const datosDefaultMes = [20, 25, 30];
         setTotalMes(datosDefaultMes.reduce((acc, val) => acc + val, 0));
-        generarGrafico(mesesDefault, datosDefaultMes, 'Turnos por Mes (Defecto)', setChartDataMes);
+        generarGrafico(mesesDefault, datosDefaultMes, 'Turnos por Mes (Ejemplo)', setChartDataMes);
     };
 
 
@@ -147,8 +147,8 @@ export default function Grafico1() {
                     label: labelGrafico,
                     data: data,
                     fill: true,
-                    backgroundColor: 'rgba(31, 135, 233, 0.455)',
-                    borderColor: '#0c71cf',
+                    backgroundColor: '#06b5b87e',
+                    borderColor: '#06b5b8',
                     tension: 0.4
                 }
             ]

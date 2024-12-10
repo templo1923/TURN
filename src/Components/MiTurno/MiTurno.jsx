@@ -9,20 +9,17 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faSearch } from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import { useParams } from "react-router-dom";
+
 export default function MiTurno() {
     const [turnos, setTurnos] = useState([]);
-    const [isFocused, setIsFocused] = useState(false);
-    const [dni, setDni] = useState(localStorage.getItem('dni') || '');
+    const [criterio, setCriterio] = useState(''); // Para buscar por DNI o teléfono
     const [turnoDetalle, setTurnoDetalle] = useState(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const { idServicio } = useParams();
+
     useEffect(() => {
         cargarTurnos();
     }, []);
-
-    useEffect(() => {
-        if (dni) buscarTurno();
-    }, [modalIsOpen]);
 
     const cargarTurnos = () => {
         fetch(`${baseURL}/turnoGet.php`, { method: 'GET' })
@@ -36,22 +33,20 @@ export default function MiTurno() {
             .catch((error) => console.error('Error al cargar turnos:', error));
     };
 
-    const openModal = () => {
-        setModalIsOpen(true);
-        setIsFocused(true);
-    };
+    const openModal = () => setModalIsOpen(true);
 
     const closeModal = () => {
         setModalIsOpen(false);
-        setIsFocused(false);
         setTurnoDetalle(null);
     };
 
-    const handleInputChange = (e) => setDni(e.target.value);
+    const handleInputChange = (e) => setCriterio(e.target.value);
 
-    const buscarTurnoConAlerta = () => {
+    const buscarTurno = () => {
         const turnoEncontrado = turnos?.find(
-            (turno) => turno.dni === dni && turno.idServicio === parseInt(idServicio)
+            (turno) =>
+                (turno.dni === criterio || turno.telefono === criterio) &&
+                turno.idServicio === parseInt(idServicio)
         );
 
         if (turnoEncontrado) {
@@ -65,22 +60,13 @@ export default function MiTurno() {
         } else {
             Swal.fire({
                 title: 'Turno no encontrado',
-                text: 'El DNI no corresponde a ningún turno existente para este servicio.',
+                text: 'No se encontró un turno para este servicio con el criterio ingresado.',
                 icon: 'error',
                 confirmButtonText: 'Aceptar',
             });
             setTurnoDetalle(null);
         }
     };
-
-    const buscarTurno = () => {
-        const turnoEncontrado = turnos?.find(
-            (turno) => turno.dni === dni && turno.idServicio === parseInt(idServicio)
-        );
-        setTurnoDetalle(turnoEncontrado || null);
-    };
-
-
     // Función para generar y descargar el PDF
     const descargarTurnoPDF = (detallesTurno) => {
         const doc = new jsPDF();
@@ -224,14 +210,14 @@ export default function MiTurno() {
                     <fieldset className="inputSearch">
                         <input
                             type="text"
-                            placeholder="Ingrese DNI"
-                            value={dni}
+                            placeholder="Ingrese DNI o Teléfono"
+                            value={criterio}
                             onChange={handleInputChange}
                             className="input"
                         />
                         <FontAwesomeIcon
                             icon={faSearch}
-                            onClick={buscarTurnoConAlerta}
+                            onClick={buscarTurno}
                             className="search-icon"
                         />
                     </fieldset>
@@ -242,12 +228,26 @@ export default function MiTurno() {
                             <div className="deFlexSpanPedido">
                                 <span><strong>Turno N°:</strong> {turnoDetalle.idTurno}</span>
                                 <span><strong>Servicio:</strong> {turnoDetalle.servicio}</span>
+                                {JSON?.parse(turnoDetalle.dias)?.map((diaInfo, index) => {
+                                    // Convertir la fecha al formato adecuado
+                                    const fecha = new Date(diaInfo.dia);
+                                    const opcionesFormato = { weekday: 'long', day: 'numeric', month: 'long' };
+                                    const fechaFormateada = fecha.toLocaleDateString('es-ES', opcionesFormato);
+
+                                    return (
+                                        <span key={index}>
+                                            <strong>Fecha:</strong> {fechaFormateada} - {diaInfo.horaInicio} - {diaInfo.horaFin}
+                                        </span>
+                                    );
+                                })}
                                 <span><strong>Estado:</strong> {turnoDetalle.estado}</span>
                                 <span><strong>Nombre:</strong> {turnoDetalle.nombre}</span>
                                 <span><strong>DNI:</strong> {turnoDetalle.dni}</span>
                                 <span><strong>Email:</strong> {turnoDetalle.email}</span>
                                 <span><strong>Teléfono:</strong> {turnoDetalle.telefono}</span>
                                 <span><strong>Pago:</strong> {turnoDetalle.pago}</span>
+
+
                             </div>
                             <div className="deFlexBtnTienda">
                                 <button onClick={() => descargarTurnoPDF(turnoDetalle)} className="btn">

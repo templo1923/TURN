@@ -154,7 +154,7 @@ export default function Detail() {
                 <button className="back" onClick={goBack}> <FontAwesomeIcon icon={faArrowLeft} /> </button>
                 <div className="deFLexIcon">
                     <button onClick={() => agregarAFavoritos(servicio.idServicio)} className='favoritos-btn'>
-                        <FontAwesomeIcon icon={faHeart} style={{ color: favoritos.includes(servicio.idServicio) ? 'red' : 'gray' }} />
+                        <FontAwesomeIcon icon={faHeart} style={{ color: favoritos.includes(servicio.idServicio) ? '#06b5b8' : 'gray' }} />
                     </button>
                     <button className="share" onClick={handleCompartirClick}> <FontAwesomeIcon icon={faExternalLinkAlt} /> </button>
                 </div>
@@ -217,7 +217,7 @@ export default function Detail() {
                                 <span>Email</span> <i className="fa fa-envelope"></i>
                             </Anchor>
 
-                            <button className="wpp" onClick={handleWhatsappMessage}>
+                            <button className="emailBtn" onClick={handleWhatsappMessage}>
                                 <span>WhatsApp</span>
                                 <i className='fa fa-whatsapp'></i>
                             </button>

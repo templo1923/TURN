@@ -278,8 +278,8 @@ hr{
     align-items: center;
 }
 .iconUser{
-    background-color: var(--gris2);
-    color: var(--text-color2);
+    background-color: var(--color1);
+    color: var(--blanco);
     padding: 10px;
     border-radius: 100%;
 }
@@ -372,8 +372,6 @@ hr{
     font-size: 10px;
 }
 .iconUser{
-    background-color: var(--gris2);
-    color: var(--text-color2);
     padding: 8px;
     font-size: 10px;
 }

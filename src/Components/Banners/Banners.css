@@ -27,6 +27,7 @@
 .BannerContain {
     padding: 0% 10%;
     padding-top: 5rem;
+    background-color: var(--blanco);
 }
 
 .service-slide {
@@ -37,7 +38,8 @@
 }
 
 .service-slide-text {
-    background-color: rgba(0, 0, 0, 0.532);
+    background-color: rgba(0, 0, 0, 0.29);
+    backdrop-filter: blur(5px);
     position: absolute;
     margin: 2rem 4rem;
     border-radius: 10px;
@@ -45,6 +47,7 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
+    min-width: 50vh;
 }
 
 .deFlexSlide {
@@ -90,7 +93,15 @@
     font-size: 19px;
     color: var(--blanco);
 }
-
+.service-slide-text span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 40ch;
+    font-weight: 500;
+    font-size: 13px;
+    color: var(--blanco);
+}
 .service-slide-text h5 {
     white-space: nowrap;
     overflow: hidden;
@@ -138,7 +149,7 @@
     }
 
     .service-slide-text h5 {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .service-slide-text strong {
@@ -147,7 +158,6 @@
     }
 
     .service-slide-text {
-        background-color: rgba(0, 0, 0, 0.532);
         position: absolute;
         margin: 1rem 1rem;
         border-radius: 10px;
@@ -155,6 +165,7 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
+        min-width: 15vh;
     }
 
     .deColumnlide {
@@ -164,7 +175,11 @@
     .service-slide-text a {
         padding: 3px;
         width: 6rem;
-        border-radius: 5px;
-        font-size: 13px;
+        font-size: 11px;
     }
+    .service-slide-text span {
+        max-width: 25ch;
+        font-size: 11px;
+    }
+
 }

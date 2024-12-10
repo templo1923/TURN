@@ -151,7 +151,7 @@ export default function TurnosData() {
             return dias?.map(dia => {
                 const bgColor =
                     item.estado === "Pendiente"
-                        ? "#0c71cf"
+                        ? "#06b5b8"
                         : item.estado === "Finalizado"
                             ? "#008000"
                             : item.estado === "Cancelado"

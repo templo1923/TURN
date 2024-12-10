@@ -6,7 +6,6 @@ import { faHome, faUser, faUsers, faImage, faChevronDown, faChevronUp, faCode, f
 import { faGauge, faStore, faList, faRectangleList, faBuilding, faTag } from '@fortawesome/free-solid-svg-icons';
 import { faProductHunt } from '@fortawesome/free-brands-svg-icons';
 import { fetchUsuario, getUsuario } from '../../user';
-import logo from '../../../images/logo.png';
 import Logout from '../Logout/Logout';
 import baseURL from '../../url';
 
@@ -61,7 +60,7 @@ export default function Navbar() {
                     {tienda?.imagen1 ? (
                         <img src={tienda?.imagen1} alt="logo" />
                     ) : (
-                        <img src={logo} alt="logo" />
+                        <></>
                     )}
                     <div className='deColumnNav'>
                         {usuarioLegued?.nombre ? (

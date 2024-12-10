@@ -26,6 +26,7 @@ export default function NewServicio() {
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [tipo, setTipo] = useState('');
+    const [estado, setEstado] = useState('');
     useEffect(() => {
         cargarCategoriasYSubcategorias();
     }, []);
@@ -147,9 +148,15 @@ export default function NewServicio() {
 
         // Validar que los campos obligatorios estén completos
         if (!formData.get('titulo') || !idCategoria || !formData.get('precio')) {
-            toast.error('Por favor, complete todos los campos obligatorios.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Por favor, complete todos los campos obligatorios.',
+            });
             return;
         }
+
+
 
         // Añadir idCategoria al FormData
         formData.append('idCategoria', idCategoria);
@@ -162,7 +169,7 @@ export default function NewServicio() {
         formData.append('nombre', nombre);
         formData.append('email', email);
         formData.append('tipo', tipo);
-        formData.append('estado', 'Mostrar');
+        formData.append('estado', estado);
         formData.append('direccion', direccion);
         formData.append('idUsuario', usuarioLegued.idUsuario);
         try {
@@ -177,11 +184,22 @@ export default function NewServicio() {
                 toast.success(data.mensaje);
                 window.location.reload();
             } else {
-                toast.error(data.error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.error,
+                    timer: 3000,
+                });
+
             }
         } catch (error) {
             console.error('Error al crear:', error);
-            toast.error('Error de conexión. Inténtelo de nuevo.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error de conexión',
+                text: 'Inténtelo de nuevo.',
+            });
+
         }
     };
 
@@ -190,7 +208,9 @@ export default function NewServicio() {
     const handleTipo = (e) => {
         setTipo(e.target.value);
     };
-
+    const handleEstado = (e) => {
+        setEstado(e.target.value);
+    };
 
     return (
         <div className='NewContain'>
@@ -318,7 +338,19 @@ export default function NewServicio() {
                                         onChange={(e) => setDireccion(e.target.value)}
                                     />
                                 </fieldset>
-
+                                <fieldset>
+                                    <legend>Mostrar en Banner</legend>
+                                    <select
+                                        id="estado"
+                                        name="estado"
+                                        value={estado}
+                                        onChange={handleEstado}
+                                    >
+                                        <option value="">Selecciona una tipo</option>
+                                        <option value="Mostrar">Mostrar</option>
+                                        <option value="No-Mostrar">No-Mostrar</option>
+                                    </select>
+                                </fieldset>
                                 <fieldset id='descripcion'>
                                     <legend>Descripción  </legend>
                                     <textarea

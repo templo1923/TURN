@@ -28,8 +28,12 @@
 .footerText h2{
     color: var(--blanco);
     font-weight: 500;
-    margin-bottom: 10px;
     font-size: 1.2em;
+}
+.footerText span{
+    color: var(--blanco);
+    font-weight: 500;
+    font-size: 0.8em;
 }
 .footerText a{
     font-size: 1em;

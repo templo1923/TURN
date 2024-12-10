@@ -27,7 +27,7 @@ export default function Banners() {
         })
             .then(response => response.json())
             .then(data => {
-                setServicios(data.servicios.reverse().slice(0, 2));
+                setServicios(data?.servicios?.filter(f => f.estado === 'Mostrar'));
                 setLoading(false);
             })
             .catch(error => {
@@ -42,7 +42,7 @@ export default function Banners() {
         })
             .then(response => response.json())
             .then(data => {
-                const bannerImages = data.banner.map(banner => banner.imagen);
+                const bannerImages = data.banner?.map(banner => banner.imagen);
                 setImages(bannerImages);
                 setLoading(false);
             })
@@ -111,9 +111,12 @@ export default function Banners() {
                                     <img src={obtenerImagen(slide.content)} alt={`servicio-${index}`} />
                                     <div className='service-slide-text'>
                                         <h3>{slide?.content?.titulo}</h3>
+                                        <span>
+                                            {slide?.content?.descripcion}
+                                        </span>
                                         <h5>{moneda} {String(slide.content?.precio)?.replace(/\B(?=(\d{3})+(?!\d))/g, ".")}</h5>
                                         <Anchor to={`/servicio/${slide?.content?.idServicio}/${slide?.content?.titulo?.replace(/\s+/g, '-')}`}>
-                                            Ver Servicio
+                                            Ver Más
                                         </Anchor>
                                     </div>
                                 </div>

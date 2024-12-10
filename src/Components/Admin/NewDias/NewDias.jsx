@@ -177,7 +177,7 @@ export default function NewDias() {
         <div className='NewContain' id='NewDias'>
             <ToastContainer />
             <button onClick={toggleModal} className='btnSave'>
-                <span>+</span> Agregar Dias
+                <span>+</span>  Dias
             </button>
             {modalOpen && (
                 <div className="modal">

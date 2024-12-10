@@ -259,9 +259,6 @@ export default function Dias() {
                     'success'
                 );
 
-                // Guardar el idTurno en localStorage
-                localStorage.setItem('idTurno', data.idTurno);
-                localStorage.setItem('dni', dni);
                 // Limpiar campos y cerrar modal
                 setNombre('');
                 setDni('');
@@ -428,8 +425,8 @@ export default function Dias() {
                                             onClick={() => !isOcupado && handleHorarioClick(horario, selectedDay.date)}
                                             style={{
                                                 cursor: isOcupado ? 'not-allowed' : 'pointer',
-                                                backgroundColor: isOcupado ? '#0076e430' : '',
-                                                color: isOcupado ? '#0c71cf' : '',
+                                                backgroundColor: isOcupado ? '#06b5b826' : '',
+                                                color: isOcupado ? '#06b5b8' : '',
                                             }}
                                             disabled={isOcupado} // Desactivar si el horario está ocupado
                                         >

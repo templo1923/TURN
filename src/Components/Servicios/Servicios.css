@@ -28,8 +28,22 @@
     padding: 10px;
    
 }
-
-
+#cardServicio:hover{
+    background-color: var(--color1);
+}
+#cardServicio:hover h3{
+    color: var(--blanco);
+}
+#cardServicio:hover span{
+    color: var(--blanco);
+}
+#cardServicio:hover strong{
+    color: var(--blanco);
+}
+#cardServicio:hover .iconCard{
+    color: var(--color1);
+    background-color: var(--blanco)!important;
+}
 #cardServicio img{
     width: 100%;
     height: 11rem;
@@ -75,7 +89,7 @@
 }
 .categoriaSection h2{
     font-weight: 600;
-    color: var(--text-color2);
+    color: var(--color1);
     border-bottom: 1px solid #4140403d;
     margin-bottom: 2rem;
     margin-top: 2rem;
@@ -217,16 +231,19 @@
 }
 #cardServicio{
     width: 60%;
-    margin: 0 10px 1rem 5px;
-    padding: 8px;
+    margin: 10px 10px 1rem 5px;
+    padding: 0;
     height: 13.4rem;
+    border-radius: 15px;
+   
 }
 #cardServicio img{
     height:7rem;
-    border-radius: 10px;
+    border-radius: 0;
+    
 }
 .cardServicioText{
-    padding: 5px;
+    padding: 8px 10px;
 }
 .cardServicioText h3{
     font-size: 1em;
@@ -289,6 +306,10 @@
     gap: 7px;
     width: 100%;
 }
+.serviciosLista #cardServicio img{
+    height:7rem;
+    border-radius: 10px;
+}
 .serviciosLista .cardServicioText{
     justify-content: space-around;
 }
@@ -307,10 +328,23 @@
 .serviciosLista .cardServicioText strong{
     max-width: 28ch;
 }
+.subcategoria {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 30ch;
+}
+.serviciosLista .subcategoria {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 17ch;
+    font-size: 9px;
+}
 .categoriaBoton{
-    padding: 8px 20px ;
+    padding: 6px 18px ;
 }
 .activeCategoria {
-    padding: 8px 20px ;
+    padding: 6px 18px ;
 }
 }

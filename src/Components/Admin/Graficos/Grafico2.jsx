@@ -68,7 +68,7 @@ export default function Grafico2() {
         const textColor = documentStyle.getPropertyValue('--text-color');
         const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-        const backgroundColors = generateColorShades('#0c71cf', labels.length);
+        const backgroundColors = generateColorShades('#06b5b8', labels.length);
 
         setChartData({
             labels: labels,
@@ -77,7 +77,7 @@ export default function Grafico2() {
                     label: 'Cantidad de turnos por servicio',
                     data: data,
                     backgroundColor: backgroundColors,
-                    borderColor: '#0c71cf',
+                    borderColor: '#06b5b8',
                     borderWidth: 1,
                 },
             ],
@@ -120,7 +120,7 @@ export default function Grafico2() {
                 {
                     label: `Turnos del servicio: ${servicioSeleccionado}`,
                     data: estados.map(estado => contadorPorEstado[estado]),
-                    backgroundColor: ['#0c71cf', '#008000', '#FF6384'],
+                    backgroundColor: ['#06b5b8', '#008000', '#FF6384'],
                 },
             ],
         });
@@ -171,8 +171,8 @@ export default function Grafico2() {
                 {
                     label: 'Datos de ejemplo',
                     data: data,
-                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
-                    borderColor: '#0c71cf',
+                    backgroundColor: ['#06b5b8', '#06b5b87e', '#06b5b826'],
+                    borderColor: '#06b5b8',
                 },
             ],
         });
