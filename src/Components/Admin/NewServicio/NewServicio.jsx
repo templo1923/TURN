@@ -6,7 +6,6 @@ import baseURL from '../../url';
 import imageIcon from '../../../images/imageIcon.png';
 import { fetchUsuario, getUsuario } from '../../user';
 import Swal from 'sweetalert2';
-import planes from '../../planes';
 
 export default function NewServicio() {
     const [mensaje, setMensaje] = useState('');

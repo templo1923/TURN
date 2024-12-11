@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import './Dias.css';
 import Modal from 'react-modal';
 import baseURL from '../url';
+import zonaHoraria from '../zonaHoraria';
 import Swal from 'sweetalert2';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
@@ -13,8 +14,11 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.locale('es');
-
 SwiperCore.use([Navigation, Pagination, Autoplay]);
 
 export default function Dias() {
@@ -35,7 +39,10 @@ export default function Dias() {
     const [turnos, setTurnos] = useState([]);
     const [isFocused, setIsFocused] = useState(false);
     const [pago, setPago] = useState('');
-
+    const timezone = zonaHoraria;
+    const ahora = dayjs().tz(timezone);
+    const fechaActual = ahora.format('YYYY-MM-DD');
+    const horaActualNum = ahora.hour() + ahora.minute() / 60; // Hora actual en formato numérico
     useEffect(() => {
         cargarDias();
         cargarTurnos()
@@ -405,42 +412,62 @@ export default function Dias() {
                         })}
 
                     </Swiper>
+
+
                     {selectedDay ? (
                         <div className='horariosSeleccionados'>
-                            {/* <h4>{dayjs(selectedDay?.date)?.format('dddd, D [de] MMMM [de] YYYY')}:</h4> */}
                             <div className="flexGrapHoras">
                                 {selectedDay?.horarios?.map((horario, idx) => {
-                                    // Verificar si el horario está ocupado por algún turno del mismo servicio
-                                    const isOcupado = turnos.some(turno =>
-                                        turno.dias.some(d =>
+                                    // Convertir horario de fin a formato numérico
+                                    const [horaFin, minutoFin] = horario?.horaFin?.split(':').map(Number);
+                                    const horarioFinNum = horaFin + minutoFin / 60;
+
+                                    // Verificar si el horario está ocupado
+                                    const isOcupado = turnos?.some(turno =>
+                                        turno?.dias?.some(d =>
                                             d.dia === selectedDay.date &&
                                             d.horaInicio === horario.horaInicio &&
                                             d.horaFin === horario.horaFin
                                         )
                                     );
 
+                                    // Verificar si el horario ya pasó
+                                    const isHorarioPasado = selectedDay.date === fechaActual && horaActualNum > horarioFinNum;
+
+                                    // Determinar el estilo del botón
+                                    const buttonStyles = {
+                                        cursor: isOcupado || isHorarioPasado ? 'not-allowed' : 'pointer',
+                                        backgroundColor: isOcupado
+                                            ? '#06b5b826' // Estilo para horarios ocupados
+                                            : isHorarioPasado
+                                                ? '#ff000018' // Estilo para horarios pasados (rojo claro)
+                                                : '',
+                                        color: isOcupado
+                                            ? '#06b5b8' // Color de texto para ocupados
+                                            : isHorarioPasado
+                                                ? '#ff0000' // Color de texto rojo para horarios pasados
+                                                : '',
+                                    };
+
                                     return (
                                         <button
                                             key={idx}
-                                            onClick={() => !isOcupado && handleHorarioClick(horario, selectedDay.date)}
-                                            style={{
-                                                cursor: isOcupado ? 'not-allowed' : 'pointer',
-                                                backgroundColor: isOcupado ? '#06b5b826' : '',
-                                                color: isOcupado ? '#06b5b8' : '',
-                                            }}
-                                            disabled={isOcupado} // Desactivar si el horario está ocupado
+                                            onClick={() => !isOcupado && !isHorarioPasado && handleHorarioClick(horario, selectedDay.date)}
+                                            style={buttonStyles}
+                                            disabled={isOcupado || isHorarioPasado} // Desactivar si el horario está ocupado o ya pasó
                                         >
                                             {horario.horaInicio} - {horario.horaFin}
                                         </button>
                                     );
                                 })}
                             </div>
-
-
                         </div>
                     ) : (
                         <h4 className="textCenter">Selecciona un día para ver sus horarios.</h4>
                     )}
+
+
+
 
 
                     {selectedHorario && (
