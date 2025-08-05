@@ -2,9 +2,9 @@
 const getBaseURL = () => {
     const currentHost = window.location.hostname; // Obtiene el host actual
     if (currentHost.startsWith('www.')) {
-        return 'http://75.102.22.152/~catalogo/';
+        return 'https://catalogosco.top/';
     } else {
-        return 'http://75.102.22.152/~catalogo/';
+        return 'https://catalogosco.top/';
     }
 };
 
