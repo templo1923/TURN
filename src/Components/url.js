@@ -2,9 +2,9 @@
 const getBaseURL = () => {
     const currentHost = window.location.hostname; // Obtiene el host actual
     if (currentHost.startsWith('www.')) {
-        return 'http://sistema-turnos.encatalogo.com/';
+        return 'http://75.102.22.152/~catalogo/';
     } else {
-        return 'https://sistema-turnos.encatalogo.com/';
+        return 'http://75.102.22.152/~catalogo/';
     }
 };
 
