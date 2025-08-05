@@ -20,7 +20,7 @@ const zonas = {
 };
 
 // Zona horaria activa
-const zonaHoraria = zonas.argentina;
+const zonaHoraria = zonas.colombia;
 
 export default zonaHoraria;
 
